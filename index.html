@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Name - Game Developer Portfolio</title>
+    <style>
+        /* Base styles */
+        :root {
+            --background-color: #ffffff;
+            --text-color: #111111;
+            --link-color: #00cb0d;
+            --link-hover-color: #009a0a;
+            --card-bg-color: #f5f5f5;
+            --border-color: #e0e0e0;
+        }
+
+        [data-theme="dark"] {
+            --background-color: #121212;
+            --text-color: #f0f0f0;
+            --link-color: #00cb0d;
+            --link-hover-color: #00e60f;
+            --card-bg-color: #1e1e1e;
+            --border-color: #333333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--link-color);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        /* Links styles */
+        .social-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: var(--link-hover-color);
+            text-decoration: underline;
+        }
+
+        /* Project styles */
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background-color: var(--card-bg-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .project-title {
+            font-size: 1.4rem;
+            margin: 0 0 0.8rem 0;
+            color: var(--text-color);
+        }
+
+        .project-description {
+            margin-bottom: 1rem;
+        }
+
+        .project-tech {
+            font-size: 0.9rem;
+            color: var(--link-color);
+            margin-bottom: 1rem;
+        }
+
+        .project-status {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .status-completed {
+            background-color: rgba(0, 203, 13, 0.2);
+            color: #00cb0d;
+        }
+
+        .status-progress {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Theme toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .theme-toggle-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .projects {
+                grid-template-columns: 1fr;
+            }
+            
+            .social-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Mode">
+        <svg class="theme-toggle-icon" id="themeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </div>
+
+    <div class="container">
+        <header>
+            <!-- CUSTOMIZE: Change your name here -->
+            <h1>Your Name</h1>
+            <!-- CUSTOMIZE: Update your education -->
+            <div class="subtitle">BA in Computer Science</div>
+            
+            <div class="social-links">
+                <!-- CUSTOMIZE: Update these links with your own URLs -->
+                <a href="your-resume.pdf" target="_blank">Resume</a>
+                <a href="https://linkedin.com/in/yourprofile" target="_blank">LinkedIn</a>
+                <a href="https://github.com/yourusername" target="_blank">GitHub</a>
+                <a href="https://yourusername.itch.io" target="_blank">itch.io</a>
+                <a href="https://x.com/yourusername" target="_blank">X</a>
+            </div>
+        </header>
+
+        <section>
+            <h2>Games & Projects</h2>
+            <div class="projects">
+                <!-- CUSTOMIZE: Project Card Template - Copy this for each new project -->
+                <div class="project-card">
+                    <h3 class="project-title">Cosmic Explorer</h3>
+                    <div class="project-description">A 2D space exploration game with procedurally generated planets and dynamic combat system.</div>
+                    <div class="project-tech">Unity, C#, Shader Graph</div>
+                    <div class="project-status status-completed">Completed</div>
+                    <div class="project-links">
+                        <a href="#" target="_blank">Play on itch.io</a>
+                        <a href="#" target="_blank">GitHub</a>
+                    </div>
+                </div>
+                <!-- END Project Card Template -->
+
+                <!-- Example of an in-progress project -->
+                <div class="project-card">
+                    <h3 class="project-title">Dungeon Crawler RPG</h3>
+                    <div class="project-description">A top-down dungeon crawler with roguelike elements and pixel art graphics.</div>
+                    <div class="project-tech">Unreal Engine, Blueprint, C++</div>
+                    <div class="project-status status-progress">In Progress</div>
+                    <div class="project-links">
+                        <a href="#" target="_blank">Development Blog</a>
+                        <a href="#" target="_blank">GitHub</a>
+                    </div>
+                </div>
+
+                <!-- Add more project cards as needed -->
+            </div>
+        </section>
+
+        <footer>
+            <!-- CUSTOMIZE: Update the year as needed -->
+            <p>© 2025 Your Name - Game Developer Portfolio</p>
+        </footer>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        
+        // Check for saved theme preference or use system preference
+        const savedTheme = localStorage.getItem('theme') || 
+                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        
+        // Apply the theme
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        
+        // Theme toggle click handler
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        // Update the theme icon based on current theme
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                // Show sun icon in dark mode
+                themeIcon.innerHTML = `
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                `;
+            } else {
+                // Show moon icon in light mode
+                themeIcon.innerHTML = `
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                `;
+            }
+        }
+    </script>
+</body>
+</html> 
