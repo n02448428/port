@@ -3,16 +3,44 @@ let isGrid = false;
 const content = document.getElementById('content');
 const toggle = document.getElementById('toggleView');
 
-fetch('port/data/projects.json')
-  .then(res => res.json())
-  .then(data => renderProjects(data));
+// Fallback data in case fetch fails
+const fallbackData = [
+  {
+    "id": "test-001",
+    "title": "Test Project",
+    "date": "2025-08-15",
+    "category": "Music",
+    "media_urls": ["https://via.placeholder.com/300"],
+    "description": "Test description",
+    "tags": ["test"],
+    "links": ["https://example.com"],
+    "highlight": true,
+    "color_theme": "#00F0FF",
+    "view_type": ["Timeline", "Vault"],
+    "legacy_priority": 5
+  }
+];
+
+function fetchAndRender() {
+  fetch('./data/projects.json') // relative path works on GH Pages
+    .then(res => {
+      if (!res.ok) throw new Error('JSON fetch failed');
+      return res.json();
+    })
+    .then(data => renderProjects(data))
+    .catch(err => {
+      console.warn('Failed to fetch projects.json, using fallback data.', err);
+      renderProjects(fallbackData);
+    });
+}
 
 toggle.addEventListener('click', () => {
   isGrid = !isGrid;
-  fetch('data/projects.json')
-    .then(res => res.json())
-    .then(data => renderProjects(data));
+  fetchAndRender();
 });
+
+// Initial render
+fetchAndRender();
 
 function renderProjects(data) {
   content.innerHTML = '';
@@ -35,9 +63,8 @@ function renderProjects(data) {
       <p>${proj.date}</p>
     `;
     card.addEventListener('click', () => {
-      window.open(proj.links[0], '_blank');
+      if (proj.links && proj.links[0]) window.open(proj.links[0], '_blank');
     });
     content.appendChild(card);
   });
 }
-
