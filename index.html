@@ -7,15 +7,28 @@
   <link rel="stylesheet" href="styles/main.css">
   <link rel="icon" href="assets/favicon.ico">
 </head>
-<body>
+<body class="dark">
+
+  <!-- Floating Controls -->
+  <div id="controls">
+    <button id="toggleView">Timeline / Vault</button>
+    <button id="toggleMode">Dark / Light</button>
+    <button id="contactBtn">Connect</button>
+  </div>
+
   <!-- Hero / Logo -->
   <div id="hero">
     <span id="logo">MD</span>
     <span id="tagline">Eternally Ephemeral</span>
-    <button id="toggleView">Toggle View</button>
   </div>
 
-  <!-- Main content -->
+  <!-- Year Label -->
+  <div id="yearLabel">
+    <span id="yearText"></span>
+    <div id="yearLine"></div>
+  </div>
+
+  <!-- Timeline / Vault Content -->
   <div id="content"></div>
 
   <script src="scripts/app.js"></script>
