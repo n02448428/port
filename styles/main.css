@@ -1,0 +1,22 @@
+/* Basic Reset */
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Inter', sans-serif; background:#1B3B2F; color:#F4F4F2; overflow-x:hidden; }
+
+/* Hero */
+#hero { position: relative; padding: 2rem; display:flex; justify-content: space-between; align-items:center; }
+#logo { font-family: 'Pacifico', cursive; font-size:2rem; opacity:0.2; }
+#tagline { font-family:'Playfair Display', serif; font-size:1rem; opacity:0.8; }
+
+/* Toggle Button */
+#toggleView { background:#00F0FF; border:none; padding:0.5rem 1rem; cursor:pointer; border-radius:4px; }
+
+/* Content Container */
+#content { display:flex; flex-direction:column; padding:2rem; gap:1rem; }
+
+/* Timeline Card */
+.card { background:#3B2F28; padding:1rem; border-radius:8px; transition: transform 0.3s, box-shadow 0.3s; cursor:pointer; }
+.card:hover { transform: scale(1.02); box-shadow: 0 0 10px #00F0FF; }
+
+/* Vault/Grid Mode */
+.grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:1rem; }
+.grid .card { transform:none !important; box-shadow:none !important; }

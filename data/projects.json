@@ -1,0 +1,30 @@
+[
+  {
+    "id": "2025-001",
+    "title": "Celestial Fragments",
+    "date": "2025-07-12",
+    "category": "Music",
+    "media_urls": ["https://via.placeholder.com/300"],
+    "description": "Echoes suspended between earth and sky.",
+    "tags": ["ambient", "soundscape", "ethereal"],
+    "links": ["https://bandcamp.com"],
+    "highlight": true,
+    "color_theme": "#00F0FF",
+    "view_type": ["Timeline", "Vault"],
+    "legacy_priority": 9
+  },
+  {
+    "id": "2024-015",
+    "title": "Unwritten Poem",
+    "date": "2024-02-18",
+    "category": "Poetry",
+    "media_urls": ["https://via.placeholder.com/300"],
+    "description": "A stanza without words.",
+    "tags": ["minimal", "book"],
+    "links": ["https://amazon.com"],
+    "highlight": false,
+    "color_theme": "#1B3B2F",
+    "view_type": ["Timeline"],
+    "legacy_priority": 7
+  }
+]
