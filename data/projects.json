@@ -1,30 +1,21 @@
 [
   {
-    "id": "2025-001",
-    "title": "Celestial Fragments",
-    "date": "2025-07-12",
-    "category": "Music",
-    "media_urls": ["https://via.placeholder.com/300"],
-    "description": "Echoes suspended between earth and sky.",
-    "tags": ["ambient", "soundscape", "ethereal"],
-    "links": ["https://bandcamp.com"],
-    "highlight": true,
-    "color_theme": "#00F0FF",
-    "view_type": ["Timeline", "Vault"],
-    "legacy_priority": 9
+    "id":"2025-001",
+    "title":"Celestial Fragments",
+    "date":"2025-07-12",
+    "type":"Music",
+    "mini":[
+      {"media_type":"image","src":"https://via.placeholder.com/300"},
+      {"media_type":"audio","src":"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"}
+    ]
   },
   {
-    "id": "2024-015",
-    "title": "Unwritten Poem",
-    "date": "2024-02-18",
-    "category": "Poetry",
-    "media_urls": ["https://via.placeholder.com/300"],
-    "description": "A stanza without words.",
-    "tags": ["minimal", "book"],
-    "links": ["https://amazon.com"],
-    "highlight": false,
-    "color_theme": "#1B3B2F",
-    "view_type": ["Timeline"],
-    "legacy_priority": 7
+    "id":"2024-015",
+    "title":"Unwritten Poem",
+    "date":"2024-02-18",
+    "type":"Poetry",
+    "mini":[
+      {"media_type":"text","content":"A stanza without words."}
+    ]
   }
 ]
