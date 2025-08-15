@@ -3,7 +3,7 @@ let isGrid = false;
 const content = document.getElementById('content');
 const toggle = document.getElementById('toggleView');
 
-fetch('data/projects.json')
+fetch('port/data/projects.json')
   .then(res => res.json())
   .then(data => renderProjects(data));
 
@@ -40,3 +40,4 @@ function renderProjects(data) {
     content.appendChild(card);
   });
 }
+
