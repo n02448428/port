@@ -220,16 +220,23 @@ function createExpandedContent(proj) {
     html += `<div class="content-section"><h4>Story</h4><p>${proj.story}</p></div>`;
   }
   
-  // Links (combine external_link_names and external_link_urls if present)
+  // Links
   if (proj.links || (proj.external_link_names && proj.external_link_urls)) {
     html += `<div class="content-section"><h4>Links</h4><ul>`;
     let links = [];
     if (proj.links && Array.isArray(proj.links)) {
-      links = proj.links.map(link => typeof link === 'string' ? { name: link, url: link } : link);
+      links = proj.links.map(link => {
+        if (typeof link === 'string') {
+          // Handle malformed links like "url1|url2"
+          const [name, url] = link.includes('|') ? link.split('|') : [link, link];
+          return { name: name || url, url: url || '#' };
+        }
+        return link;
+      });
     } else if (proj.external_link_names && proj.external_link_urls) {
       const names = Array.isArray(proj.external_link_names) ? proj.external_link_names : [proj.external_link_names];
       const urls = Array.isArray(proj.external_link_urls) ? proj.external_link_urls : [proj.external_link_urls];
-      links = names.map((name, i) => ({ name, url: urls[i] || '#' }));
+      links = names.map((name, i) => ({ name: name || urls[i] || 'Link', url: urls[i] || '#' }));
     }
     links.forEach(link => {
       html += `<li><a href="${link.url}" class="external-link" target="_blank">${link.name}</a></li>`;
