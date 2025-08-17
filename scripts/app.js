@@ -92,11 +92,6 @@ function renderTimelineView(data) {
     const item = document.createElement('div');
     item.className = 'timeline-item';
     
-    // Marker
-    const marker = document.createElement('div');
-    marker.className = 'timeline-marker';
-    marker.dataset.projectId = proj.id;
-    
     // Card
     const card = document.createElement('div');
     card.className = 'project-card';
@@ -125,6 +120,11 @@ function renderTimelineView(data) {
       toggleExpanded(card, marker, false);
     });
     card.appendChild(closeBtn);
+    
+    // Marker
+    const marker = document.createElement('div');
+    marker.className = 'timeline-marker';
+    marker.dataset.projectId = proj.id;
     
     // Hover
     card.addEventListener('mouseenter', () => {
@@ -194,15 +194,19 @@ function createExpandedContent(proj) {
         ${proj.status ? `<span class="project-status">${proj.status}</span>` : ''}
       </div>
     </div>
+    <div class="expanded-scroll">
   `;
-  
-  html += '<div class="expanded-scroll">';
   
   if (proj.description) {
     html += `<div class="content-section"><h4>Description</h4><p>${proj.description}</p></div>`;
   }
   if (proj.story) {
     html += `<div class="content-section"><h4>Story</h4><p>${proj.story}</p></div>`;
+  }
+  
+  // Add more fields if available
+  if (proj.otherField) { // Placeholder for additional data fields
+    html += `<div class="content-section"><h4>Other</h4><p>${proj.otherField}</p></div>`;
   }
   
   html += '</div>';
@@ -212,8 +216,8 @@ function createExpandedContent(proj) {
 function snapOrbToMarker(marker) {
   if (!positionOrb || !marker) return;
   const rect = marker.getBoundingClientRect();
-  positionOrb.style.top = `${rect.top + window.scrollY}px`;
-  positionOrb.style.left = `${rect.left + rect.width / 2}px`;
+  positionOrb.style.top = `${rect.top + window.scrollY + 2}px`;
+  positionOrb.style.left = `${rect.left + 2}px`;
 }
 
 function toggleExpanded(card, marker, forceState = null) {
