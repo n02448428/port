@@ -9,7 +9,7 @@ from io import StringIO
 class SimpleSheetsConverter:
     def __init__(self, sheet_id):
         self.sheet_id = sheet_id
-        self.csv_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv"
+        self.csv_url = f"https://docs.google.com/spreadsheets/d/1xR2n2WlsAx32ZAkgUte253zL81VSScZq9HDjW8pFuRE/export?format=csv"
     
     def fetch_sheet_data(self):
         """Fetch CSV data from public Google Sheet"""
