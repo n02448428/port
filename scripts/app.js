@@ -231,7 +231,7 @@ function createExpandedContent(proj) {
           const [name, url] = link.includes('|') ? link.split('|') : [link, link];
           return { name: name || url, url: url || '#' };
         }
-        return link;
+        return { name: link.name || link.url || 'Link', url: link.url || '#' };
       });
     } else if (proj.external_link_names && proj.external_link_urls) {
       const names = Array.isArray(proj.external_link_names) ? proj.external_link_names : [proj.external_link_names];
