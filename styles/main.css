@@ -53,3 +53,69 @@ body.light { background:#FFF; color:#000; }
 
 /* Vault/Grid Mode */
 .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:1rem; }
+
+/* Add these to your styles/main.css */
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.project-meta {
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
+.project-status {
+  font-size: 0.8em;
+  color: #00F0FF;
+  margin-bottom: 0.5rem;
+}
+
+.project-tags {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background: #00FF9020;
+  color: #00FF90;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7em;
+}
+
+.story-content, .medium-content {
+  background: rgba(0,0,0,0.3);
+  padding: 1rem;
+  border-radius: 6px;
+}
+
+.external-links {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.external-link {
+  background: #00F0FF20;
+  color: #00F0FF;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.external-link:hover {
+  background: #00F0FF40;
+}
+
+.text-content, .embed-content {
+  background: rgba(0,0,0,0.2);
+  padding: 1rem;
+  border-radius: 6px;
+}
