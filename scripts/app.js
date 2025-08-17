@@ -9,7 +9,6 @@ let positionOrb = null;
 const content = document.getElementById('content');
 const toggle = document.getElementById('toggleView');
 const modeBtn = document.getElementById('toggleMode');
-const yearText = document.getElementById('yearText');
 
 // Birth date for timeline calculation
 const BIRTH_DATE = new Date('1989-09-07');
@@ -53,17 +52,7 @@ async function loadProjects() {
   }
 }
 
-function calculateTimelinePosition(projectDate) {
-  const projectTime = new Date(projectDate);
-  const totalLifespan = CURRENT_DATE - BIRTH_DATE;
-  const projectAge = CURRENT_DATE - projectTime;
-  const positionPercent = (projectAge / totalLifespan) * 100;
-  return Math.max(0, Math.min(100, positionPercent));
-}
-
 function renderProjects(data) {
-  console.log('🎨 Rendering projects...', data);
-  
   if (!data || data.length === 0) {
     content.innerHTML = '<div class="error-message"><p>No projects found. Add data to your Google Sheet and run the GitHub Action!</p></div>';
     return;
@@ -80,33 +69,40 @@ function renderTimelineView(data) {
   content.className = 'timeline-container';
   content.innerHTML = '';
   
-  // Create timeline
-  const timeline = document.createElement('div');
-  timeline.className = 'timeline';
-  
-  // Create position orb
   createPositionOrb();
   
-  // Sort by date (newest first for display)
+  // Sort by date (newest first)
   const sortedData = [...data].sort((a, b) => new Date(b.date) - new Date(a.date));
   
-  sortedData.forEach((proj, index) => {
-    // Calculate timeline position (based on life span)
-    const timelinePosition = calculateTimelinePosition(proj.date);
+  let lastYear = null;
+  
+  sortedData.forEach((proj) => {
+    const projectYear = new Date(proj.date).getFullYear();
     
-    // Create timeline marker
+    // Year label
+    if (projectYear !== lastYear) {
+      const yearLabel = document.createElement('div');
+      yearLabel.className = 'year-label';
+      yearLabel.innerText = projectYear;
+      content.appendChild(yearLabel);
+      lastYear = projectYear;
+    }
+    
+    // Timeline item wrapper
+    const item = document.createElement('div');
+    item.className = 'timeline-item';
+    
+    // Marker
     const marker = document.createElement('div');
     marker.className = 'timeline-marker';
-    marker.style.top = `${timelinePosition}%`;
     marker.dataset.projectId = proj.id;
     
-    // Create project card
+    // Card
     const card = document.createElement('div');
     card.className = 'project-card';
     card.dataset.projectId = proj.id;
     
     // Compact display
-    const projectYear = new Date(proj.date).getFullYear();
     card.innerHTML = `
       <div class="project-compact">
         [${proj.type}] ${proj.title}, ${projectYear}
@@ -114,32 +110,11 @@ function renderTimelineView(data) {
       </div>
     `;
     
-    // Add expanded content
+    // Expanded content
     const expandedContent = document.createElement('div');
     expandedContent.className = 'expanded-content';
     expandedContent.innerHTML = createExpandedContent(proj);
     card.appendChild(expandedContent);
-    
-    // Mouse hover effects
-    card.addEventListener('mouseenter', () => {
-      marker.classList.add('active');
-      snapOrbToTimelinePosition(timelinePosition);
-    });
-    
-    card.addEventListener('mouseleave', () => {
-      if (!card.classList.contains('expanded')) {
-        marker.classList.remove('active');
-      }
-    });
-    
-    // Click to expand
-    card.addEventListener('click', (e) => {
-      if (e.target.closest('.media-item, .external-link, .close-btn')) {
-        return;
-      }
-      e.stopPropagation();
-      toggleExpanded(card, marker);
-    });
     
     // Close button
     const closeBtn = document.createElement('button');
@@ -151,22 +126,36 @@ function renderTimelineView(data) {
     });
     card.appendChild(closeBtn);
     
-    timeline.appendChild(marker);
-    content.appendChild(card);
+    // Hover
+    card.addEventListener('mouseenter', () => {
+      marker.classList.add('active');
+      snapOrbToMarker(marker);
+    });
+    card.addEventListener('mouseleave', () => {
+      if (!card.classList.contains('expanded')) {
+        marker.classList.remove('active');
+      }
+    });
+    
+    // Click expand
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.media-item, .external-link, .close-btn')) return;
+      e.stopPropagation();
+      toggleExpanded(card, marker);
+    });
+    
+    // Append
+    item.appendChild(marker);
+    item.appendChild(card);
+    content.appendChild(item);
   });
-  
-  content.appendChild(timeline);
-  console.log('✅ Timeline rendered with', sortedData.length, 'projects');
 }
 
 function renderGridView(data) {
   content.className = 'grid-container';
   content.innerHTML = '';
   
-  // Hide position orb in grid view
-  if (positionOrb) {
-    positionOrb.style.display = 'none';
-  }
+  if (positionOrb) positionOrb.style.display = 'none';
   
   data.sort((a, b) => new Date(b.date) - new Date(a.date));
   
@@ -182,17 +171,12 @@ function renderGridView(data) {
     `;
     
     card.addEventListener('click', () => {
-      // Switch to timeline view and expand this project
       isGrid = false;
       renderProjects(projectsData);
       setTimeout(() => {
-        const timelineCard = Array.from(document.querySelectorAll('.project-card'))
-          .find(c => c.dataset.projectId === proj.id);
-        const marker = Array.from(document.querySelectorAll('.timeline-marker'))
-          .find(m => m.dataset.projectId === proj.id);
-        if (timelineCard && marker) {
-          toggleExpanded(timelineCard, marker, true);
-        }
+        const timelineCard = document.querySelector(`.project-card[data-project-id="${proj.id}"]`);
+        const marker = document.querySelector(`.timeline-marker[data-project-id="${proj.id}"]`);
+        if (timelineCard && marker) toggleExpanded(timelineCard, marker, true);
       }, 100);
     });
     
@@ -215,49 +199,31 @@ function createExpandedContent(proj) {
   html += '<div class="expanded-scroll">';
   
   if (proj.description) {
-    html += `<div class="content-section">
-      <h4>Description</h4>
-      <p>${proj.description}</p>
-    </div>`;
+    html += `<div class="content-section"><h4>Description</h4><p>${proj.description}</p></div>`;
   }
-  
   if (proj.story) {
-    html += `<div class="content-section">
-      <h4>Story</h4>
-      <p>${proj.story}</p>
-    </div>`;
+    html += `<div class="content-section"><h4>Story</h4><p>${proj.story}</p></div>`;
   }
-  
-  // Add media, links, etc. sections here as needed
   
   html += '</div>';
   return html;
 }
 
-function snapOrbToTimelinePosition(timelinePercent) {
-  if (!positionOrb) return;
-  
-  const timelineElement = document.querySelector('.timeline');
-  if (!timelineElement) return;
-  
-  const timelineRect = timelineElement.getBoundingClientRect();
-  const orbPosition = timelineRect.top + (timelineRect.height * (timelinePercent / 100));
-  
-  positionOrb.style.top = `${orbPosition}px`;
+function snapOrbToMarker(marker) {
+  if (!positionOrb || !marker) return;
+  const rect = marker.getBoundingClientRect();
+  positionOrb.style.top = `${rect.top + window.scrollY}px`;
+  positionOrb.style.left = `${rect.left + rect.width / 2}px`;
 }
 
 function toggleExpanded(card, marker, forceState = null) {
   const isExpanded = forceState !== null ? forceState : !card.classList.contains('expanded');
   
-  // Close other expanded cards
   document.querySelectorAll('.project-card.expanded').forEach(c => {
     if (c !== card) {
       c.classList.remove('expanded');
-      const otherId = c.dataset.projectId;
-      const otherMarker = document.querySelector(`.timeline-marker[data-project-id="${otherId}"]`);
-      if (otherMarker) {
-        otherMarker.classList.remove('active');
-      }
+      const otherMarker = document.querySelector(`.timeline-marker[data-project-id="${c.dataset.projectId}"]`);
+      if (otherMarker) otherMarker.classList.remove('active');
     }
   });
   
@@ -265,11 +231,7 @@ function toggleExpanded(card, marker, forceState = null) {
     card.classList.add('expanded');
     marker.classList.add('active');
     expandedCard = card;
-    
-    setTimeout(() => {
-      document.addEventListener('click', handleClickOutside);
-    }, 100);
-    
+    setTimeout(() => document.addEventListener('click', handleClickOutside), 100);
   } else {
     card.classList.remove('expanded');
     marker.classList.remove('active');
@@ -286,23 +248,19 @@ function handleClickOutside(e) {
   }
 }
 
-// Initialize
+// Init
 loadProjects();
 
 // Toggle View
 if (toggle) {
   toggle.addEventListener('click', () => {
     isGrid = !isGrid;
-    if (isGrid) {
-      if (positionOrb) positionOrb.style.display = 'none';
-    } else {
-      if (positionOrb) positionOrb.style.display = 'block';
-    }
+    if (positionOrb) positionOrb.style.display = isGrid ? 'none' : 'block';
     renderProjects(projectsData);
   });
 }
 
-// Dark/Light mode
+// Dark/Light Mode
 if (modeBtn) {
   modeBtn.addEventListener('click', () => {
     document.body.classList.toggle('light');
