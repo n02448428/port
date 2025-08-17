@@ -422,10 +422,11 @@ function createExpandedContent(proj) {
     html += `<div class="content-section"><h4>Story</h4><p>${proj.story}</p></div>`;
   }
   
-  // Links
+  // Links - Fixed the processing logic
   if (proj.links || (proj.external_link_names && proj.external_link_urls)) {
     html += `<div class="content-section"><h4>Links</h4><ul>`;
     let links = [];
+    
     if (proj.links && Array.isArray(proj.links)) {
       links = proj.links.map(link => {
         if (typeof link === 'string') {
@@ -436,12 +437,34 @@ function createExpandedContent(proj) {
         return { name: link.name || link.url || 'Link', url: link.url || '#' };
       });
     } else if (proj.external_link_names && proj.external_link_urls) {
-      const namesStr = proj.external_link_names;
-      const urlsStr = proj.external_link_urls;
-      const names = typeof namesStr === 'string' ? namesStr.split(',') : [namesStr];
-      const urls = typeof urlsStr === 'string' ? urlsStr.split(',') : [urlsStr];
-      links = names.map((name, i) => ({ name: name.trim() || urls[i] || 'Link', url: urls[i] ? urls[i].trim() : '#' }));
+      // Handle arrays or strings
+      let names = [];
+      let urls = [];
+      
+      if (Array.isArray(proj.external_link_names)) {
+        names = proj.external_link_names;
+      } else if (typeof proj.external_link_names === 'string') {
+        names = proj.external_link_names.split('|').length > 1 ? 
+               proj.external_link_names.split('|') : 
+               proj.external_link_names.split(',');
+      }
+      
+      if (Array.isArray(proj.external_link_urls)) {
+        urls = proj.external_link_urls;
+      } else if (typeof proj.external_link_urls === 'string') {
+        urls = proj.external_link_urls.split('|').length > 1 ? 
+               proj.external_link_urls.split('|') : 
+               proj.external_link_urls.split(',');
+      }
+      
+      // Create links array, ensuring we handle each name/url safely
+      links = names.map((name, i) => {
+        const safeName = (typeof name === 'string' ? name.trim() : String(name || '')) || urls[i] || 'Link';
+        const safeUrl = (typeof urls[i] === 'string' ? urls[i].trim() : String(urls[i] || '')) || '#';
+        return { name: safeName, url: safeUrl };
+      });
     }
+    
     links.forEach(link => {
       html += `<li><a href="${link.url}" class="external-link" target="_blank">${link.name}</a></li>`;
     });
