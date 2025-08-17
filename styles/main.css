@@ -18,7 +18,7 @@ body.dark {
 .timeline-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-end;
   padding: 2rem;
   position: relative;
 }
@@ -26,14 +26,15 @@ body.dark {
 .year-label {
   font-size: 0.9rem;
   opacity: 0.3;
-  margin: 1rem 0 0.5rem 2rem;
+  margin: 1rem 2rem 0.5rem 0;
 }
 
 .timeline-item {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 2rem;
   position: relative;
+  width: 100%;
 }
 
 .timeline-marker {
@@ -41,7 +42,7 @@ body.dark {
   height: 14px;
   border-radius: 50%;
   border: 2px solid var(--fg);
-  margin-right: 1rem;
+  margin-left: 1rem;
   position: relative;
   flex-shrink: 0;
   transition: box-shadow 0.3s ease;
@@ -53,15 +54,37 @@ body.dark {
   box-shadow: 0 0 12px var(--fg);
 }
 
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  width: 2px;
+  background: var(--fg);
+  top: 0;
+  bottom: 0;
+  right: 8px;
+  z-index: -1;
+}
+
 .project-card {
   flex: 1;
   border: 1px solid var(--fg);
-  border-radius: 8px;
   padding: 0.5rem 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  margin-right: 2rem;
+}
+
+.project-card::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 2px;
+  background: var(--fg);
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .project-compact {
@@ -75,7 +98,7 @@ body.dark {
 }
 
 .project-card.expanded .expanded-content {
-  max-height: 800px; /* enough to show content */
+  max-height: 800px;
   padding-top: 1rem;
 }
 
@@ -110,7 +133,6 @@ body.dark {
 
 .grid-card {
   border: 1px solid var(--fg);
-  border-radius: 6px;
   padding: 1rem;
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -122,13 +144,19 @@ body.dark {
 /* Mobile adjustments */
 @media (max-width: 768px) {
   .timeline-item {
-    flex-direction: row-reverse;
+    flex-direction: row;
   }
   .timeline-marker {
     margin-left: 1rem;
     margin-right: 0;
   }
   .year-label {
-    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+  .project-card {
+    margin-right: 2rem;
+  }
+  .project-card::after {
+    right: -20px;
   }
 }
