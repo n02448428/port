@@ -28,5 +28,260 @@
     "video_urls": [
       "https://www.youtube.com/watch?v=bZrfMU71W9I&list=RDbZrfMU71W9I&start_radio=1"
     ]
+  },
+  {
+    "id": "3",
+    "title": "Neon Trailblazer",
+    "type": "video game",
+    "status": "Completed",
+    "description": "Weave through the neon cybergrid, leaving light trails in your wake. Built for Pieter Levels' (@levelsio) March 2025 VibeJam game jam.",
+    "medium": "Javascript;CSS;HTML;Three.js",
+    "external_link_names": [
+      "Play here!|GitHub"
+    ],
+    "external_link_urls": [
+      "https://ntb-chi.vercel.app|https://github.com/n02448428/NTB"
+    ],
+    "tags": [
+      "Javascript;CSS;HTML;Three.js"
+    ]
+  },
+  {
+    "id": "4",
+    "title": "Rosie's Debugger",
+    "type": "video game",
+    "status": "Completed",
+    "description": "A narrative-driven adventure where a quirky AI guides you through a broken digital world using text-based dialogue, expressive animation, and player-driven choices.",
+    "medium": "React;Three.js;Cannon.js;Leva;HTML",
+    "external_link_names": [
+      "Try it here|GitHub"
+    ],
+    "external_link_urls": [
+      "https://n02448428.github.io/rosie/|https://github.com/n02448428/rosie"
+    ],
+    "tags": [
+      "React;Three.js;Cannon.js;Leva;HTML"
+    ]
+  },
+  {
+    "id": "5",
+    "title": "Billboard Spritesheet Generator",
+    "type": "web app",
+    "status": "Completed",
+    "description": "Simple web-based tool that allows users to input 3D models and output a 2D spritesheet of the model from various angles to recreate that classic video game feel (as used in games such as Mario Kart 64, Donkey Kong Country, Mortal Kombat, etc.).",
+    "medium": "Javascript;CSS;HTML;Three.js",
+    "external_link_names": [
+      "Try it here (.glt files work best)|GitHub"
+    ],
+    "external_link_urls": [
+      "https://n02448428.github.io/billboard-gen-gui/|https://github.com/n02448428/billboard-gen-gui"
+    ],
+    "tags": [
+      "Javascript;CSS;HTML;Three.js"
+    ]
+  },
+  {
+    "id": "6",
+    "title": "My Room",
+    "type": "web app",
+    "status": "Completed",
+    "description": "Interactive model of my workspace complete with Unity style gizmos to transform objects.",
+    "medium": "Javascript;HTML;THREE.js;Rosebud AI",
+    "external_link_names": [
+      "Try here!|GitHub"
+    ],
+    "external_link_urls": [
+      "https://n02448428.github.io/My-Room/|https://github.com/n02448428/My-Room"
+    ],
+    "tags": [
+      "Javascript;HTML;THREE.js;Rosebud AI"
+    ]
+  },
+  {
+    "id": "7",
+    "title": "Firebreather",
+    "type": "video game",
+    "status": "Completed",
+    "description": "Game that uses computer camera to track player's head and make fire come out of their mouth to destroy ice enemies.",
+    "medium": "Javascript;HTML;THREE.js;Rosebud AI",
+    "external_link_names": [
+      "Play here!|GitHub"
+    ],
+    "external_link_urls": [
+      "https://n02448428.github.io/Firebreather/|https://github.com/n02448428/Firebreather"
+    ],
+    "tags": [
+      "Javascript;HTML;THREE.js;Rosebud AI"
+    ]
+  },
+  {
+    "id": "8",
+    "title": "Kart (working title)",
+    "type": "video game",
+    "status": "In Progress",
+    "description": "An ambitious kart game project. Building for private client.",
+    "medium": "HTML;Javascript;THREE.js;Rosebud AI",
+    "external_link_names": [
+      "Play here!|GitHub"
+    ],
+    "external_link_urls": [
+      "https://n02448428.github.io/kart/|https://github.com/n02448428/kart"
+    ],
+    "tags": [
+      "HTML;Javascript;THREE.js;Rosebud AI"
+    ]
+  },
+  {
+    "id": "9",
+    "title": "8192",
+    "type": "video game",
+    "status": "Completed",
+    "description": "Numbers puzzle: try to get to the 8192 tile!",
+    "medium": "Javascript;CSS;HTML;THREE.js",
+    "external_link_names": [
+      "Play here!|GitHub"
+    ],
+    "external_link_urls": [
+      "https://novelfilms.itch.io/8192|https://github.com/n02448428/8192"
+    ],
+    "tags": [
+      "Javascript;CSS;HTML;THREE.js"
+    ]
+  },
+  {
+    "id": "10",
+    "title": "MuseumInteractive",
+    "type": "web app",
+    "status": "Demo (Incomplete)",
+    "description": "Demo interactive portfolio website.",
+    "medium": "HTML;RTF;Replit;THREE.js",
+    "external_link_names": [
+      "Try Demo!|GitHub"
+    ],
+    "external_link_urls": [
+      "https://n02448428.github.io/MuseumInteractive/|https://github.com/n02448428/MuseumInteractive"
+    ],
+    "tags": [
+      "HTML;RTF;Replit;THREE.js"
+    ]
+  },
+  {
+    "id": "11",
+    "title": "Hand Dance Revolution",
+    "type": "video game",
+    "status": "Completed",
+    "description": "Dance Dance Revolution but played with hands using hand-tracking with computer camera.",
+    "medium": "Rosebud AI",
+    "external_link_names": [
+      "Try here!"
+    ],
+    "external_link_urls": [
+      "https://rosebud.ai/p/cd3fb542-5e34-4c0f-b5b9-618b963a25e3"
+    ],
+    "tags": [
+      "Rosebud AI"
+    ]
+  },
+  {
+    "id": "12",
+    "title": "SlimScreen",
+    "type": "web app",
+    "status": "Almost Completed",
+    "description": "Meet Lexi, your pocket-sized, ever-helpful librarian who makes research a breeze. Get instant definitions anywhere on the web.",
+    "medium": "Javascript;HTML;Vercel;Web APIs",
+    "external_link_names": [
+      "Try here!|GitHub"
+    ],
+    "external_link_urls": [
+      "https://slim-screen.vercel.app/|https://github.com/n02448428/SlimScreen"
+    ],
+    "tags": [
+      "Javascript;HTML;Vercel;Web APIs"
+    ]
+  },
+  {
+    "id": "13",
+    "title": "Stranded",
+    "type": "video game",
+    "status": "In Progress",
+    "description": "Stranded is a first-person 3D exploration game set on a mysterious island. The player must uncover the truth about their past by piecing together memories.",
+    "medium": "Unity;C#",
+    "external_link_names": [
+      "GitHub"
+    ],
+    "external_link_urls": [
+      "https://github.com/n02448428/Stranded-game"
+    ],
+    "tags": [
+      "Unity;C#"
+    ]
+  },
+  {
+    "id": "14",
+    "title": "Win95 3D Maze",
+    "type": "video game",
+    "status": "Completed",
+    "description": "Navigate a 3D maze, collect retro icons, and race the clock in this classic screensaver-inspired challenge!",
+    "medium": "Javascript;CSS;HTML;THREE.js",
+    "external_link_names": [
+      "Play here!|GitHub"
+    ],
+    "external_link_urls": [
+      "https://novelfilms.itch.io/3d-maze|https://github.com/n02448428/3D-Maze"
+    ],
+    "tags": [
+      "Javascript;CSS;HTML;THREE.js"
+    ]
+  },
+  {
+    "id": "15",
+    "title": "BRIX",
+    "type": "video game",
+    "status": "Completed",
+    "description": "Brickbreaker-inspired action game. Beat the fifth level for a secret bonus!",
+    "medium": "Unity;HTML;C#",
+    "external_link_names": [
+      "Play here!|GitHub"
+    ],
+    "external_link_urls": [
+      "https://novelfilms.itch.io/brix|https://github.com/n02448428/brix"
+    ],
+    "tags": [
+      "Unity;HTML;C#"
+    ]
+  },
+  {
+    "id": "16",
+    "title": "Flippy Bard",
+    "type": "video game",
+    "status": "Completed",
+    "description": "A fun and challenging Flappy Bird clone with a twist! Guide a pixelated bard through a series of obstacles while keeping the rhythm alive.",
+    "medium": "Unity;HTML;C#",
+    "external_link_names": [
+      "Play here!|GitHub"
+    ],
+    "external_link_urls": [
+      "https://novelfilms.itch.io/flippybard|https://github.com/n02448428/flippybard-game"
+    ],
+    "tags": [
+      "Unity;HTML;C#"
+    ]
+  },
+  {
+    "id": "17",
+    "title": "Contrast",
+    "type": "video game",
+    "status": "Completed",
+    "description": "Contrast is a completely original fast-paced clicker game where players must quickly match falling balls to the correct basket color.",
+    "medium": "Unity;HTML;C#",
+    "external_link_names": [
+      "Play here!|GitHub"
+    ],
+    "external_link_urls": [
+      "https://novelfilms.itch.io/contrast|https://github.com/n02448428/contrast-game"
+    ],
+    "tags": [
+      "Unity;HTML;C#"
+    ]
   }
 ]
