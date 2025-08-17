@@ -79,13 +79,13 @@ body.dark {
   align-items: flex-end;
   padding: 2rem;
   position: relative;
-  margin-right: 15px; /* Space for fixed timeline */
+  margin-right: 8px; /* Space for fixed timeline - matches timeline position */
 }
 
 .timeline-container::before {
   content: '';
   position: fixed;
-  right: 15px; /* Centered over 14px wide markers with 2px border */
+  right: 8px; /* Centered through 14px wide markers (14/2 = 7, plus 1px for border) */
   top: 60px; /* Below fixed header */
   bottom: 0;
   width: 2px;
@@ -96,7 +96,7 @@ body.dark {
 .year-label {
   font-size: 0.9rem;
   opacity: 0.3;
-  margin: 1rem 15px 0.5rem 0;
+  margin: 1rem 8px 0.5rem 0; /* Match timeline position */
   align-self: flex-end;
 }
 
@@ -113,7 +113,7 @@ body.dark {
   height: 14px;
   border-radius: 50%;
   border: 2px solid var(--fg);
-  margin-left: 0; /* Align center with timeline at right: 15px */
+  margin-left: 0; /* Align center with timeline at right: 8px */
   position: relative;
   flex-shrink: 0;
   transition: box-shadow 0.3s ease;
@@ -135,7 +135,7 @@ body.dark {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  margin-right: 15px;
+  margin-right: 8px; /* Match timeline position */
 }
 
 .project-card.expanded {
@@ -146,10 +146,10 @@ body.dark {
 .project-card::after {
   content: '';
   position: absolute;
-  width: 15px;
+  width: 8px; /* Match timeline position */
   height: 2px;
   background: var(--fg);
-  right: -15px;
+  right: -8px; /* Match timeline position */
   top: 50%;
   transform: translateY(-50%);
 }
@@ -414,6 +414,33 @@ button.flash {
   --grid-item-size: 220px;
 }
 
+/* Content sections */
+.content-section {
+  margin-bottom: 1.5rem;
+}
+
+.content-section h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.expanded-header {
+  margin-bottom: 1rem;
+}
+
+.expanded-header h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.3rem;
+}
+
+.project-metadata {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
 /* Mobile adjustments */
 @media (max-width: 768px) {
   body {
@@ -463,7 +490,7 @@ button.flash {
   }
 
   .timeline-container {
-    margin-right: 15px;
+    margin-right: 8px; /* Match desktop */
     background: var(--bg);
   }
 
@@ -476,24 +503,24 @@ button.flash {
   }
 
   .year-label {
-    margin-right: 15px;
+    margin-right: 8px; /* Match desktop */
     color: var(--fg);
   }
 
   .project-card {
-    margin-right: 15px;
+    margin-right: 8px; /* Match desktop */
     background: var(--bg);
     color: var(--fg);
   }
 
   .project-card::after {
     left: 100%;
-    width: 15px;
+    width: 8px; /* Match desktop */
     background: var(--fg);
   }
 
   .timeline-container::before {
-    right: 15px;
+    right: 8px; /* Match desktop */
     top: 60px; /* Below fixed header */
     background: var(--fg);
   }
