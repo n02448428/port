@@ -293,61 +293,69 @@ function toggleExpanded(card, forceState = null) {
   
   // Close other expanded cards
   document.querySelectorAll('.project-card.expanded').forEach(c => {
-    if (c !== card) c.classList.remove('expanded');
+    if (c !== card) {
+      c.classList.remove('expanded');
+      // Reset any inline styles
+      c.style.position = '';
+      c.style.top = '';
+      c.style.left = '';
+      c.style.right = '';
+      c.style.width = '';
+      c.style.maxHeight = '';
+      c.style.transform = '';
+    }
   });
   
   if (isExpanded) {
     card.classList.add('expanded');
     expandedCard = card;
     
-    // Position the card within viewport bounds
-    positionExpandedCard(card);
+    // Force positioning using inline styles to override everything
+    if (window.innerWidth <= 768) {
+      // Mobile: Full screen overlay
+      card.style.position = 'fixed';
+      card.style.top = '4rem';
+      card.style.left = '1rem';
+      card.style.right = '1rem';
+      card.style.width = 'auto';
+      card.style.maxHeight = 'calc(100vh - 5rem)';
+      card.style.zIndex = '1000';
+      card.style.transform = 'none';
+    } else {
+      // Desktop: Fixed to top-right
+      card.style.position = 'fixed';
+      card.style.top = '5vh';
+      card.style.right = '2rem';
+      card.style.left = 'auto';
+      card.style.width = 'min(500px, 40vw)';
+      card.style.maxHeight = '90vh';
+      card.style.zIndex = '1000';
+      card.style.transform = 'none';
+    }
     
     // Add click-outside-to-close listener
     setTimeout(() => {
       document.addEventListener('click', handleClickOutside);
     }, 100);
     
-    // Smooth scroll to center the expanded card on desktop
-    if (window.innerWidth > 768) {
-      setTimeout(() => {
-        card.scrollIntoView({behavior: 'smooth', block: 'center'});
-      }, 300);
-    }
   } else {
     card.classList.remove('expanded');
     expandedCard = null;
     document.removeEventListener('click', handleClickOutside);
+    
+    // Reset all inline styles
+    card.style.position = '';
+    card.style.top = '';
+    card.style.left = '';
+    card.style.right = '';
+    card.style.width = '';
+    card.style.maxHeight = '';
+    card.style.transform = '';
+    card.style.zIndex = '';
   }
 }
 
-function positionExpandedCard(card) {
-  if (window.innerWidth <= 768) {
-    // Mobile positioning is handled by CSS
-    return;
-  }
-  
-  // Desktop positioning
-  setTimeout(() => {
-    const cardRect = card.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-    const cardHeight = cardRect.height;
-    
-    // Check if card goes off top of screen
-    if (cardRect.top < 50) {
-      const currentTop = parseInt(card.style.top) || parseInt(getComputedStyle(card).top);
-      const adjustment = 50 - cardRect.top;
-      card.style.top = `${currentTop + adjustment}px`;
-    }
-    
-    // Check if card goes off bottom of screen
-    if (cardRect.bottom > viewportHeight - 50) {
-      const currentTop = parseInt(card.style.top) || parseInt(getComputedStyle(card).top);
-      const adjustment = (cardRect.bottom - viewportHeight + 50);
-      card.style.top = `${currentTop - adjustment}px`;
-    }
-  }, 100);
-}
+// Remove the old positionExpandedCard function as it's no longer needed
 
 // Handle click outside to close expanded card
 function handleClickOutside(e) {
