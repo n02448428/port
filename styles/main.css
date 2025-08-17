@@ -202,6 +202,92 @@ body.dark {
   box-shadow: 0 0 8px var(--fg);
 }
 
+/* Grid view */
+.grid-container {
+  padding: 2rem;
+}
+
+.grid-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filter-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-wrapper label {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--grid-item-size), 1fr));
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.grid-card {
+  border: 1px solid var(--fg);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 1 / 1; /* Square like iOS Photos */
+}
+
+.grid-card:hover {
+  transform: scale(1.02);
+}
+
+.grid-image {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+.grid-title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(var(--bg-rgb), 0.7);
+  color: var(--fg);
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+.grid-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.overlay-card {
+  width: 80%;
+  max-height: 80%;
+  overflow: auto;
+  background: var(--bg);
+  border: 1px solid var(--fg);
+  padding: 1rem;
+  position: relative;
+}
+
 /* Media overlay */
 .media-overlay {
   position: fixed;
@@ -235,9 +321,8 @@ body.dark {
   position: absolute;
   top: 10px;
   left: 10px;
-  background: var(--bg);
-  border: 1px solid var(--fg);
-  color: var(--fg);
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
   padding: 5px 10px;
   cursor: pointer;
 }
@@ -248,7 +333,7 @@ body.dark {
   right: 10px;
   background: transparent;
   border: none;
-  color: var(--fg);
+  color: white;
   font-size: 2rem;
   cursor: pointer;
 }
@@ -273,8 +358,8 @@ body.dark {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--fg);
-  color: var(--bg);
+  background: gray;
+  color: white;
   font-size: 0.8rem;
   text-align: center;
 }
@@ -286,23 +371,15 @@ body.dark {
   cursor: pointer;
 }
 
-/* Grid view */
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
-  padding: 2rem;
+/* Flash effect */
+button.flash {
+  background: var(--fg) !important;
+  color: var(--bg) !important;
 }
 
-.grid-card {
-  border: 1px solid var(--fg);
-  padding: 1rem;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.grid-card:hover {
-  transform: scale(1.02);
+/* Variable for grid item size */
+:root {
+  --grid-item-size: 220px;
 }
 
 /* Mobile adjustments */
@@ -314,13 +391,6 @@ body.dark {
   #controls {
     height: 50px;
     padding: 0 0.5rem;
-    justify-content: flex-end;
-  }
-
-  #controls button {
-    margin-left: 5px;
-    padding: 4px 8px;
-    font-size: 0.8rem;
   }
 
   #hero {
@@ -337,7 +407,7 @@ body.dark {
   }
 
   .timeline-marker {
-    margin-left: 2px; /* Align with timeline */
+    margin-left: 2px;
   }
 
   .year-label {
@@ -354,7 +424,10 @@ body.dark {
   }
 
   .timeline-container::before {
-    right: 22px; /* Centered over markers */
+    right: 22px;
     top: 120px; /* Below fixed controls and hero */
+  }
+  .grid-controls {
+    flex-direction: column;
   }
 }
