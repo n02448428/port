@@ -13,7 +13,7 @@ const content = document.getElementById('content');
 const toggle = document.getElementById('toggleView');
 const modeBtn = document.getElementById('toggleMode');
 
-// Birth date for timeline calculation
+// Birth date for timeline calculation (unused but kept for reference)
 const BIRTH_DATE = new Date('1989-09-07');
 const CURRENT_DATE = new Date();
 
@@ -82,8 +82,12 @@ function renderTimelineView(data) {
   
   createPositionOrb();
   
-  // Sort by date (newest first)
-  const sortedData = [...data].sort((a, b) => new Date(b.date) - new Date(a.date));
+  // Separate dated and undated projects
+  const datedProjects = data.filter(proj => proj.date && !isNaN(new Date(proj.date).getTime()));
+  const undatedProjects = data.filter(proj => !proj.date || isNaN(new Date(proj.date).getTime()));
+  
+  // Sort dated projects by date (newest first)
+  const sortedData = datedProjects.sort((a, b) => new Date(b.date) - new Date(a.date));
   
   let lastYear = null;
   
@@ -108,10 +112,12 @@ function renderTimelineView(data) {
     card.className = 'project-card';
     card.dataset.projectId = proj.id;
     
-    // Compact display
+    // Compact display: [type] title, date
     card.innerHTML = `
       <div class="project-compact">
-        [${proj.type}] ${proj.title}, ${projectYear}
+        <span class="project-type">[${proj.type}]</span>
+        <span class="project-title">${proj.title}</span>,
+        <span class="project-date">${proj.date}</span>
         ${proj.status ? `<span class="status-indicator">${proj.status}</span>` : ''}
       </div>
     `;
@@ -176,6 +182,85 @@ function renderTimelineView(data) {
     item.appendChild(marker);
     content.appendChild(item);
   });
+  
+  // Undated section
+  if (undatedProjects.length > 0) {
+    const undatedLabel = document.createElement('div');
+    undatedLabel.className = 'year-label';
+    undatedLabel.innerText = 'Undated';
+    content.appendChild(undatedLabel);
+    
+    undatedProjects.sort((a, b) => a.title.localeCompare(b.title)).forEach(proj => {
+      const item = document.createElement('div');
+      item.className = 'timeline-item';
+      
+      const card = document.createElement('div');
+      card.className = 'project-card';
+      card.dataset.projectId = proj.id;
+      
+      card.innerHTML = `
+        <div class="project-compact">
+          <span class="project-type">[${proj.type}]</span>
+          <span class="project-title">${proj.title}</span>,
+          <span class="project-date">Undated</span>
+          ${proj.status ? `<span class="status-indicator">${proj.status}</span>` : ''}
+        </div>
+      `;
+      
+      const expandedContent = document.createElement('div');
+      expandedContent.className = 'expanded-content';
+      expandedContent.innerHTML = createExpandedContent(proj);
+      card.appendChild(expandedContent);
+      
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'close-btn';
+      closeBtn.innerHTML = '×';
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleExpanded(card, marker, false);
+      });
+      card.appendChild(closeBtn);
+      
+      const marker = document.createElement('div');
+      marker.className = 'timeline-marker';
+      marker.dataset.projectId = proj.id;
+      
+      card.addEventListener('mouseenter', () => {
+        marker.classList.add('active');
+        snapOrbToMarker(marker);
+      });
+      card.addEventListener('mouseleave', () => {
+        if (!card.classList.contains('expanded')) {
+          marker.classList.remove('active');
+        }
+      });
+      
+      card.addEventListener('click', (e) => {
+        const mediaItem = e.target.closest('.media-item');
+        if (mediaItem) {
+          e.stopPropagation();
+          openMediaOverlay(mediaItem.dataset.url, mediaItem.dataset.type);
+          return;
+        }
+        
+        if (e.target.closest('.external-link, .close-btn')) return;
+        e.stopPropagation();
+        toggleExpanded(card, marker);
+      });
+      
+      expandedContent.addEventListener('click', (e) => {
+        const link = e.target.closest('.external-link');
+        if (link) {
+          e.stopPropagation();
+          window.open(link.href, '_blank');
+        }
+      });
+      
+      item.appendChild(card);
+      item.appendChild(marker);
+      content.appendChild(item);
+    });
+  }
 }
 
 function renderGridView(data) {
@@ -234,9 +319,14 @@ function renderGridView(data) {
   
   content.appendChild(controls);
   
-  // Filtered data
-  const filteredData = data.filter(proj => filterTypes.length === 0 || filterTypes.includes(proj.type));
-  filteredData.sort((a, b) => new Date(b.date) - new Date(a.date));
+  // Separate dated and undated projects
+  const datedProjects = data.filter(proj => proj.date && !isNaN(new Date(proj.date).getTime()));
+  const undatedProjects = data.filter(proj => !proj.date || isNaN(new Date(proj.date).getTime()));
+  
+  // Sort dated projects by date (newest first)
+  const sortedData = datedProjects.sort((a, b) => new Date(b.date) - new Date(a.date));
+  const filteredData = [...sortedData, ...undatedProjects.sort((a, b) => a.title.localeCompare(b.title))]
+    .filter(proj => filterTypes.length === 0 || filterTypes.includes(proj.type));
   
   filteredData.forEach(proj => {
     const card = document.createElement('div');
@@ -247,7 +337,11 @@ function renderGridView(data) {
     const isImage = firstMedia && getMediaType(firstMedia) === 'image';
     card.innerHTML = `
       <div class="grid-image" style="${isImage ? `background-image: url('${firstMedia}');` : 'background-color: gray;'}"></div>
-      <div class="grid-title">${proj.title}</div>
+      <div class="grid-title">
+        <span class="project-type">[${proj.type}]</span>
+        <span class="project-title">${proj.title}</span>,
+        <span class="project-date">${proj.date || 'Undated'}</span>
+      </div>
     `;
     
     card.addEventListener('click', () => {
@@ -306,7 +400,7 @@ function createExpandedContent(proj) {
       <h2>${proj.title}</h2>
       <div class="project-metadata">
         <span class="project-type">[${proj.type}]</span>
-        <span class="project-date">${proj.date}</span>
+        <span class="project-date">${proj.date || 'Undated'}</span>
         ${proj.status ? `<span class="project-status">${proj.status}</span>` : ''}
       </div>
     </div>
