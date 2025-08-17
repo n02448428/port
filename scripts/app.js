@@ -300,20 +300,53 @@ function toggleExpanded(card, forceState = null) {
     card.classList.add('expanded');
     expandedCard = card;
     
+    // Position the card within viewport bounds
+    positionExpandedCard(card);
+    
     // Add click-outside-to-close listener
     setTimeout(() => {
       document.addEventListener('click', handleClickOutside);
     }, 100);
     
-    // Smooth scroll to center the expanded card
-    setTimeout(() => {
-      card.scrollIntoView({behavior: 'smooth', block: 'center'});
-    }, 300);
+    // Smooth scroll to center the expanded card on desktop
+    if (window.innerWidth > 768) {
+      setTimeout(() => {
+        card.scrollIntoView({behavior: 'smooth', block: 'center'});
+      }, 300);
+    }
   } else {
     card.classList.remove('expanded');
     expandedCard = null;
     document.removeEventListener('click', handleClickOutside);
   }
+}
+
+function positionExpandedCard(card) {
+  if (window.innerWidth <= 768) {
+    // Mobile positioning is handled by CSS
+    return;
+  }
+  
+  // Desktop positioning
+  setTimeout(() => {
+    const cardRect = card.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const cardHeight = cardRect.height;
+    
+    // Check if card goes off top of screen
+    if (cardRect.top < 50) {
+      const currentTop = parseInt(card.style.top) || parseInt(getComputedStyle(card).top);
+      const adjustment = 50 - cardRect.top;
+      card.style.top = `${currentTop + adjustment}px`;
+    }
+    
+    // Check if card goes off bottom of screen
+    if (cardRect.bottom > viewportHeight - 50) {
+      const currentTop = parseInt(card.style.top) || parseInt(getComputedStyle(card).top);
+      const adjustment = (cardRect.bottom - viewportHeight + 50);
+      card.style.top = `${currentTop - adjustment}px`;
+    }
+  }, 100);
 }
 
 // Handle click outside to close expanded card
