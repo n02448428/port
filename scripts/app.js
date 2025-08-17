@@ -173,34 +173,12 @@ function createExpandedContent(proj) {
   // Create scrollable content area
   html += '<div class="expanded-scroll">';
   
-  // Description
+  // Description (always show first if available)
   if (proj.description) {
     html += `<div class="content-section">
       <h4>Description</h4>
       <p>${proj.description}</p>
     </div>`;
-  }
-  
-  // Media section
-  const mediaItems = [];
-  if (proj.image_urls) proj.image_urls.forEach(url => mediaItems.push({type: 'image', url}));
-  if (proj.audio_urls) proj.audio_urls.forEach(url => mediaItems.push({type: 'audio', url}));
-  if (proj.video_urls) proj.video_urls.forEach(url => mediaItems.push({type: 'video', url}));
-  
-  if (mediaItems.length > 0) {
-    html += '<div class="content-section"><h4>Media</h4><div class="media-grid">';
-    mediaItems.forEach((item, i) => {
-      html += `<div class="media-item" onclick="openMediaOverlay('${item.type}', '${item.url}', ${i})">`;
-      if (item.type === 'image') {
-        html += `<img src="${item.url}" alt="Project media">`;
-      } else if (item.type === 'video') {
-        html += `<video src="${item.url}" preload="metadata"></video><div class="play-button">▶</div>`;
-      } else if (item.type === 'audio') {
-        html += `<div class="audio-preview">🎵 Audio</div><div class="play-button">▶</div>`;
-      }
-      html += '</div>';
-    });
-    html += '</div></div>';
   }
   
   // Story section
@@ -211,20 +189,58 @@ function createExpandedContent(proj) {
     </div>`;
   }
   
-  // Links section
+  // Media section - only show if we have media
+  const mediaItems = [];
+  if (proj.image_urls && proj.image_urls.length > 0) {
+    proj.image_urls.forEach(url => {
+      if (url.trim()) mediaItems.push({type: 'image', url: url.trim()});
+    });
+  }
+  if (proj.audio_urls && proj.audio_urls.length > 0) {
+    proj.audio_urls.forEach(url => {
+      if (url.trim()) mediaItems.push({type: 'audio', url: url.trim()});
+    });
+  }
+  if (proj.video_urls && proj.video_urls.length > 0) {
+    proj.video_urls.forEach(url => {
+      if (url.trim()) mediaItems.push({type: 'video', url: url.trim()});
+    });
+  }
+  
+  if (mediaItems.length > 0) {
+    html += '<div class="content-section"><h4>Media</h4><div class="media-grid">';
+    mediaItems.forEach((item, i) => {
+      html += `<div class="media-item" onclick="openMediaOverlay('${item.type}', '${item.url}', ${i})">`;
+      if (item.type === 'image') {
+        html += `<img src="${item.url}" alt="Project media" loading="lazy">`;
+      } else if (item.type === 'video') {
+        html += `<video src="${item.url}" preload="metadata" muted></video><div class="play-button">▶</div>`;
+      } else if (item.type === 'audio') {
+        html += `<div class="audio-preview">🎵</div><div class="play-button">▶</div>`;
+      }
+      html += '</div>';
+    });
+    html += '</div></div>';
+  }
+  
+  // Links section - only show if we have both names and URLs
   if (proj.external_link_names && proj.external_link_urls) {
     const names = Array.isArray(proj.external_link_names) ? proj.external_link_names : [proj.external_link_names];
     const urls = Array.isArray(proj.external_link_urls) ? proj.external_link_urls : [proj.external_link_urls];
     
-    html += '<div class="content-section"><h4>Links</h4><div class="links-grid">';
-    for (let i = 0; i < Math.min(names.length, urls.length); i++) {
-      html += `<a href="${urls[i]}" target="_blank" class="external-link">${names[i]}</a>`;
+    if (names.length > 0 && urls.length > 0) {
+      html += '<div class="content-section"><h4>Links</h4><div class="links-grid">';
+      for (let i = 0; i < Math.min(names.length, urls.length); i++) {
+        if (names[i] && names[i].trim() && urls[i] && urls[i].trim()) {
+          html += `<a href="${urls[i].trim()}" target="_blank" class="external-link">${names[i].trim()}</a>`;
+        }
+      }
+      html += '</div></div>';
     }
-    html += '</div></div>';
   }
   
   // HTML Embed section
-  if (proj.embedded_html) {
+  if (proj.embedded_html && proj.embedded_html.trim()) {
     html += `<div class="content-section">
       <h4>Embed</h4>
       <div class="embed-container">${proj.embedded_html}</div>
@@ -232,7 +248,7 @@ function createExpandedContent(proj) {
   }
   
   // Medium section
-  if (proj.medium) {
+  if (proj.medium && proj.medium.trim()) {
     html += `<div class="content-section">
       <h4>Medium</h4>
       <p>${proj.medium}</p>
@@ -241,11 +257,15 @@ function createExpandedContent(proj) {
   
   // Tags section
   if (proj.tags && proj.tags.length > 0) {
-    html += `<div class="content-section">
-      <div class="tags-container">
-        ${proj.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-      </div>
-    </div>`;
+    const validTags = proj.tags.filter(tag => tag && tag.trim());
+    if (validTags.length > 0) {
+      html += `<div class="content-section">
+        <h4>Tags</h4>
+        <div class="tags-container">
+          ${validTags.map(tag => `<span class="tag">${tag.trim()}</span>`).join('')}
+        </div>
+      </div>`;
+    }
   }
   
   html += '</div>'; // Close expanded-scroll
