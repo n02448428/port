@@ -203,7 +203,15 @@ function createExpandedContent(proj) {
   }
   if (proj.video_urls && proj.video_urls.length > 0) {
     proj.video_urls.forEach(url => {
-      if (url.trim()) mediaItems.push({type: 'video', url: url.trim()});
+      if (url.trim()) {
+        const cleanUrl = url.trim();
+        // Check if it's a YouTube URL and convert to embed format
+        if (cleanUrl.includes('youtube.com') || cleanUrl.includes('youtu.be')) {
+          mediaItems.push({type: 'youtube', url: convertToYouTubeEmbed(cleanUrl)});
+        } else {
+          mediaItems.push({type: 'video', url: cleanUrl});
+        }
+      }
     });
   }
   
@@ -213,6 +221,9 @@ function createExpandedContent(proj) {
       html += `<div class="media-item" onclick="openMediaOverlay('${item.type}', '${item.url}', ${i})">`;
       if (item.type === 'image') {
         html += `<img src="${item.url}" alt="Project media" loading="lazy">`;
+      } else if (item.type === 'youtube') {
+        const videoId = extractYouTubeId(item.url);
+        html += `<img src="https://img.youtube.com/vi/${videoId}/mqdefault.jpg" alt="YouTube video thumbnail" loading="lazy"><div class="play-button">▶</div>`;
       } else if (item.type === 'video') {
         html += `<video src="${item.url}" preload="metadata" muted></video><div class="play-button">▶</div>`;
       } else if (item.type === 'audio') {
@@ -294,6 +305,18 @@ function toggleExpanded(card, forceState = null) {
   }
 }
 
+// YouTube helper functions
+function convertToYouTubeEmbed(url) {
+  const videoId = extractYouTubeId(url);
+  return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+}
+
+function extractYouTubeId(url) {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+}
+
 // Media overlay functions
 function openMediaOverlay(type, url, index) {
   closeMediaOverlay();
@@ -304,6 +327,9 @@ function openMediaOverlay(type, url, index) {
   let content = '';
   if (type === 'image') {
     content = `<img src="${url}" alt="Media">`;
+  } else if (type === 'youtube') {
+    const videoId = extractYouTubeId(url);
+    content = `<iframe width="800" height="450" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
   } else if (type === 'video') {
     content = `<video src="${url}" controls autoplay></video>`;
   } else if (type === 'audio') {
@@ -314,7 +340,7 @@ function openMediaOverlay(type, url, index) {
     <div class="media-overlay-content">
       ${content}
       <button class="media-close" onclick="closeMediaOverlay()">×</button>
-      <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
+      ${type !== 'youtube' ? '<button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>' : ''}
     </div>
   `;
   
