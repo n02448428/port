@@ -145,8 +145,8 @@ function renderTimelineView(data) {
     });
     
     // Append
-    item.appendChild(marker);
     item.appendChild(card);
+    item.appendChild(marker);
     content.appendChild(item);
   });
 }
