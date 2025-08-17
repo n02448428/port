@@ -88,7 +88,7 @@ body.dark {
   width: 20px;
   height: 2px;
   background: var(--fg);
-  right: -20px;
+  right: -21px;
   top: 50%;
   transform: translateY(-50%);
 }
@@ -170,7 +170,7 @@ body.dark {
     margin-right: 2rem;
   }
   .project-card::after {
-    right: -20px;
+    right: -21px;
   }
   .timeline-container::before {
     right: 8px;
