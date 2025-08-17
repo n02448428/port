@@ -16,5 +16,17 @@
     "tags": [
       "#urmom"
     ]
+  },
+  {
+    "id": "2",
+    "title": "game2",
+    "type": "game",
+    "status": "in progressss",
+    "description": "this was a good and fun game to make",
+    "story": "took forever",
+    "medium": "unity, blender, apis",
+    "video_urls": [
+      "https://www.youtube.com/watch?v=bZrfMU71W9I&list=RDbZrfMU71W9I&start_radio=1"
+    ]
   }
 ]
