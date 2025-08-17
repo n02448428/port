@@ -1,5 +1,206 @@
-cardRect.height / 2);
-  positionOrb.style.top = `${cardCenter}px`;
+console.log('Script loaded');
+
+let isGrid = false;
+const content = document.getElementById('content');
+const toggle = document.getElementById('toggleView');
+const modeBtn = document.getElementById('toggleMode');
+const yearText = document.getElementById('yearText');
+
+let expandedCard = null;
+let projectsData = [];
+let currentMediaOverlay = null;
+let positionOrb = null;
+let lastOrbPosition = null;
+
+// Birth date for timeline calculation
+const BIRTH_DATE = new Date('1989-09-07');
+const CURRENT_DATE = new Date();
+
+// Create position orb
+function createPositionOrb() {
+  if (!positionOrb) {
+    positionOrb = document.createElement('div');
+    positionOrb.className = 'timeline-position-orb';
+    document.body.appendChild(positionOrb);
+  }
+}
+
+// Update position orb based on scroll
+function updatePositionOrb() {
+  if (!positionOrb) return;
+  
+  // If we have a remembered position and no interaction, use it
+  if (lastOrbPosition !== null && !expandedCard) {
+    positionOrb.style.top = `${lastOrbPosition}px`;
+    return;
+  }
+  
+  const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+  const timelineHeight = window.innerHeight;
+  const orbPosition = scrollPercent * timelineHeight;
+  
+  const finalPosition = Math.max(50, Math.min(timelineHeight - 50, orbPosition));
+  positionOrb.style.top = `${finalPosition}px`;
+  
+  // Update year label based on scroll position
+  const totalYears = CURRENT_DATE.getFullYear() - BIRTH_DATE.getFullYear();
+  const currentYear = CURRENT_DATE.getFullYear() - Math.floor(scrollPercent * totalYears);
+  yearText.textContent = Math.max(BIRTH_DATE.getFullYear(), currentYear);
+}
+
+// Snap orb to timeline position
+function snapOrbToTimelinePosition(timelinePercent) {
+  if (!positionOrb) return;
+  
+  const timelineElement = document.querySelector('.timeline');
+  if (!timelineElement) return;
+  
+  const timelineRect = timelineElement.getBoundingClientRect();
+  const orbPosition = timelineRect.top + (timelineRect.height * (timelinePercent / 100));
+  
+  positionOrb.style.top = `${orbPosition}px`;
+  lastOrbPosition = orbPosition;
+}
+
+// Load projects from JSON file
+async function loadProjects() {
+  try {
+    console.log('Attempting to load projects...');
+    const response = await fetch('data/projects.json');
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    console.log('Loaded projects:', data);
+    projectsData = data;
+    renderProjects(projectsData);
+  } catch (error) {
+    console.error('Error loading projects:', error);
+    content.innerHTML = `<div class="error-message">
+      <p>Error loading projects: ${error.message}</p>
+      <p>Make sure your Google Sheet is set up and the GitHub Action has run successfully.</p>
+    </div>`;
+  }
+}
+
+function calculateTimelinePosition(projectDate) {
+  const projectTime = new Date(projectDate);
+  const totalLifespan = CURRENT_DATE - BIRTH_DATE;
+  const projectAge = CURRENT_DATE - projectTime;
+  const positionPercent = (projectAge / totalLifespan) * 100;
+  return Math.max(0, Math.min(100, positionPercent));
+}
+
+function renderProjects(data) {
+  content.innerHTML = '';
+  
+  if (!data || data.length === 0) {
+    content.innerHTML = '<div class="error-message"><p>No projects found. Add data to your Google Sheet and run the GitHub Action!</p></div>';
+    return;
+  }
+  
+  console.log('Rendering', data.length, 'projects');
+  
+  if (isGrid) {
+    renderGridView(data);
+  } else {
+    renderTimelineView(data);
+  }
+}
+
+function renderTimelineView(data) {
+  content.className = 'timeline-container';
+  
+  // Create timeline
+  const timeline = document.createElement('div');
+  timeline.className = 'timeline';
+  
+  // Create position orb
+  createPositionOrb();
+  
+  // Sort by date (newest first for display)
+  const sortedData = [...data].sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  sortedData.forEach((proj, index) => {
+    // Create project card
+    const card = document.createElement('div');
+    card.className = 'project-card';
+    if (proj.non_expandable) {
+      card.classList.add('non-expandable');
+    }
+    card.dataset.projectId = proj.id;
+    
+    // Calculate timeline position (based on life span)
+    const timelinePosition = calculateTimelinePosition(proj.date);
+    
+    // Create timeline marker
+    const marker = document.createElement('div');
+    marker.className = 'timeline-marker';
+    marker.style.top = `${timelinePosition}%`;
+    marker.dataset.projectId = proj.id;
+    
+    // Compact display
+    const projectYear = new Date(proj.date).getFullYear();
+    let displayText = `[${proj.type}] ${proj.title}`;
+    if (!proj.non_expandable) {
+      displayText += `, ${projectYear}`;
+      if (proj.status) displayText += ` <span class="status-indicator">${proj.status}</span>`;
+    }
+    
+    card.innerHTML = `
+      <div class="project-compact">
+        ${displayText}
+      </div>
+    `;
+    
+    // Add expanded content for expandable items
+    if (!proj.non_expandable) {
+      const expandedContent = document.createElement('div');
+      expandedContent.className = 'expanded-content';
+      expandedContent.innerHTML = createExpandedContent(proj);
+      card.appendChild(expandedContent);
+      
+      // Close button
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'close-btn';
+      closeBtn.innerHTML = '×';
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleExpanded(card, marker, false);
+      });
+      card.appendChild(closeBtn);
+    }
+    
+    // Mouse hover effects for all items
+    card.addEventListener('mouseenter', () => {
+      marker.classList.add('active');
+      snapOrbToTimelinePosition(timelinePosition);
+    });
+    
+    card.addEventListener('mouseleave', () => {
+      if (!card.classList.contains('expanded')) {
+        marker.classList.remove('active');
+      }
+    });
+    
+    // Click to expand (only for expandable items)
+    if (!proj.non_expandable) {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.media-item, .external-link, .close-btn')) {
+          return;
+        }
+        e.stopPropagation();
+        toggleExpanded(card, marker);
+      });
+    }
+    
+    timeline.appendChild(marker);
+    content.appendChild(card);
+  });
+  
+  content.appendChild(timeline);
 }
 
 function renderGridView(data) {
@@ -172,7 +373,7 @@ function createExpandedContent(proj) {
 function toggleExpanded(card, marker, forceState = null) {
   const isExpanded = forceState !== null ? forceState : !card.classList.contains('expanded');
   
-  // Close other expanded cards and reset their markers
+  // Close other expanded cards
   document.querySelectorAll('.project-card.expanded').forEach(c => {
     if (c !== card) {
       c.classList.remove('expanded');
@@ -189,9 +390,6 @@ function toggleExpanded(card, marker, forceState = null) {
     marker.classList.add('active');
     expandedCard = card;
     
-    // Snap orb to expanded project and keep it there
-    snapOrbToProject(card);
-    
     // Add click-outside-to-close listener
     setTimeout(() => {
       document.addEventListener('click', handleClickOutside);
@@ -202,9 +400,6 @@ function toggleExpanded(card, marker, forceState = null) {
     marker.classList.remove('active');
     expandedCard = null;
     document.removeEventListener('click', handleClickOutside);
-    
-    // Return orb to scroll position
-    updatePositionOrb();
   }
 }
 
@@ -219,12 +414,12 @@ function handleClickOutside(e) {
       if (isClickOnBackground) {
         const markerId = expandedCard.dataset.projectId;
         const marker = document.querySelector(`.timeline-marker[data-project-id="${markerId}"]`);
-        toggleExpanded(expandedCard, marker, false);
+        if (marker) toggleExpanded(expandedCard, marker, false);
       }
     } else {
       const markerId = expandedCard.dataset.projectId;
       const marker = document.querySelector(`.timeline-marker[data-project-id="${markerId}"]`);
-      toggleExpanded(expandedCard, marker, false);
+      if (marker) toggleExpanded(expandedCard, marker, false);
     }
   }
 }
