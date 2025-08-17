@@ -5,6 +5,9 @@ let expandedCard = null;
 let projectsData = [];
 let currentMediaOverlay = null;
 let positionOrb = null;
+let currentOverlay = null;
+let filterTypes = [];
+let itemSize = 220; // Default minmax size
 
 const content = document.getElementById('content');
 const toggle = document.getElementById('toggleView');
@@ -50,6 +53,14 @@ async function loadProjects() {
       <p>Make sure your Google Sheet is set up and the GitHub Action has run successfully.</p>
     </div>`;
   }
+}
+
+function getUniqueTypes() {
+  const types = new Set();
+  projectsData.forEach(proj => {
+    if (proj.type) types.add(proj.type);
+  });
+  return Array.from(types);
 }
 
 function renderProjects(data) {
@@ -173,30 +184,119 @@ function renderGridView(data) {
   
   if (positionOrb) positionOrb.style.display = 'none';
   
-  data.sort((a, b) => new Date(b.date) - new Date(a.date));
+  // Filter and slider controls
+  const controls = document.createElement('div');
+  controls.className = 'grid-controls';
   
-  data.forEach(proj => {
+  // Filter types
+  const filterWrapper = document.createElement('div');
+  filterWrapper.className = 'filter-wrapper';
+  const filterLabel = document.createElement('label');
+  filterLabel.innerText = 'Filter Types:';
+  filterWrapper.appendChild(filterLabel);
+  
+  const uniqueTypes = getUniqueTypes();
+  uniqueTypes.forEach(type => {
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.value = type;
+    checkbox.checked = filterTypes.includes(type);
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        filterTypes.push(type);
+      } else {
+        filterTypes = filterTypes.filter(t => t !== type);
+      }
+      renderGridView(projectsData);
+    });
+    
+    const label = document.createElement('label');
+    label.innerText = type;
+    label.prepend(checkbox);
+    filterWrapper.appendChild(label);
+  });
+  controls.appendChild(filterWrapper);
+  
+  // Size slider
+  const sizeSlider = document.createElement('input');
+  sizeSlider.type = 'range';
+  sizeSlider.min = '150';
+  sizeSlider.max = '400';
+  sizeSlider.value = itemSize;
+  sizeSlider.addEventListener('input', (e) => {
+    itemSize = parseInt(e.target.value);
+    document.documentElement.style.setProperty('--grid-item-size', `${itemSize}px`);
+  });
+  const sliderLabel = document.createElement('label');
+  sliderLabel.innerText = 'Item Size:';
+  sliderLabel.appendChild(sizeSlider);
+  controls.appendChild(sliderLabel);
+  
+  content.appendChild(controls);
+  
+  // Filtered data
+  const filteredData = data.filter(proj => filterTypes.length === 0 || filterTypes.includes(proj.type));
+  filteredData.sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  filteredData.forEach(proj => {
     const card = document.createElement('div');
     card.className = 'grid-card';
+    
+    // Name and first image or blank
+    const firstMedia = proj.media && proj.media.length > 0 ? proj.media[0] : null;
+    const isImage = firstMedia && getMediaType(firstMedia) === 'image';
     card.innerHTML = `
-      <div class="grid-card-header">
-        <strong>${proj.title}</strong>
-        <span>${proj.type}</span>
-      </div>
-      <div class="grid-card-meta">${proj.date}</div>
+      <div class="grid-image" style="${isImage ? `background-image: url('${firstMedia}');` : 'background-color: gray;'}"></div>
+      <div class="grid-title">${proj.title}</div>
     `;
     
     card.addEventListener('click', () => {
-      isGrid = false;
-      renderProjects(projectsData);
-      setTimeout(() => {
-        const timelineCard = document.querySelector(`.project-card[data-project-id="${proj.id}"]`);
-        const marker = document.querySelector(`.timeline-marker[data-project-id="${proj.id}"]`);
-        if (timelineCard && marker) toggleExpanded(timelineCard, marker, true);
-      }, 100);
+      openGridOverlay(proj);
     });
     
     content.appendChild(card);
+  });
+}
+
+function openGridOverlay(proj) {
+  if (currentOverlay) currentOverlay.remove();
+
+  const overlay = document.createElement('div');
+  overlay.className = 'grid-overlay';
+  
+  const overlayCard = document.createElement('div');
+  overlayCard.className = 'overlay-card expanded';
+  overlayCard.innerHTML = createExpandedContent(proj);
+  
+  // Close button
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'close-btn';
+  closeBtn.innerHTML = '×';
+  closeBtn.addEventListener('click', () => {
+    overlay.remove();
+    currentOverlay = null;
+  });
+  overlayCard.appendChild(closeBtn);
+  
+  // Media handling
+  overlayCard.addEventListener('click', (e) => {
+    const mediaItem = e.target.closest('.media-item');
+    if (mediaItem) {
+      e.stopPropagation();
+      openMediaOverlay(mediaItem.dataset.url, mediaItem.dataset.type);
+    }
+  });
+  
+  overlay.appendChild(overlayCard);
+  document.body.appendChild(overlay);
+  currentOverlay = overlay;
+  
+  // Close on outside click
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.remove();
+      currentOverlay = null;
+    }
   });
 }
 
@@ -388,6 +488,14 @@ function handleClickOutside(e) {
     if (marker) toggleExpanded(expandedCard, marker, false);
   }
 }
+
+// Flash effect for buttons
+document.querySelectorAll('button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.classList.add('flash');
+    setTimeout(() => btn.classList.remove('flash'), 100);
+  });
+});
 
 // Init
 loadProjects();
