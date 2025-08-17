@@ -9,7 +9,7 @@ from io import StringIO
 class SimpleSheetsConverter:
     def __init__(self, sheet_id):
         self.sheet_id = sheet_id
-        self.csv_url = f"https://docs.google.com/spreadsheets/d/1xR2n2WlsAx32ZAkgUte253zL81VSScZq9HDjW8pFuRE/export?format=csv"
+        self.csv_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv"
     
     def fetch_sheet_data(self):
         """Fetch CSV data from public Google Sheet"""
@@ -33,7 +33,7 @@ class SimpleSheetsConverter:
             print("❌ No valid data found")
             return []
         
-        headers = [h.strip().lower().replace(' ', '_') for h in csv_data[0]]
+        headers = [h.strip().lower().replace(' ', '_').replace('-', '_') for h in csv_data[0]]
         projects = []
         
         for row in csv_data[1:]:
