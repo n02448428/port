@@ -38,7 +38,8 @@
     "description": "Weave through the neon cybergrid, leaving light trails in your wake. Built for Pieter Levels' (@levelsio) March 2025 VibeJam game jam.",
     "medium": "Javascript;CSS;HTML;Three.js",
     "external_link_names": [
-      "Play here!|GitHub"
+      "Play here!",
+      "GitHub"
     ],
     "external_link_urls": [
       "https://ntb-chi.vercel.app|https://github.com/n02448428/NTB"
