@@ -102,7 +102,11 @@ function renderTimelineView(data) {
     
     // Click to expand
     card.addEventListener('click', (e) => {
-      if (e.target.closest('.media-item, .external-link')) return;
+      // Don't expand if clicking on media, links, or close button
+      if (e.target.closest('.media-item, .external-link, .close-btn')) {
+        return;
+      }
+      e.stopPropagation(); // Prevent event bubbling
       toggleExpanded(card);
     });
     
@@ -295,6 +299,12 @@ function toggleExpanded(card, forceState = null) {
   if (isExpanded) {
     card.classList.add('expanded');
     expandedCard = card;
+    
+    // Add click-outside-to-close listener
+    setTimeout(() => {
+      document.addEventListener('click', handleClickOutside);
+    }, 100);
+    
     // Smooth scroll to center the expanded card
     setTimeout(() => {
       card.scrollIntoView({behavior: 'smooth', block: 'center'});
@@ -302,6 +312,14 @@ function toggleExpanded(card, forceState = null) {
   } else {
     card.classList.remove('expanded');
     expandedCard = null;
+    document.removeEventListener('click', handleClickOutside);
+  }
+}
+
+// Handle click outside to close expanded card
+function handleClickOutside(e) {
+  if (expandedCard && !expandedCard.contains(e.target)) {
+    toggleExpanded(expandedCard, false);
   }
 }
 
