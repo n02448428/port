@@ -63,6 +63,25 @@ function getUniqueTypes() {
   return Array.from(types);
 }
 
+function formatDate(dateStr) {
+  if (!dateStr || isNaN(new Date(dateStr).getTime())) return 'Undated';
+  const date = new Date(dateStr);
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const day = date.getDate();
+  const month = monthNames[date.getMonth()];
+  const year = date.getFullYear();
+  const ordinal = (day) => {
+    if (day > 3 && day < 21) return 'th';
+    switch (day % 10) {
+      case 1: return 'st';
+      case 2: return 'nd';
+      case 3: return 'rd';
+      default: return 'th';
+    }
+  };
+  return `${month} ${day}${ordinal(day)}, ${year}`;
+}
+
 function renderProjects(data) {
   if (!data || data.length === 0) {
     content.innerHTML = '<div class="error-message"><p>No projects found. Add data to your Google Sheet and run the GitHub Action!</p></div>';
@@ -112,13 +131,12 @@ function renderTimelineView(data) {
     card.className = 'project-card';
     card.dataset.projectId = proj.id;
     
-    // Compact display: [type] title, date
+    // Compact display: [type] title, date (no close button)
     card.innerHTML = `
       <div class="project-compact">
         <span class="project-type">[${proj.type}]</span>
         <span class="project-title">${proj.title}</span>,
-        <span class="project-date">${proj.date}</span>
-        ${proj.status ? `<span class="status-indicator">${proj.status}</span>` : ''}
+        <span class="project-date">${formatDate(proj.date)}</span>
       </div>
     `;
     
@@ -128,7 +146,7 @@ function renderTimelineView(data) {
     expandedContent.innerHTML = createExpandedContent(proj);
     card.appendChild(expandedContent);
     
-    // Close button
+    // Close button (only in expanded view)
     const closeBtn = document.createElement('button');
     closeBtn.className = 'close-btn';
     closeBtn.innerHTML = '×';
@@ -202,8 +220,7 @@ function renderTimelineView(data) {
         <div class="project-compact">
           <span class="project-type">[${proj.type}]</span>
           <span class="project-title">${proj.title}</span>,
-          <span class="project-date">Undated</span>
-          ${proj.status ? `<span class="status-indicator">${proj.status}</span>` : ''}
+          <span class="project-date">${formatDate(proj.date)}</span>
         </div>
       `;
       
@@ -340,7 +357,7 @@ function renderGridView(data) {
       <div class="grid-title">
         <span class="project-type">[${proj.type}]</span>
         <span class="project-title">${proj.title}</span>,
-        <span class="project-date">${proj.date || 'Undated'}</span>
+        <span class="project-date">${formatDate(proj.date)}</span>
       </div>
     `;
     
@@ -400,8 +417,7 @@ function createExpandedContent(proj) {
       <h2>${proj.title}</h2>
       <div class="project-metadata">
         <span class="project-type">[${proj.type}]</span>
-        <span class="project-date">${proj.date || 'Undated'}</span>
-        ${proj.status ? `<span class="project-status">${proj.status}</span>` : ''}
+        <span class="project-date">${formatDate(proj.date)}</span>
       </div>
     </div>
     <div class="expanded-scroll">
