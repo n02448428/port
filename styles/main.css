@@ -4,7 +4,7 @@ body {
   background: var(--bg);
   color: var(--fg);
   transition: background 0.3s, color 0.3s;
-  padding-top: 120px; /* Space for fixed controls and hero */
+  padding-top: 60px; /* Space for fixed header */
 }
 
 body.light {
@@ -17,7 +17,7 @@ body.dark {
   --fg: #ffffff;
 }
 
-#controls {
+.header {
   position: fixed;
   top: 0;
   left: 0;
@@ -26,10 +26,26 @@ body.dark {
   background: var(--bg);
   border-bottom: 1px solid var(--fg);
   display: flex;
-  justify-content: flex-end;
   align-items: center;
+  justify-content: space-between;
   padding: 0 1rem;
   z-index: 1000;
+}
+
+#logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--fg);
+}
+
+#name {
+  font-size: 1.2rem;
+  color: var(--fg);
+}
+
+#controls {
+  display: flex;
+  gap: 10px;
 }
 
 #controls button {
@@ -37,7 +53,6 @@ body.dark {
   border: 1px solid var(--fg);
   color: var(--fg);
   padding: 5px 10px;
-  margin-left: 10px;
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
   font-size: 0.9rem;
@@ -46,32 +61,6 @@ body.dark {
 #controls button:hover {
   background: var(--fg);
   color: var(--bg);
-}
-
-#hero {
-  position: fixed;
-  top: 50px;
-  left: 0;
-  right: 0;
-  height: 60px;
-  background: var(--bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-}
-
-#logo {
-  font-size: 2rem;
-  font-weight: bold;
-  color: var(--fg);
-}
-
-#tagline {
-  font-size: 1rem;
-  margin-left: 1rem;
-  color: var(--fg);
-  opacity: 0.7;
 }
 
 #yearLabel {
@@ -91,7 +80,7 @@ body.dark {
   content: '';
   position: fixed;
   right: 22px; /* Centered over 14px wide markers with 2px border */
-  top: 120px; /* Below fixed controls and hero */
+  top: 60px; /* Below fixed header */
   bottom: 0;
   width: 2px;
   background: var(--fg);
@@ -161,6 +150,22 @@ body.dark {
 
 .project-compact {
   font-size: 0.95rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.project-type {
+  font-size: 0.8rem;
+  color: gray;
+}
+
+.project-title {
+  font-weight: bold;
+}
+
+.project-date {
+  font-style: italic;
 }
 
 .expanded-content {
@@ -263,6 +268,23 @@ body.dark {
   padding: 0.5rem;
   text-align: center;
   font-size: 0.8rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.grid-title .project-type {
+  font-size: 0.7rem;
+  color: gray;
+}
+
+.grid-title .project-title {
+  font-weight: bold;
+}
+
+.grid-title .project-date {
+  font-style: italic;
 }
 
 .grid-overlay {
@@ -321,8 +343,9 @@ body.dark {
   position: absolute;
   top: 10px;
   left: 10px;
-  background: rgba(255, 255, 255, 0.7);
-  border: none;
+  background: var(--bg);
+  border: 1px solid var(--fg);
+  color: var(--fg);
   padding: 5px 10px;
   cursor: pointer;
 }
@@ -333,7 +356,7 @@ body.dark {
   right: 10px;
   background: transparent;
   border: none;
-  color: white;
+  color: var(--fg);
   font-size: 2rem;
   cursor: pointer;
 }
@@ -358,8 +381,8 @@ body.dark {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: gray;
-  color: white;
+  background: var(--fg);
+  color: var(--bg);
   font-size: 0.8rem;
   text-align: center;
 }
@@ -380,22 +403,39 @@ button.flash {
 /* Variable for grid item size */
 :root {
   --grid-item-size: 220px;
+  --bg-rgb: 0, 0, 0; /* Default for dark mode */
+}
+
+body.light {
+  --bg-rgb: 255, 255, 255;
 }
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
   body {
-    padding-top: 120px; /* Space for fixed controls and hero */
+    padding-top: 60px; /* Space for fixed header */
   }
 
-  #controls {
+  .header {
     height: 50px;
     padding: 0 0.5rem;
   }
 
-  #hero {
-    height: 60px;
-    padding: 0 0.5rem;
+  #controls {
+    gap: 5px;
+  }
+
+  #controls button {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+
+  #logo {
+    font-size: 1.2rem;
+  }
+
+  #name {
+    font-size: 1rem;
   }
 
   .timeline-container {
@@ -425,8 +465,9 @@ button.flash {
 
   .timeline-container::before {
     right: 22px;
-    top: 120px; /* Below fixed controls and hero */
+    top: 60px; /* Below fixed header */
   }
+
   .grid-controls {
     flex-direction: column;
   }
