@@ -1,387 +1,308 @@
-console.log('🚀 Script loaded successfully');
-
-let isGrid = false;
-let expandedCard = null;
-let projectsData = [];
-let currentMediaOverlay = null;
-let positionOrb = null;
-
-const content = document.getElementById('content');
-const toggle = document.getElementById('toggleView');
-const modeBtn = document.getElementById('toggleMode');
-
-// Birth date for timeline calculation
-const BIRTH_DATE = new Date('1989-09-07');
-const CURRENT_DATE = new Date();
-
-// Create position orb
-function createPositionOrb() {
-  if (!positionOrb) {
-    positionOrb = document.createElement('div');
-    positionOrb.className = 'timeline-position-orb';
-    document.body.appendChild(positionOrb);
-    console.log('✅ Position orb created');
-  }
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  transition: background 0.3s, color 0.3s;
+  padding-top: 60px; /* Space for fixed header */
 }
 
-// Load projects from JSON file
-async function loadProjects() {
-  console.log('🔍 Starting to load projects...');
-  
-  try {
-    const response = await fetch('data/projects.json');
-    console.log('📡 Response status:', response.status);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    
-    const data = await response.json();
-    console.log('✅ Data loaded successfully:', data);
-    console.log('📊 Number of projects:', data.length);
-    
-    projectsData = data;
-    renderProjects(data);
-    
-  } catch (error) {
-    console.error('❌ Error loading projects:', error);
-    content.innerHTML = `<div class="error-message">
-      <p>Error loading projects: ${error.message}</p>
-      <p>Make sure your Google Sheet is set up and the GitHub Action has run successfully.</p>
-    </div>`;
-  }
+body.light {
+  --bg: #ffffff;
+  --fg: #000000;
 }
 
-function renderProjects(data) {
-  if (!data || data.length === 0) {
-    content.innerHTML = '<div class="error-message"><p>No projects found. Add data to your Google Sheet and run the GitHub Action!</p></div>';
-    return;
-  }
-  
-  if (isGrid) {
-    renderGridView(data);
-  } else {
-    renderTimelineView(data);
-  }
+body.dark {
+  --bg: #000000;
+  --fg: #ffffff;
 }
 
-function renderTimelineView(data) {
-  content.className = 'timeline-container';
-  content.innerHTML = '';
-  
-  createPositionOrb();
-  
-  // Sort by date (newest first)
-  const sortedData = [...data].sort((a, b) => new Date(b.date) - new Date(a.date));
-  
-  let lastYear = null;
-  
-  sortedData.forEach((proj) => {
-    const projectYear = new Date(proj.date).getFullYear();
-    
-    // Year label
-    if (projectYear !== lastYear) {
-      const yearLabel = document.createElement('div');
-      yearLabel.className = 'year-label';
-      yearLabel.innerText = projectYear;
-      content.appendChild(yearLabel);
-      lastYear = projectYear;
-    }
-    
-    // Timeline item wrapper
-    const item = document.createElement('div');
-    item.className = 'timeline-item';
-    
-    // Card
-    const card = document.createElement('div');
-    card.className = 'project-card';
-    card.dataset.projectId = proj.id;
-    
-    // Compact display
-    card.innerHTML = `
-      <div class="project-compact">
-        [${proj.type}] ${proj.title}, ${projectYear}
-        ${proj.status ? `<span class="status-indicator">${proj.status}</span>` : ''}
-      </div>
-    `;
-    
-    // Expanded content
-    const expandedContent = document.createElement('div');
-    expandedContent.className = 'expanded-content';
-    expandedContent.innerHTML = createExpandedContent(proj);
-    card.appendChild(expandedContent);
-    
-    // Close button
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'close-btn';
-    closeBtn.innerHTML = '×';
-    closeBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleExpanded(card, marker, false);
-    });
-    card.appendChild(closeBtn);
-    
-    // Marker
-    const marker = document.createElement('div');
-    marker.className = 'timeline-marker';
-    marker.dataset.projectId = proj.id;
-    
-    // Hover
-    card.addEventListener('mouseenter', () => {
-      marker.classList.add('active');
-      snapOrbToMarker(marker);
-    });
-    card.addEventListener('mouseleave', () => {
-      if (!card.classList.contains('expanded')) {
-        marker.classList.remove('active');
-      }
-    });
-    
-    // Click expand and media handling
-    card.addEventListener('click', (e) => {
-      const mediaItem = e.target.closest('.media-item');
-      if (mediaItem) {
-        e.stopPropagation();
-        openMediaOverlay(mediaItem.dataset.url, mediaItem.dataset.type);
-        return;
-      }
-      
-      if (e.target.closest('.external-link, .close-btn')) return;
-      e.stopPropagation();
-      toggleExpanded(card, marker);
-    });
-    
-    // Append
-    item.appendChild(card);
-    item.appendChild(marker);
-    content.appendChild(item);
-  });
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--fg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  z-index: 1000;
 }
 
-function renderGridView(data) {
-  content.className = 'grid-container';
-  content.innerHTML = '';
-  
-  if (positionOrb) positionOrb.style.display = 'none';
-  
-  data.sort((a, b) => new Date(b.date) - new Date(a.date));
-  
-  data.forEach(proj => {
-    const card = document.createElement('div');
-    card.className = 'grid-card';
-    card.innerHTML = `
-      <div class="grid-card-header">
-        <strong>${proj.title}</strong>
-        <span>${proj.type}</span>
-      </div>
-      <div class="grid-card-meta">${proj.date}</div>
-    `;
-    
-    card.addEventListener('click', () => {
-      isGrid = false;
-      renderProjects(projectsData);
-      setTimeout(() => {
-        const timelineCard = document.querySelector(`.project-card[data-project-id="${proj.id}"]`);
-        const marker = document.querySelector(`.timeline-marker[data-project-id="${proj.id}"]`);
-        if (timelineCard && marker) toggleExpanded(timelineCard, marker, true);
-      }, 100);
-    });
-    
-    content.appendChild(card);
-  });
+.header button {
+  background: transparent;
+  border: 1px solid var(--fg);
+  color: var(--fg);
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
 }
 
-function createExpandedContent(proj) {
-  let html = `
-    <div class="expanded-header">
-      <h2>${proj.title}</h2>
-      <div class="project-metadata">
-        <span class="project-type">[${proj.type}]</span>
-        <span class="project-date">${proj.date}</span>
-        ${proj.status ? `<span class="project-status">${proj.status}</span>` : ''}
-      </div>
-    </div>
-    <div class="expanded-scroll">
-  `;
-  
-  if (proj.description) {
-    html += `<div class="content-section"><h4>Description</h4><p>${proj.description}</p></div>`;
+.header button:hover {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.timeline-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 2rem;
+  position: relative;
+  margin-right: 30px; /* Space for fixed timeline */
+}
+
+.timeline-container::before {
+  content: '';
+  position: fixed;
+  right: 20px;
+  top: 60px; /* Below header */
+  bottom: 0;
+  width: 2px;
+  background: var(--fg);
+  z-index: -1;
+}
+
+.year-label {
+  font-size: 0.9rem;
+  opacity: 0.3;
+  margin: 1rem 23px 0.5rem 0;
+  align-self: flex-end;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  position: relative;
+  width: 100%;
+}
+
+.timeline-marker {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--fg);
+  margin-left: 0;
+  position: relative;
+  flex-shrink: 0;
+  transition: box-shadow 0.3s ease;
+}
+
+.timeline-marker.active {
+  box-shadow: 0 0 8px var(--fg);
+}
+
+.timeline-marker:hover {
+  box-shadow: 0 0 12px var(--fg);
+}
+
+.project-card {
+  flex: 1;
+  border: 1px solid var(--fg);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  margin-right: 23px;
+}
+
+.project-card.expanded {
+  height: 400px;
+  overflow: hidden;
+}
+
+.project-card::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  width: 23px;
+  height: 2px;
+  background: var(--fg);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.project-compact {
+  font-size: 0.95rem;
+}
+
+.expanded-content {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.4s ease;
+}
+
+.project-card.expanded .expanded-content {
+  height: calc(100% - 50px);
+  overflow: auto;
+  padding-top: 1rem;
+}
+
+.expanded-scroll {
+  overflow: auto;
+  height: 100%;
+}
+
+.close-btn {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  border: none;
+  background: transparent;
+  color: var(--fg);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.timeline-position-orb {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--fg);
+  pointer-events: none;
+  transition: top 0.3s ease, left 0.3s ease;
+  box-shadow: 0 0 8px var(--fg);
+}
+
+/* Media overlay */
+.media-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.overlay-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  background: var(--bg);
+}
+
+.overlay-content img,
+.overlay-content video,
+.overlay-content iframe {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.fullscreen-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.close-overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+/* Media gallery */
+.media-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.media-item {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 1px solid var(--fg);
+}
+
+.video-thumb,
+.youtube-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: gray;
+  color: white;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+/* Grid view */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.grid-card {
+  border: 1px solid var(--fg);
+  padding: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.grid-card:hover {
+  transform: scale(1.02);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  body {
+    padding-top: 60px; /* Ensure space for fixed header */
   }
-  if (proj.story) {
-    html += `<div class="content-section"><h4>Story</h4><p>${proj.story}</p></div>`;
-  }
-  
-  // Links
-  if (proj.links) {
-    html += `<div class="content-section"><h4>Links</h4><ul>`;
-    const links = Array.isArray(proj.links) ? proj.links : [proj.links];
-    links.forEach(link => {
-      html += `<li><a href="${link}" class="external-link" target="_blank">${link}</a></li>`;
-    });
-    html += `</ul></div>`;
-  }
-  
-  // Media
-  if (proj.media) {
-    html += `<div class="content-section"><h4>Media</h4><div class="media-gallery">`;
-    const mediaItems = Array.isArray(proj.media) ? proj.media : [proj.media];
-    mediaItems.forEach(url => {
-      const type = getMediaType(url);
-      if (type === 'image') {
-        html += `<img src="${url}" alt="media" class="media-item" data-type="image" data-url="${url}">`;
-      } else if (type === 'video') {
-        html += `<div class="video-thumb media-item" data-type="video" data-url="${url}"><span>▶️ Video</span></div>`;
-      } else if (type === 'youtube') {
-        html += `<div class="youtube-thumb media-item" data-type="youtube" data-url="${url}"><span>▶️ YouTube</span></div>`;
-      } else {
-        html += `<a href="${url}" class="external-link" target="_blank">${url}</a>`;
-      }
-    });
-    html += `</div></div>`;
-  }
-  
-  // Other fields
-  let otherHtml = '';
-  Object.entries(proj).forEach(([key, value]) => {
-    if (['id', 'title', 'type', 'date', 'status', 'description', 'story', 'links', 'media'].includes(key)) return;
-    otherHtml += `<p><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${value}</p>`;
-  });
-  if (otherHtml) {
-    html += `<div class="content-section"><h4>Other Details</h4>${otherHtml}</div>`;
-  }
-  
-  html += '</div>';
-  return html;
-}
 
-function getMediaType(url) {
-  if (typeof url !== 'string') return 'unknown';
-  if (url.match(/\.(jpeg|jpg|gif|png|webp)$/i)) return 'image';
-  if (url.match(/\.(mp4|webm|ogg)$/i)) return 'video';
-  if (url.match(/(youtube\.com|youtu\.be)/i)) return 'youtube';
-  return 'unknown';
-}
-
-function extractYoutubeId(url) {
-  const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-  const match = url.match(regExp);
-  return (match && match[2].length === 11) ? match[2] : null;
-}
-
-function openMediaOverlay(url, type) {
-  if (currentMediaOverlay) currentMediaOverlay.remove();
-
-  const overlay = document.createElement('div');
-  overlay.className = 'media-overlay';
-  
-  let content = '';
-  if (type === 'image') {
-    content = `<img src="${url}" alt="Media">`;
-  } else if (type === 'video') {
-    content = `<video src="${url}" controls autoplay loop></video>`;
-  } else if (type === 'youtube') {
-    const videoId = extractYoutubeId(url);
-    if (videoId) {
-      content = `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
-    } else {
-      content = `<p>Invalid YouTube URL</p>`;
-    }
+  .header {
+    height: 50px;
+    padding: 0 0.5rem;
   }
 
-  overlay.innerHTML = `
-    <div class="overlay-content">
-      ${content}
-      <button class="fullscreen-btn">⛶ Fullscreen</button>
-      <button class="close-overlay">×</button>
-    </div>
-  `;
-  
-  document.body.appendChild(overlay);
-  currentMediaOverlay = overlay;
-
-  const closeBtn = overlay.querySelector('.close-overlay');
-  closeBtn.addEventListener('click', () => {
-    overlay.remove();
-    currentMediaOverlay = null;
-  });
-
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) {
-      overlay.remove();
-      currentMediaOverlay = null;
-    }
-  });
-
-  const fullscreenBtn = overlay.querySelector('.fullscreen-btn');
-  const mediaElem = overlay.querySelector('img, video, iframe');
-  if (fullscreenBtn && mediaElem) {
-    fullscreenBtn.addEventListener('click', () => {
-      if (mediaElem.requestFullscreen) {
-        mediaElem.requestFullscreen();
-      } else if (mediaElem.webkitRequestFullscreen) {
-        mediaElem.webkitRequestFullscreen();
-      } else if (mediaElem.msRequestFullscreen) {
-        mediaElem.msRequestFullscreen();
-      }
-    });
+  .timeline-container {
+    margin-right: 30px;
   }
-}
 
-function snapOrbToMarker(marker) {
-  if (!positionOrb || !marker) return;
-  const rect = marker.getBoundingClientRect();
-  positionOrb.style.top = `${rect.top + window.scrollY + 1}px`;
-  positionOrb.style.left = `${rect.left + 1}px`;
-}
-
-function toggleExpanded(card, marker, forceState = null) {
-  const isExpanded = forceState !== null ? forceState : !card.classList.contains('expanded');
-  
-  document.querySelectorAll('.project-card.expanded').forEach(c => {
-    if (c !== card) {
-      c.classList.remove('expanded');
-      const otherMarker = document.querySelector(`.timeline-marker[data-project-id="${c.dataset.projectId}"]`);
-      if (otherMarker) otherMarker.classList.remove('active');
-    }
-  });
-  
-  if (isExpanded) {
-    card.classList.add('expanded');
-    marker.classList.add('active');
-    expandedCard = card;
-    setTimeout(() => document.addEventListener('click', handleClickOutside), 100);
-  } else {
-    card.classList.remove('expanded');
-    marker.classList.remove('active');
-    expandedCard = null;
-    document.removeEventListener('click', handleClickOutside);
+  .timeline-item {
+    flex-direction: row;
   }
-}
 
-function handleClickOutside(e) {
-  if (expandedCard && !expandedCard.contains(e.target)) {
-    const markerId = expandedCard.dataset.projectId;
-    const marker = document.querySelector(`.timeline-marker[data-project-id="${markerId}"]`);
-    if (marker) toggleExpanded(expandedCard, marker, false);
+  .timeline-marker {
+    margin-left: 0;
   }
-}
 
-// Init
-loadProjects();
+  .year-label {
+    margin-right: 23px;
+  }
 
-// Toggle View
-if (toggle) {
-  toggle.addEventListener('click', () => {
-    isGrid = !isGrid;
-    if (positionOrb) positionOrb.style.display = isGrid ? 'none' : 'block';
-    renderProjects(projectsData);
-  });
-}
+  .project-card {
+    margin-right: 23px;
+  }
 
-// Dark/Light Mode
-if (modeBtn) {
-  modeBtn.addEventListener('click', () => {
-    document.body.classList.toggle('light');
-    document.body.classList.toggle('dark');
-  });
+  .project-card::after {
+    left: 100%;
+    width: 23px;
+  }
+
+  .timeline-container::before {
+    right: 20px;
+    top: 60px; /* Below fixed header */
+  }
 }
