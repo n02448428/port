@@ -4,15 +4,46 @@ body {
   background: var(--bg);
   color: var(--fg);
   transition: background 0.3s, color 0.3s;
+  padding-top: 60px; /* Space for fixed header */
 }
 
 body.light {
   --bg: #ffffff;
   --fg: #000000;
 }
+
 body.dark {
   --bg: #000000;
   --fg: #ffffff;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--fg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  z-index: 1000;
+}
+
+.header button {
+  background: transparent;
+  border: 1px solid var(--fg);
+  color: var(--fg);
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+.header button:hover {
+  background: var(--fg);
+  color: var(--bg);
 }
 
 .timeline-container {
@@ -21,13 +52,14 @@ body.dark {
   align-items: flex-end;
   padding: 2rem;
   position: relative;
+  margin-right: 30px; /* Space for fixed timeline */
 }
 
 .timeline-container::before {
   content: '';
-  position: absolute;
-  right: 6px;
-  top: 0;
+  position: fixed;
+  right: 20px;
+  top: 60px; /* Below header */
   bottom: 0;
   width: 2px;
   background: var(--fg);
@@ -59,9 +91,11 @@ body.dark {
   flex-shrink: 0;
   transition: box-shadow 0.3s ease;
 }
+
 .timeline-marker.active {
   box-shadow: 0 0 8px var(--fg);
 }
+
 .timeline-marker:hover {
   box-shadow: 0 0 12px var(--fg);
 }
@@ -226,29 +260,49 @@ body.dark {
   cursor: pointer;
   transition: transform 0.2s ease;
 }
+
 .grid-card:hover {
   transform: scale(1.02);
 }
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
+  body {
+    padding-top: 60px; /* Ensure space for fixed header */
+  }
+
+  .header {
+    height: 50px;
+    padding: 0 0.5rem;
+  }
+
+  .timeline-container {
+    margin-right: 30px;
+  }
+
   .timeline-item {
     flex-direction: row;
   }
+
   .timeline-marker {
     margin-left: 0;
   }
+
   .year-label {
     margin-right: 23px;
   }
+
   .project-card {
     margin-right: 23px;
   }
+
   .project-card::after {
     left: 100%;
     width: 23px;
   }
+
   .timeline-container::before {
-    right: 6px;
+    right: 20px;
+    top: 60px; /* Below fixed header */
   }
 }
