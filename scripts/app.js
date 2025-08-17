@@ -1,3 +1,5 @@
+console.log('Script loaded');
+
 let isGrid = false;
 const content = document.getElementById('content');
 const toggle = document.getElementById('toggleView');
@@ -10,15 +12,24 @@ let projectsData = [];
 // Load projects from JSON file
 async function loadProjects() {
   try {
+    console.log('Attempting to load projects...');
     const response = await fetch('data/projects.json');
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
     const data = await response.json();
+    console.log('Loaded projects:', data);
     projectsData = data;
-    console.log('Loaded projects:', projectsData);
     renderProjects(projectsData);
   } catch (error) {
     console.error('Error loading projects:', error);
-    // Fallback to sample data if file doesn't exist
-    renderProjects([]);
+    // Show error message on page
+    content.innerHTML = `<div style="text-align: center; opacity: 0.7; padding: 2rem;">
+      <p>Error loading projects: ${error.message}</p>
+      <p>Make sure your Google Sheet is set up and the GitHub Action has run successfully.</p>
+    </div>`;
   }
 }
 
@@ -27,14 +38,18 @@ function renderProjects(data) {
   content.className = isGrid ? 'grid' : '';
   
   if (!data || data.length === 0) {
-    content.innerHTML = '<p style="text-align: center; opacity: 0.7;">No projects found. Update your Google Sheet and run the workflow!</p>';
+    content.innerHTML = '<div style="text-align: center; opacity: 0.7; padding: 2rem;"><p>No projects found.</p><p>Add data to your Google Sheet and run the GitHub Action!</p></div>';
     return;
   }
+  
+  console.log('Rendering', data.length, 'projects');
   
   // Sort by date (newest first)
   data.sort((a, b) => new Date(b.date) - new Date(a.date));
   
   data.forEach(proj => {
+    console.log('Rendering project:', proj.title);
+    
     const card = document.createElement('div');
     card.className = 'card';
     
@@ -66,19 +81,19 @@ function renderProjects(data) {
         const mini = document.createElement('div');
         mini.className = 'mini';
         
-        if (m.media_type === 'image') {
-          mini.innerHTML = `<img src="${m.src}" style="width:100%; border-radius: 4px;" alt="Project image">`;
+        if (m.media_type === 'image' && m.src) {
+          mini.innerHTML = `<img src="${m.src}" style="width:100%; border-radius: 4px;" alt="Project image" onload="console.log('Image loaded:', '${m.src}')" onerror="console.log('Image failed:', '${m.src}')">`;
         }
-        else if (m.media_type === 'audio') {
+        else if (m.media_type === 'audio' && m.src) {
           mini.innerHTML = `<audio src="${m.src}" controls preload="none" style="width:100%;"></audio>`;
         }
-        else if (m.media_type === 'video') {
+        else if (m.media_type === 'video' && m.src) {
           mini.innerHTML = `<video src="${m.src}" controls preload="none" style="width:100%; border-radius: 4px;"></video>`;
         }
-        else if (m.media_type === 'text') {
+        else if (m.media_type === 'text' && m.content) {
           mini.innerHTML = `<div class="text-content">${m.content}</div>`;
         }
-        else if (m.media_type === 'embed') {
+        else if (m.media_type === 'embed' && m.content) {
           mini.innerHTML = `<div class="embed-content">${m.content}</div>`;
         }
         
