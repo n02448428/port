@@ -98,18 +98,17 @@ body.light #controls button:hover {
 
 /* Main Layout */
 .timeline-container {
-  padding: 2rem 4rem 2rem 2rem; /* Right padding for timeline */
-  padding-top: 6rem;
+  padding: 8rem 4rem 2rem 2rem; /* Top padding for fixed header */
   position: relative;
-  min-height: 200vh;
+  min-height: 100vh;
 }
 
 /* Integrated Timeline - Replaces Scrollbar */
 .timeline {
   position: fixed;
   right: 2rem;
-  top: 0;
-  bottom: 0;
+  top: 7.5rem; /* Below header elements */
+  bottom: 2rem;
   width: 3px;
   z-index: 10;
   border-radius: 1.5px;
@@ -193,17 +192,37 @@ body.light .timeline-marker.active {
   box-shadow: 0 0 15px rgba(0,0,0,0.8);
 }
 
-/* Full-Width Project Cards */
+/* Uniform Project Cards */
 .project-card {
-  position: absolute;
+  position: relative;
   left: 2rem;
-  right: 4rem; /* Space for timeline */
+  right: 4rem;
   width: auto;
-  transform: translateY(-50%);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 80px; /* Fixed height for all minimized cards */
+  margin-bottom: 2rem;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 20;
   display: flex;
   align-items: center;
+}
+
+/* Special styling for non-expandable items */
+.project-card.non-expandable {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.project-card.non-expandable .project-compact {
+  cursor: default;
+  background: transparent !important;
+}
+
+/* Expanded state */
+.project-card.expanded {
+  height: 80vh; /* Fixed height for all expanded cards */
+  z-index: 1000;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 /* Connection Tail to Timeline */
@@ -211,11 +230,17 @@ body.light .timeline-marker.active {
   content: '';
   position: absolute;
   right: -2rem;
-  top: 50%;
+  top: 40px; /* Center of minimized card */
   width: 2rem;
   height: 1px;
-  transform: translateY(-50%);
   transition: all 0.3s ease;
+}
+
+/* Expanded card connection */
+.project-card.expanded::before {
+  top: 40px; /* Keep connection at same level */
+  height: 3px;
+  animation: breathe 2s ease-in-out infinite;
 }
 
 body.dark .project-card::before { 
