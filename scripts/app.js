@@ -190,8 +190,8 @@ function renderTimelineView(data) {
     expandedContent.addEventListener('click', (e) => {
       const link = e.target.closest('.external-link');
       if (link) {
-        e.stopPropagation(); // Prevent card collapse
-        window.open(link.href, '_blank'); // Open link in new tab
+        e.stopPropagation();
+        window.open(link.href, '_blank');
       }
     });
     
@@ -290,34 +290,26 @@ function renderGridView(data) {
   const controls = document.createElement('div');
   controls.className = 'grid-controls';
   
-  // Filter types
-  const filterWrapper = document.createElement('div');
-  filterWrapper.className = 'filter-wrapper';
-  const filterLabel = document.createElement('label');
-  filterLabel.innerText = 'Filter Types:';
-  filterWrapper.appendChild(filterLabel);
+  // Filter types as dropdown
+  const filterSelect = document.createElement('select');
+  filterSelect.className = 'filter-select';
+  filterSelect.addEventListener('change', () => {
+    filterTypes = filterSelect.value ? [filterSelect.value] : [];
+    renderGridView(projectsData);
+  });
+  const defaultOption = document.createElement('option');
+  defaultOption.value = '';
+  defaultOption.innerText = 'All Types';
+  filterSelect.appendChild(defaultOption);
   
   const uniqueTypes = getUniqueTypes();
   uniqueTypes.forEach(type => {
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.value = type;
-    checkbox.checked = filterTypes.includes(type);
-    checkbox.addEventListener('change', () => {
-      if (checkbox.checked) {
-        filterTypes.push(type);
-      } else {
-        filterTypes = filterTypes.filter(t => t !== type);
-      }
-      renderGridView(projectsData);
-    });
-    
-    const label = document.createElement('label');
-    label.innerText = type;
-    label.prepend(checkbox);
-    filterWrapper.appendChild(label);
+    const option = document.createElement('option');
+    option.value = type;
+    option.innerText = type;
+    filterSelect.appendChild(option);
   });
-  controls.appendChild(filterWrapper);
+  controls.appendChild(filterSelect);
   
   // Size slider
   const sizeSlider = document.createElement('input');
