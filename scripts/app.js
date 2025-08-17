@@ -151,6 +151,15 @@ function renderTimelineView(data) {
       toggleExpanded(card, marker);
     });
     
+    // Ensure expanded content is clickable
+    expandedContent.addEventListener('click', (e) => {
+      const link = e.target.closest('.external-link');
+      if (link) {
+        e.stopPropagation(); // Prevent card collapse
+        window.open(link.href, '_blank'); // Open link in new tab
+      }
+    });
+    
     // Append
     item.appendChild(card);
     item.appendChild(marker);
@@ -211,12 +220,19 @@ function createExpandedContent(proj) {
     html += `<div class="content-section"><h4>Story</h4><p>${proj.story}</p></div>`;
   }
   
-  // Links
-  if (proj.links) {
+  // Links (combine external_link_names and external_link_urls if present)
+  if (proj.links || (proj.external_link_names && proj.external_link_urls)) {
     html += `<div class="content-section"><h4>Links</h4><ul>`;
-    const links = Array.isArray(proj.links) ? proj.links : [proj.links];
+    let links = [];
+    if (proj.links && Array.isArray(proj.links)) {
+      links = proj.links.map(link => typeof link === 'string' ? { name: link, url: link } : link);
+    } else if (proj.external_link_names && proj.external_link_urls) {
+      const names = Array.isArray(proj.external_link_names) ? proj.external_link_names : [proj.external_link_names];
+      const urls = Array.isArray(proj.external_link_urls) ? proj.external_link_urls : [proj.external_link_urls];
+      links = names.map((name, i) => ({ name, url: urls[i] || '#' }));
+    }
     links.forEach(link => {
-      html += `<li><a href="${link}" class="external-link" target="_blank">${link}</a></li>`;
+      html += `<li><a href="${link.url}" class="external-link" target="_blank">${link.name}</a></li>`;
     });
     html += `</ul></div>`;
   }
@@ -243,7 +259,7 @@ function createExpandedContent(proj) {
   // Other fields
   let otherHtml = '';
   Object.entries(proj).forEach(([key, value]) => {
-    if (['id', 'title', 'type', 'date', 'status', 'description', 'story', 'links', 'media'].includes(key)) return;
+    if (['id', 'title', 'type', 'date', 'status', 'description', 'story', 'links', 'media', 'external_link_names', 'external_link_urls'].includes(key)) return;
     otherHtml += `<p><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${value}</p>`;
   });
   if (otherHtml) {
