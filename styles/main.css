@@ -10,11 +10,13 @@ body {
 body.light {
   --bg: #ffffff;
   --fg: #000000;
+  --bg-rgb: 255, 255, 255;
 }
 
 body.dark {
   --bg: #000000;
   --fg: #ffffff;
+  --bg-rgb: 0, 0, 0;
 }
 
 .header {
@@ -74,6 +76,7 @@ body.dark {
   padding: 2rem;
   position: relative;
   margin-right: 23px; /* Space for fixed timeline */
+  background: var(--bg); /* Ensure container matches body */
 }
 
 .timeline-container::before {
@@ -92,6 +95,7 @@ body.dark {
   opacity: 0.3;
   margin: 1rem 23px 0.5rem 0;
   align-self: flex-end;
+  color: var(--fg);
 }
 
 .timeline-item {
@@ -130,6 +134,8 @@ body.dark {
   position: relative;
   overflow: hidden;
   margin-right: 23px;
+  background: var(--bg);
+  color: var(--fg);
 }
 
 .project-card.expanded {
@@ -210,6 +216,7 @@ body.dark {
 /* Grid view */
 .grid-container {
   padding: 2rem;
+  background: var(--bg);
 }
 
 .grid-controls {
@@ -229,6 +236,7 @@ body.dark {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  color: var(--fg);
 }
 
 .grid-container {
@@ -245,6 +253,7 @@ body.dark {
   overflow: hidden;
   position: relative;
   aspect-ratio: 1 / 1; /* Square like iOS Photos */
+  background: var(--bg);
 }
 
 .grid-card:hover {
@@ -308,6 +317,7 @@ body.dark {
   border: 1px solid var(--fg);
   padding: 1rem;
   position: relative;
+  color: var(--fg);
 }
 
 /* Media overlay */
@@ -403,22 +413,20 @@ button.flash {
 /* Variable for grid item size */
 :root {
   --grid-item-size: 220px;
-  --bg-rgb: 0, 0, 0; /* Default for dark mode */
-}
-
-body.light {
-  --bg-rgb: 255, 255, 255;
 }
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
   body {
     padding-top: 60px; /* Space for fixed header */
+    background: var(--bg); /* Explicitly set background */
   }
 
   .header {
     height: 50px;
     padding: 0 0.5rem;
+    background: var(--bg);
+    color: var(--fg);
   }
 
   #controls {
@@ -428,18 +436,29 @@ body.light {
   #controls button {
     padding: 4px 8px;
     font-size: 0.8rem;
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid var(--fg);
+  }
+
+  #controls button:hover {
+    background: var(--fg);
+    color: var(--bg);
   }
 
   #logo {
     font-size: 1.2rem;
+    color: var(--fg);
   }
 
   #name {
     font-size: 1rem;
+    color: var(--fg);
   }
 
   .timeline-container {
     margin-right: 23px;
+    background: var(--bg);
   }
 
   .timeline-item {
@@ -452,23 +471,81 @@ body.light {
 
   .year-label {
     margin-right: 23px;
+    color: var(--fg);
   }
 
   .project-card {
     margin-right: 23px;
+    background: var(--bg);
+    color: var(--fg);
   }
 
   .project-card::after {
     left: 100%;
     width: 22px;
+    background: var(--fg);
   }
 
   .timeline-container::before {
     right: 22px;
     top: 60px; /* Below fixed header */
+    background: var(--fg);
+  }
+
+  .grid-container {
+    background: var(--bg);
+  }
+
+  .grid-card {
+    background: var(--bg);
+    border: 1px solid var(--fg);
+  }
+
+  .grid-title {
+    background: rgba(var(--bg-rgb), 0.7);
+    color: var(--fg);
   }
 
   .grid-controls {
     flex-direction: column;
+    background: var(--bg);
+  }
+
+  .filter-wrapper label {
+    color: var(--fg);
+  }
+
+  .grid-overlay {
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .overlay-card {
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid var(--fg);
+  }
+
+  .media-overlay {
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .overlay-content {
+    background: var(--bg);
+  }
+
+  .fullscreen-btn {
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid var(--fg);
+  }
+
+  .close-overlay {
+    color: var(--fg);
+  }
+
+  .video-thumb,
+  .youtube-thumb {
+    background: var(--fg);
+    color: var(--bg);
   }
 }
