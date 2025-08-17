@@ -1,21 +1,20 @@
 [
   {
-    "id":"2025-001",
-    "title":"Celestial Fragments",
-    "date":"2025-07-12",
-    "type":"Music",
-    "mini":[
-      {"media_type":"image","src":"https://via.placeholder.com/300"},
-      {"media_type":"audio","src":"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"}
-    ]
-  },
-  {
-    "id":"2024-015",
-    "title":"Unwritten Poem",
-    "date":"2024-02-18",
-    "type":"Poetry",
-    "mini":[
-      {"media_type":"text","content":"A stanza without words."}
+    "id": "1",
+    "title": "game1",
+    "date": "08/27/24",
+    "type": "video game",
+    "status": "completed",
+    "description": "describing things",
+    "medium": "code",
+    "external_link_names": [
+      "google"
+    ],
+    "external_link_urls": [
+      "google.com"
+    ],
+    "tags": [
+      "#urmom"
     ]
   }
 ]
