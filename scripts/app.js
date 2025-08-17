@@ -137,9 +137,16 @@ function renderTimelineView(data) {
       }
     });
     
-    // Click expand
+    // Click expand and media handling
     card.addEventListener('click', (e) => {
-      if (e.target.closest('.media-item, .external-link, .close-btn')) return;
+      const mediaItem = e.target.closest('.media-item');
+      if (mediaItem) {
+        e.stopPropagation();
+        openMediaOverlay(mediaItem.dataset.url, mediaItem.dataset.type);
+        return;
+      }
+      
+      if (e.target.closest('.external-link, .close-btn')) return;
       e.stopPropagation();
       toggleExpanded(card, marker);
     });
@@ -204,20 +211,127 @@ function createExpandedContent(proj) {
     html += `<div class="content-section"><h4>Story</h4><p>${proj.story}</p></div>`;
   }
   
-  // Add more fields if available
-  if (proj.otherField) { // Placeholder for additional data fields
-    html += `<div class="content-section"><h4>Other</h4><p>${proj.otherField}</p></div>`;
+  // Links
+  if (proj.links) {
+    html += `<div class="content-section"><h4>Links</h4><ul>`;
+    const links = Array.isArray(proj.links) ? proj.links : [proj.links];
+    links.forEach(link => {
+      html += `<li><a href="${link}" class="external-link" target="_blank">${link}</a></li>`;
+    });
+    html += `</ul></div>`;
+  }
+  
+  // Media
+  if (proj.media) {
+    html += `<div class="content-section"><h4>Media</h4><div class="media-gallery">`;
+    const mediaItems = Array.isArray(proj.media) ? proj.media : [proj.media];
+    mediaItems.forEach(url => {
+      const type = getMediaType(url);
+      if (type === 'image') {
+        html += `<img src="${url}" alt="media" class="media-item" data-type="image" data-url="${url}">`;
+      } else if (type === 'video') {
+        html += `<div class="video-thumb media-item" data-type="video" data-url="${url}"><span>▶️ Video</span></div>`;
+      } else if (type === 'youtube') {
+        html += `<div class="youtube-thumb media-item" data-type="youtube" data-url="${url}"><span>▶️ YouTube</span></div>`;
+      } else {
+        html += `<a href="${url}" class="external-link" target="_blank">${url}</a>`;
+      }
+    });
+    html += `</div></div>`;
+  }
+  
+  // Other fields
+  let otherHtml = '';
+  Object.entries(proj).forEach(([key, value]) => {
+    if (['id', 'title', 'type', 'date', 'status', 'description', 'story', 'links', 'media'].includes(key)) return;
+    otherHtml += `<p><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${value}</p>`;
+  });
+  if (otherHtml) {
+    html += `<div class="content-section"><h4>Other Details</h4>${otherHtml}</div>`;
   }
   
   html += '</div>';
   return html;
 }
 
+function getMediaType(url) {
+  if (typeof url !== 'string') return 'unknown';
+  if (url.match(/\.(jpeg|jpg|gif|png|webp)$/i)) return 'image';
+  if (url.match(/\.(mp4|webm|ogg)$/i)) return 'video';
+  if (url.match(/(youtube\.com|youtu\.be)/i)) return 'youtube';
+  return 'unknown';
+}
+
+function extractYoutubeId(url) {
+  const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+}
+
+function openMediaOverlay(url, type) {
+  if (currentMediaOverlay) currentMediaOverlay.remove();
+
+  const overlay = document.createElement('div');
+  overlay.className = 'media-overlay';
+  
+  let content = '';
+  if (type === 'image') {
+    content = `<img src="${url}" alt="Media">`;
+  } else if (type === 'video') {
+    content = `<video src="${url}" controls autoplay loop></video>`;
+  } else if (type === 'youtube') {
+    const videoId = extractYoutubeId(url);
+    if (videoId) {
+      content = `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+    } else {
+      content = `<p>Invalid YouTube URL</p>`;
+    }
+  }
+
+  overlay.innerHTML = `
+    <div class="overlay-content">
+      ${content}
+      <button class="fullscreen-btn">⛶ Fullscreen</button>
+      <button class="close-overlay">×</button>
+    </div>
+  `;
+  
+  document.body.appendChild(overlay);
+  currentMediaOverlay = overlay;
+
+  const closeBtn = overlay.querySelector('.close-overlay');
+  closeBtn.addEventListener('click', () => {
+    overlay.remove();
+    currentMediaOverlay = null;
+  });
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.remove();
+      currentMediaOverlay = null;
+    }
+  });
+
+  const fullscreenBtn = overlay.querySelector('.fullscreen-btn');
+  const mediaElem = overlay.querySelector('img, video, iframe');
+  if (fullscreenBtn && mediaElem) {
+    fullscreenBtn.addEventListener('click', () => {
+      if (mediaElem.requestFullscreen) {
+        mediaElem.requestFullscreen();
+      } else if (mediaElem.webkitRequestFullscreen) {
+        mediaElem.webkitRequestFullscreen();
+      } else if (mediaElem.msRequestFullscreen) {
+        mediaElem.msRequestFullscreen();
+      }
+    });
+  }
+}
+
 function snapOrbToMarker(marker) {
   if (!positionOrb || !marker) return;
   const rect = marker.getBoundingClientRect();
-  positionOrb.style.top = `${rect.top + window.scrollY}px`;
-  positionOrb.style.left = `${rect.left}px`;
+  positionOrb.style.top = `${rect.top + window.scrollY + 2}px`;
+  positionOrb.style.left = `${rect.left - 2}px`;
 }
 
 function toggleExpanded(card, marker, forceState = null) {
