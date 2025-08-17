@@ -1,0 +1,46 @@
+name: Update Projects from Google Sheet
+
+on:
+  # Manual trigger - you can run this from GitHub mobile/web
+  workflow_dispatch:
+  
+  # Optional: Auto-run daily at 9 AM UTC (remove if you only want manual)
+  # schedule:
+  #   - cron: '0 9 * * *'
+
+jobs:
+  update-projects:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+    
+    - name: Run sheet converter
+      run: |
+        python sheets_to_json.py
+      env:
+        SHEET_ID: ${{ secrets.SHEET_ID }}
+    
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add data/projects.json
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Update projects from Google Sheet - $(date)"
+          git push
+        fi
