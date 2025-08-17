@@ -8,6 +8,11 @@ const yearText = document.getElementById('yearText');
 
 let expandedCard = null;
 let projectsData = [];
+let currentMediaOverlay = null;
+
+// Birth date for timeline calculation
+const BIRTH_DATE = new Date('1989-09-07');
+const CURRENT_DATE = new Date();
 
 // Load projects from JSON file
 async function loadProjects() {
@@ -25,151 +30,313 @@ async function loadProjects() {
     renderProjects(projectsData);
   } catch (error) {
     console.error('Error loading projects:', error);
-    // Show error message on page
-    content.innerHTML = `<div style="text-align: center; opacity: 0.7; padding: 2rem;">
+    content.innerHTML = `<div class="error-message">
       <p>Error loading projects: ${error.message}</p>
       <p>Make sure your Google Sheet is set up and the GitHub Action has run successfully.</p>
     </div>`;
   }
 }
 
+function calculateTimelinePosition(projectDate) {
+  const projectTime = new Date(projectDate);
+  const totalLifespan = CURRENT_DATE - BIRTH_DATE;
+  const projectAge = CURRENT_DATE - projectTime;
+  const positionPercent = (projectAge / totalLifespan) * 100;
+  return Math.max(0, Math.min(100, positionPercent));
+}
+
 function renderProjects(data) {
   content.innerHTML = '';
-  content.className = isGrid ? 'grid' : '';
   
   if (!data || data.length === 0) {
-    content.innerHTML = '<div style="text-align: center; opacity: 0.7; padding: 2rem;"><p>No projects found.</p><p>Add data to your Google Sheet and run the GitHub Action!</p></div>';
+    content.innerHTML = '<div class="error-message"><p>No projects found. Add data to your Google Sheet and run the GitHub Action!</p></div>';
     return;
   }
   
   console.log('Rendering', data.length, 'projects');
   
-  // Sort by date (newest first)
-  data.sort((a, b) => new Date(b.date) - new Date(a.date));
+  if (isGrid) {
+    renderGridView(data);
+  } else {
+    renderTimelineView(data);
+  }
+}
+
+function renderTimelineView(data) {
+  content.className = 'timeline-container';
   
-  data.forEach(proj => {
-    console.log('Rendering project:', proj.title);
+  // Create timeline
+  const timeline = document.createElement('div');
+  timeline.className = 'timeline';
+  
+  // Sort by date (oldest first for timeline)
+  const sortedData = [...data].sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+  sortedData.forEach((proj, index) => {
+    const timelinePosition = calculateTimelinePosition(proj.date);
     
+    // Create project marker
+    const marker = document.createElement('div');
+    marker.className = 'timeline-marker';
+    marker.style.top = `${timelinePosition}%`;
+    
+    // Create project card
     const card = document.createElement('div');
-    card.className = 'card';
+    card.className = 'project-card';
+    card.style.top = `${timelinePosition}%`;
     
-    // Basic project info
-    let cardHTML = `<div class="project-header">
-      <strong>${proj.title}</strong>
-      <span class="project-meta">${proj.date} [${proj.type}]</span>
-    </div>`;
+    // Compact one-line display
+    const projectYear = new Date(proj.date).getFullYear();
+    card.innerHTML = `
+      <div class="project-compact">
+        [${proj.type}] ${proj.title}, ${projectYear}
+        ${proj.status ? `<span class="status-indicator">${proj.status}</span>` : ''}
+      </div>
+    `;
     
-    // Add status if present
-    if (proj.status) {
-      cardHTML += `<div class="project-status">${proj.status}</div>`;
-    }
+    // Create expanded content container
+    const expandedContent = document.createElement('div');
+    expandedContent.className = 'expanded-content';
+    expandedContent.innerHTML = createExpandedContent(proj);
+    card.appendChild(expandedContent);
     
-    // Add tags if present
-    if (proj.tags && proj.tags.length > 0) {
-      cardHTML += `<div class="project-tags">${proj.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>`;
-    }
-    
-    card.innerHTML = cardHTML;
-    
-    // Mini modules container (hidden initially)
-    const miniContainer = document.createElement('div');
-    miniContainer.className = 'miniContainer';
-    
-    // Handle mini modules (created by the Python script for compatibility)
-    if (proj.mini && proj.mini.length > 0) {
-      proj.mini.forEach(m => {
-        const mini = document.createElement('div');
-        mini.className = 'mini';
-        
-        if (m.media_type === 'image' && m.src) {
-          mini.innerHTML = `<img src="${m.src}" style="width:100%; border-radius: 4px;" alt="Project image" onload="console.log('Image loaded:', '${m.src}')" onerror="console.log('Image failed:', '${m.src}')">`;
-        }
-        else if (m.media_type === 'audio' && m.src) {
-          mini.innerHTML = `<audio src="${m.src}" controls preload="none" style="width:100%;"></audio>`;
-        }
-        else if (m.media_type === 'video' && m.src) {
-          mini.innerHTML = `<video src="${m.src}" controls preload="none" style="width:100%; border-radius: 4px;"></video>`;
-        }
-        else if (m.media_type === 'text' && m.content) {
-          mini.innerHTML = `<div class="text-content">${m.content}</div>`;
-        }
-        else if (m.media_type === 'embed' && m.content) {
-          mini.innerHTML = `<div class="embed-content">${m.content}</div>`;
-        }
-        
-        miniContainer.appendChild(mini);
-      });
-    }
-    
-    // Add story section if present
-    if (proj.story) {
-      const storyMini = document.createElement('div');
-      storyMini.className = 'mini story-section';
-      storyMini.innerHTML = `<div class="story-content">
-        <h4>Story</h4>
-        <p>${proj.story}</p>
-      </div>`;
-      miniContainer.appendChild(storyMini);
-    }
-    
-    // Add external links if present
-    if (proj.external_link_names && proj.external_link_urls) {
-      const linksMini = document.createElement('div');
-      linksMini.className = 'mini links-section';
-      let linksHTML = '<div class="external-links"><h4>Links</h4>';
-      
-      const names = Array.isArray(proj.external_link_names) ? proj.external_link_names : [proj.external_link_names];
-      const urls = Array.isArray(proj.external_link_urls) ? proj.external_link_urls : [proj.external_link_urls];
-      
-      for (let i = 0; i < Math.min(names.length, urls.length); i++) {
-        linksHTML += `<a href="${urls[i]}" target="_blank" class="external-link">${names[i]}</a>`;
-      }
-      linksHTML += '</div>';
-      
-      linksMini.innerHTML = linksHTML;
-      miniContainer.appendChild(linksMini);
-    }
-    
-    // Add medium info if present
-    if (proj.medium) {
-      const mediumMini = document.createElement('div');
-      mediumMini.className = 'mini medium-section';
-      mediumMini.innerHTML = `<div class="medium-content">
-        <h4>Medium</h4>
-        <p>${proj.medium}</p>
-      </div>`;
-      miniContainer.appendChild(mediumMini);
-    }
-    
-    card.appendChild(miniContainer);
-    
-    // Expand/Collapse functionality
+    // Click to expand
     card.addEventListener('click', (e) => {
-      // Don't expand if clicking on links or media controls
-      if (e.target.tagName === 'A' || e.target.tagName === 'AUDIO' || e.target.tagName === 'VIDEO') {
-        return;
-      }
-      
-      if (expandedCard && expandedCard !== card) {
-        expandedCard.classList.remove('expanded');
-      }
-      const isExpanded = card.classList.toggle('expanded');
-      expandedCard = isExpanded ? card : null;
+      if (e.target.closest('.media-item, .external-link')) return;
+      toggleExpanded(card);
     });
     
     // Close button
-    const closeBtn = document.createElement('span');
-    closeBtn.className = 'closeBtn';
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'close-btn';
     closeBtn.innerHTML = '×';
     closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      card.classList.remove('expanded');
-      expandedCard = null;
+      toggleExpanded(card, false);
     });
     card.appendChild(closeBtn);
     
+    timeline.appendChild(marker);
     content.appendChild(card);
   });
+  
+  content.appendChild(timeline);
+  
+  // Update year label on scroll
+  updateYearLabel();
+}
+
+function renderGridView(data) {
+  content.className = 'grid-container';
+  
+  data.sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  data.forEach(proj => {
+    const card = document.createElement('div');
+    card.className = 'grid-card';
+    card.innerHTML = `
+      <div class="grid-card-header">
+        <strong>${proj.title}</strong>
+        <span>${proj.type}</span>
+      </div>
+      <div class="grid-card-meta">${proj.date}</div>
+    `;
+    
+    card.addEventListener('click', () => {
+      // Switch to timeline view and expand this project
+      isGrid = false;
+      renderProjects(projectsData);
+      // Find and expand the clicked project
+      setTimeout(() => {
+        const timelineCard = Array.from(document.querySelectorAll('.project-card'))
+          .find(c => c.textContent.includes(proj.title));
+        if (timelineCard) toggleExpanded(timelineCard, true);
+      }, 100);
+    });
+    
+    content.appendChild(card);
+  });
+}
+
+function createExpandedContent(proj) {
+  let html = `
+    <div class="expanded-header">
+      <h2>${proj.title}</h2>
+      <div class="project-metadata">
+        <span class="project-type">[${proj.type}]</span>
+        <span class="project-date">${proj.date}</span>
+        ${proj.status ? `<span class="project-status">${proj.status}</span>` : ''}
+      </div>
+    </div>
+  `;
+  
+  // Create scrollable content area
+  html += '<div class="expanded-scroll">';
+  
+  // Description
+  if (proj.description) {
+    html += `<div class="content-section">
+      <h4>Description</h4>
+      <p>${proj.description}</p>
+    </div>`;
+  }
+  
+  // Media section
+  const mediaItems = [];
+  if (proj.image_urls) proj.image_urls.forEach(url => mediaItems.push({type: 'image', url}));
+  if (proj.audio_urls) proj.audio_urls.forEach(url => mediaItems.push({type: 'audio', url}));
+  if (proj.video_urls) proj.video_urls.forEach(url => mediaItems.push({type: 'video', url}));
+  
+  if (mediaItems.length > 0) {
+    html += '<div class="content-section"><h4>Media</h4><div class="media-grid">';
+    mediaItems.forEach((item, i) => {
+      html += `<div class="media-item" onclick="openMediaOverlay('${item.type}', '${item.url}', ${i})">`;
+      if (item.type === 'image') {
+        html += `<img src="${item.url}" alt="Project media">`;
+      } else if (item.type === 'video') {
+        html += `<video src="${item.url}" preload="metadata"></video><div class="play-button">▶</div>`;
+      } else if (item.type === 'audio') {
+        html += `<div class="audio-preview">🎵 Audio</div><div class="play-button">▶</div>`;
+      }
+      html += '</div>';
+    });
+    html += '</div></div>';
+  }
+  
+  // Story section
+  if (proj.story) {
+    html += `<div class="content-section">
+      <h4>Story</h4>
+      <p>${proj.story}</p>
+    </div>`;
+  }
+  
+  // Links section
+  if (proj.external_link_names && proj.external_link_urls) {
+    const names = Array.isArray(proj.external_link_names) ? proj.external_link_names : [proj.external_link_names];
+    const urls = Array.isArray(proj.external_link_urls) ? proj.external_link_urls : [proj.external_link_urls];
+    
+    html += '<div class="content-section"><h4>Links</h4><div class="links-grid">';
+    for (let i = 0; i < Math.min(names.length, urls.length); i++) {
+      html += `<a href="${urls[i]}" target="_blank" class="external-link">${names[i]}</a>`;
+    }
+    html += '</div></div>';
+  }
+  
+  // HTML Embed section
+  if (proj.embedded_html) {
+    html += `<div class="content-section">
+      <h4>Embed</h4>
+      <div class="embed-container">${proj.embedded_html}</div>
+    </div>`;
+  }
+  
+  // Medium section
+  if (proj.medium) {
+    html += `<div class="content-section">
+      <h4>Medium</h4>
+      <p>${proj.medium}</p>
+    </div>`;
+  }
+  
+  // Tags section
+  if (proj.tags && proj.tags.length > 0) {
+    html += `<div class="content-section">
+      <div class="tags-container">
+        ${proj.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+      </div>
+    </div>`;
+  }
+  
+  html += '</div>'; // Close expanded-scroll
+  
+  return html;
+}
+
+function toggleExpanded(card, forceState = null) {
+  const isExpanded = forceState !== null ? forceState : !card.classList.contains('expanded');
+  
+  // Close other expanded cards
+  document.querySelectorAll('.project-card.expanded').forEach(c => {
+    if (c !== card) c.classList.remove('expanded');
+  });
+  
+  if (isExpanded) {
+    card.classList.add('expanded');
+    expandedCard = card;
+    // Smooth scroll to center the expanded card
+    setTimeout(() => {
+      card.scrollIntoView({behavior: 'smooth', block: 'center'});
+    }, 300);
+  } else {
+    card.classList.remove('expanded');
+    expandedCard = null;
+  }
+}
+
+// Media overlay functions
+function openMediaOverlay(type, url, index) {
+  closeMediaOverlay();
+  
+  const overlay = document.createElement('div');
+  overlay.className = 'media-overlay';
+  
+  let content = '';
+  if (type === 'image') {
+    content = `<img src="${url}" alt="Media">`;
+  } else if (type === 'video') {
+    content = `<video src="${url}" controls autoplay></video>`;
+  } else if (type === 'audio') {
+    content = `<audio src="${url}" controls autoplay></audio>`;
+  }
+  
+  overlay.innerHTML = `
+    <div class="media-overlay-content">
+      ${content}
+      <button class="media-close" onclick="closeMediaOverlay()">×</button>
+      <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
+    </div>
+  `;
+  
+  document.body.appendChild(overlay);
+  currentMediaOverlay = overlay;
+  
+  // Close on background click
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeMediaOverlay();
+  });
+  
+  // Close on Escape key
+  document.addEventListener('keydown', handleMediaKeydown);
+}
+
+function closeMediaOverlay() {
+  if (currentMediaOverlay) {
+    document.body.removeChild(currentMediaOverlay);
+    currentMediaOverlay = null;
+    document.removeEventListener('keydown', handleMediaKeydown);
+  }
+}
+
+function handleMediaKeydown(e) {
+  if (e.key === 'Escape') closeMediaOverlay();
+}
+
+function toggleFullscreen() {
+  const mediaElement = currentMediaOverlay.querySelector('img, video, audio');
+  if (!document.fullscreenElement) {
+    mediaElement.requestFullscreen?.() || mediaElement.webkitRequestFullscreen?.();
+  } else {
+    document.exitFullscreen?.() || document.webkitExitFullscreen?.();
+  }
+}
+
+function updateYearLabel() {
+  const timelineHeight = window.innerHeight;
+  const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+  const totalYears = CURRENT_DATE.getFullYear() - BIRTH_DATE.getFullYear();
+  const currentYear = CURRENT_DATE.getFullYear() - Math.floor(scrollPercent * totalYears);
+  yearText.textContent = Math.max(BIRTH_DATE.getFullYear(), currentYear);
 }
 
 // Initialize
@@ -187,20 +354,10 @@ modeBtn.addEventListener('click', () => {
   document.body.classList.toggle('dark');
 });
 
-// Year Label - updates on scroll
-window.addEventListener('scroll', () => {
-  const modules = document.querySelectorAll('.card');
-  for (const mod of modules) {
-    const rect = mod.getBoundingClientRect();
-    if (rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2) {
-      // Try to extract year from the project data
-      const projectTitle = mod.querySelector('strong')?.textContent;
-      const project = projectsData.find(p => p.title === projectTitle);
-      if (project && project.date) {
-        const year = new Date(project.date).getFullYear();
-        yearText.innerText = year;
-        break;
-      }
-    }
-  }
-});
+// Scroll handler
+window.addEventListener('scroll', updateYearLabel);
+
+// Global functions for onclick handlers
+window.openMediaOverlay = openMediaOverlay;
+window.closeMediaOverlay = closeMediaOverlay;
+window.toggleFullscreen = toggleFullscreen;
