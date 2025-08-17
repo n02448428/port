@@ -319,7 +319,17 @@ function toggleExpanded(card, forceState = null) {
 // Handle click outside to close expanded card
 function handleClickOutside(e) {
   if (expandedCard && !expandedCard.contains(e.target)) {
-    toggleExpanded(expandedCard, false);
+    // On mobile, only close if clicking on the background, not other UI elements
+    if (window.innerWidth <= 768) {
+      const isClickOnBackground = e.target === document.body || 
+                                  e.target === content || 
+                                  e.target.classList.contains('timeline-container');
+      if (isClickOnBackground) {
+        toggleExpanded(expandedCard, false);
+      }
+    } else {
+      toggleExpanded(expandedCard, false);
+    }
   }
 }
 
