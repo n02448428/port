@@ -17,6 +17,13 @@ body.light {
   color: #000000; 
 }
 
+body.dark * {
+  color: inherit;
+}
+body.light * {
+  color: inherit;
+}
+
 /* Hero */
 #hero { 
   padding: 1.5rem; 
@@ -580,71 +587,110 @@ body.light .embed-container { border-color: #ccc; }
 
 /* Mobile Optimizations */
 @media (max-width: 768px) {
-  #hero {
-    padding: 1rem;
-    flex-direction: column;
-    gap: 0.5rem;
-    text-align: center;
+  body {
+    padding-top: 4rem; /* Space for fixed controls */
   }
   
-  #logo { font-size: 1.3rem; }
-  #tagline { font-size: 0.8rem; }
+  #hero {
+    padding: 0.75rem 1rem;
+    text-align: center;
+    position: relative;
+    z-index: 90;
+  }
+  
+  #logo { 
+    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
+  }
+  #tagline { 
+    font-size: 0.75rem; 
+    opacity: 0.6;
+  }
   
   #controls {
     position: fixed;
     top: 0.5rem;
-    right: 0.5rem;
-    gap: 0.3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 0.4rem;
+    z-index: 1000;
+    background: rgba(0,0,0,0.1);
+    padding: 0.25rem;
+    border-radius: 4px;
   }
   
   #controls button {
-    padding: 0.4rem 0.7rem;
+    padding: 0.4rem 0.8rem;
     font-size: 0.7rem;
+    border-width: 1px;
   }
   
   #yearLabel {
     position: fixed;
-    top: auto;
     bottom: 1rem;
     left: 1rem;
     font-size: 0.8rem;
+    z-index: 500;
   }
   
   .timeline-container {
-    padding: 1rem 0.5rem;
-    padding-top: 5rem;
+    padding: 1rem 0.75rem;
+    padding-top: 2rem;
+    padding-bottom: 4rem;
   }
   
+  /* Mobile Timeline */
   .timeline {
-    right: 1rem;
-    top: 5rem;
+    right: 0.75rem;
+    top: 8rem;
+    bottom: 4rem;
+    width: 2px;
   }
   
   .timeline-marker {
-    width: 10px;
-    height: 10px;
-    right: -5px;
+    width: 8px;
+    height: 8px;
+    right: -4px;
+    border-width: 1px;
   }
   
+  /* Mobile Project Cards */
   .project-card {
-    right: 2.5rem;
-    width: calc(100vw - 4rem);
+    right: 1.5rem;
+    width: calc(100vw - 3rem);
     max-width: none;
   }
   
-  .project-card.expanded {
-    width: calc(100vw - 4rem);
-    transform: translateY(-50%);
-  }
-  
   .project-card::before {
-    right: -1.5rem;
-    width: 1rem;
+    right: -0.75rem;
+    width: 0.75rem;
+    top: 0.6rem;
   }
   
   .project-compact {
     padding: 0.75rem;
     font-size: 0.8rem;
+    line-height: 1.4;
+  }
+  
+  /* Mobile Expanded View */
+  .project-card.expanded {
+    position: fixed;
+    top: 8rem;
+    left: 0.75rem;
+    right: 0.75rem;
+    width: auto;
+    transform: none;
+    z-index: 1000;
+    max-height: calc(100vh - 9rem);
+  }
+  
+  .project-card.expanded .expanded-content {
+    max-height: calc(100vh - 12rem);
+  }
+  
+  .expanded-scroll {
+    max-height: calc(100vh - 16rem);
   }
   
   .expanded-header {
@@ -652,46 +698,141 @@ body.light .embed-container { border-color: #ccc; }
   }
   
   .expanded-header h2 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+  }
+  
+  .project-metadata {
+    font-size: 0.75rem;
+    gap: 0.75rem;
   }
   
   .content-section {
     padding: 0.75rem 1rem;
   }
   
+  .content-section h4 {
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .content-section p {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  
   .media-grid {
-    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 0.75rem;
+  }
+  
+  .links-grid {
     gap: 0.5rem;
   }
   
+  .external-link {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+  
+  .tags-container {
+    gap: 0.4rem;
+  }
+  
+  .tag {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.65rem;
+  }
+  
+  /* Close button for mobile */
+  .close-btn {
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
+    background: rgba(128, 128, 128, 0.2);
+    border: 1px solid;
+  }
+  
+  body.dark .close-btn {
+    border-color: #ffffff;
+    color: #ffffff;
+  }
+  
+  body.light .close-btn {
+    border-color: #000000;
+    color: #000000;
+  }
+  
+  .project-card.expanded .close-btn {
+    opacity: 1;
+  }
+  
+  /* Grid view mobile */
   .grid-container {
-    padding: 5rem 0.5rem 2rem 0.5rem;
+    padding: 8rem 0.75rem 4rem 0.75rem;
     grid-template-columns: 1fr;
-    gap: 0.75rem;
+    gap: 1rem;
   }
   
   .grid-card {
     padding: 1rem;
   }
   
+  .grid-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  /* Media overlay mobile */
   .media-overlay {
     padding: 1rem;
   }
   
+  .media-overlay iframe {
+    width: 100%;
+    height: 50vh;
+  }
+  
   .media-close, .fullscreen-btn {
-    width: 40px;
-    height: 40px;
-    font-size: 1.1rem;
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
   }
   
   .media-close {
-    top: -50px;
+    top: -54px;
     right: 0;
   }
   
   .fullscreen-btn {
-    top: -50px;
-    right: 50px;
+    top: -54px;
+    right: 54px;
+  }
+}
+
+/* Extra small mobile */
+@media (max-width: 480px) {
+  #controls button {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.65rem;
+  }
+  
+  .project-card.expanded {
+    left: 0.5rem;
+    right: 0.5rem;
+  }
+  
+  .timeline {
+    right: 0.5rem;
+  }
+  
+  .project-card {
+    right: 1rem;
+    width: calc(100vw - 2rem);
   }
 }
 
