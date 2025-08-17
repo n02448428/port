@@ -216,8 +216,8 @@ function createExpandedContent(proj) {
 function snapOrbToMarker(marker) {
   if (!positionOrb || !marker) return;
   const rect = marker.getBoundingClientRect();
-  positionOrb.style.top = `${rect.top + window.scrollY + 2}px`;
-  positionOrb.style.left = `${rect.left + 2}px`;
+  positionOrb.style.top = `${rect.top + window.scrollY}px`;
+  positionOrb.style.left = `${rect.left}px`;
 }
 
 function toggleExpanded(card, marker, forceState = null) {
