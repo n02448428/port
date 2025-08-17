@@ -32,6 +32,7 @@
   {
     "id": "3",
     "title": "Neon Trailblazer",
+    "date": "04/01/25",
     "type": "video game",
     "status": "Completed",
     "description": "Weave through the neon cybergrid, leaving light trails in your wake. Built for Pieter Levels' (@levelsio) March 2025 VibeJam game jam.",
@@ -49,6 +50,7 @@
   {
     "id": "4",
     "title": "Rosie's Debugger",
+    "date": "05/01/25",
     "type": "video game",
     "status": "Completed",
     "description": "A narrative-driven adventure where a quirky AI guides you through a broken digital world using text-based dialogue, expressive animation, and player-driven choices.",
@@ -270,6 +272,7 @@
   {
     "id": "17",
     "title": "Contrast",
+    "date": "03/05/21",
     "type": "video game",
     "status": "Completed",
     "description": "Contrast is a completely original fast-paced clicker game where players must quickly match falling balls to the correct basket color.",
