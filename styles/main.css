@@ -204,6 +204,11 @@ body.dark {
   color: var(--fg);
   font-size: 1.2rem;
   cursor: pointer;
+  display: none; /* Hide by default, show when expanded */
+}
+
+.project-card.expanded .close-btn {
+  display: block;
 }
 
 .timeline-position-orb {
@@ -433,6 +438,7 @@ button.flash {
     background: var(--bg);
     color: var(--fg);
     flex-wrap: nowrap; /* Prevent wrapping */
+    overflow: hidden; /* Hide overflow if needed */
   }
 
   #logo {
