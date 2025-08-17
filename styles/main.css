@@ -79,13 +79,13 @@ body.dark {
   align-items: flex-end;
   padding: 2rem;
   position: relative;
-  margin-right: 15px; /* Adjusted to center timeline */
+  margin-right: 15px; /* Space for fixed timeline */
 }
 
 .timeline-container::before {
   content: '';
   position: fixed;
-  right: 15px; /* Adjusted to center timeline over markers */
+  right: 15px; /* Centered over 14px wide markers with 2px border */
   top: 60px; /* Below fixed header */
   bottom: 0;
   width: 2px;
@@ -98,7 +98,6 @@ body.dark {
   opacity: 0.3;
   margin: 1rem 15px 0.5rem 0;
   align-self: flex-end;
-  color: var(--fg);
 }
 
 .timeline-item {
@@ -114,7 +113,7 @@ body.dark {
   height: 14px;
   border-radius: 50%;
   border: 2px solid var(--fg);
-  margin-left: 0; /* Adjusted to align with new right position */
+  margin-left: 0; /* Align center with timeline at right: 15px */
   position: relative;
   flex-shrink: 0;
   transition: box-shadow 0.3s ease;
@@ -136,9 +135,7 @@ body.dark {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  margin-right: 15px; /* Adjusted to match container margin */
-  background: var(--bg);
-  color: var(--fg);
+  margin-right: 15px;
 }
 
 .project-card.expanded {
@@ -149,10 +146,10 @@ body.dark {
 .project-card::after {
   content: '';
   position: absolute;
-  left: 100%;
-  width: 15px; /* Adjusted to match new margin and align with timeline */
+  width: 15px;
   height: 2px;
   background: var(--fg);
+  right: -15px;
   top: 50%;
   transform: translateY(-50%);
 }
@@ -223,29 +220,22 @@ body.dark {
 }
 
 /* Grid view */
-.grid-container {
-  padding: 2rem;
-  background: var(--bg);
-}
-
 .grid-controls {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  background: var(--bg);
+  padding: 0.5rem 1rem;
+  z-index: 999;
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1rem;
+  font-size: 0.8rem; /* Small font */
 }
 
-.filter-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.filter-wrapper label {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  color: var(--fg);
+.filter-select {
+  font-size: 0.8rem;
 }
 
 .grid-container {
@@ -253,6 +243,7 @@ body.dark {
   grid-template-columns: repeat(auto-fit, minmax(var(--grid-item-size), 1fr));
   gap: 1rem;
   padding: 2rem;
+  background: var(--bg);
 }
 
 .grid-card {
@@ -262,7 +253,6 @@ body.dark {
   overflow: hidden;
   position: relative;
   aspect-ratio: 1 / 1; /* Square like iOS Photos */
-  background: var(--bg);
 }
 
 .grid-card:hover {
@@ -327,7 +317,6 @@ body.dark {
   border: 1px solid var(--fg);
   padding: 1rem;
   position: relative;
-  color: var(--fg);
 }
 
 /* Media overlay */
@@ -564,5 +553,15 @@ button.flash {
   .youtube-thumb {
     background: var(--fg);
     color: var(--bg);
+  }
+
+  .grid-controls {
+    top: 60px;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .filter-select {
+    font-size: 0.8rem;
   }
 }
