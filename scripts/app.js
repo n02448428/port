@@ -436,9 +436,11 @@ function createExpandedContent(proj) {
         return { name: link.name || link.url || 'Link', url: link.url || '#' };
       });
     } else if (proj.external_link_names && proj.external_link_urls) {
-      const names = Array.isArray(proj.external_link_names) ? proj.external_link_names : [proj.external_link_names];
-      const urls = Array.isArray(proj.external_link_urls) ? proj.external_link_urls : [proj.external_link_urls];
-      links = names.map((name, i) => ({ name: name || urls[i] || 'Link', url: urls[i] || '#' }));
+      const namesStr = proj.external_link_names;
+      const urlsStr = proj.external_link_urls;
+      const names = typeof namesStr === 'string' ? namesStr.split(',') : [namesStr];
+      const urls = typeof urlsStr === 'string' ? urlsStr.split(',') : [urlsStr];
+      links = names.map((name, i) => ({ name: name.trim() || urls[i] || 'Link', url: urls[i] ? urls[i].trim() : '#' }));
     }
     links.forEach(link => {
       html += `<li><a href="${link.url}" class="external-link" target="_blank">${link.name}</a></li>`;
