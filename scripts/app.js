@@ -330,8 +330,8 @@ function openMediaOverlay(url, type) {
 function snapOrbToMarker(marker) {
   if (!positionOrb || !marker) return;
   const rect = marker.getBoundingClientRect();
-  positionOrb.style.top = `${rect.top + window.scrollY + 2}px`;
-  positionOrb.style.left = `${rect.left - 2}px`;
+  positionOrb.style.top = `${rect.top + window.scrollY + 1}px`;
+  positionOrb.style.left = `${rect.left + 1}px`;
 }
 
 function toggleExpanded(card, marker, forceState = null) {
