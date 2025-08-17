@@ -23,10 +23,22 @@ body.dark {
   position: relative;
 }
 
+.timeline-container::before {
+  content: '';
+  position: absolute;
+  right: 8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--fg);
+  z-index: -1;
+}
+
 .year-label {
   font-size: 0.9rem;
   opacity: 0.3;
   margin: 1rem 2rem 0.5rem 0;
+  align-self: flex-end;
 }
 
 .timeline-item {
@@ -54,17 +66,6 @@ body.dark {
   box-shadow: 0 0 12px var(--fg);
 }
 
-.timeline-item::before {
-  content: '';
-  position: absolute;
-  width: 2px;
-  background: var(--fg);
-  top: 0;
-  bottom: 0;
-  right: 8px;
-  z-index: -1;
-}
-
 .project-card {
   flex: 1;
   border: 1px solid var(--fg);
@@ -74,6 +75,11 @@ body.dark {
   position: relative;
   overflow: hidden;
   margin-right: 2rem;
+}
+
+.project-card.expanded {
+  height: 400px;
+  overflow: hidden;
 }
 
 .project-card::after {
@@ -92,14 +98,20 @@ body.dark {
 }
 
 .expanded-content {
-  max-height: 0;
+  height: 0;
   overflow: hidden;
-  transition: max-height 0.4s ease;
+  transition: height 0.4s ease;
 }
 
 .project-card.expanded .expanded-content {
-  max-height: 800px;
+  height: calc(100% - 50px);
+  overflow: auto;
   padding-top: 1rem;
+}
+
+.expanded-scroll {
+  overflow: auto;
+  height: 100%;
 }
 
 .close-btn {
@@ -115,12 +127,13 @@ body.dark {
 
 .timeline-position-orb {
   position: absolute;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: var(--fg);
   pointer-events: none;
   transition: top 0.3s ease, left 0.3s ease;
+  box-shadow: 0 0 8px var(--fg);
 }
 
 /* Grid view */
@@ -158,5 +171,8 @@ body.dark {
   }
   .project-card::after {
     right: -20px;
+  }
+  .timeline-container::before {
+    right: 8px;
   }
 }
