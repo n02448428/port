@@ -9,10 +9,36 @@ const yearText = document.getElementById('yearText');
 let expandedCard = null;
 let projectsData = [];
 let currentMediaOverlay = null;
+let positionOrb = null;
 
 // Birth date for timeline calculation
 const BIRTH_DATE = new Date('1989-09-07');
 const CURRENT_DATE = new Date();
+
+// Create position orb
+function createPositionOrb() {
+  if (!positionOrb) {
+    positionOrb = document.createElement('div');
+    positionOrb.className = 'timeline-position-orb';
+    document.body.appendChild(positionOrb);
+  }
+}
+
+// Update position orb based on scroll
+function updatePositionOrb() {
+  if (!positionOrb) return;
+  
+  const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+  const timelineHeight = window.innerHeight;
+  const orbPosition = scrollPercent * timelineHeight;
+  
+  positionOrb.style.top = `${Math.max(50, Math.min(timelineHeight - 50, orbPosition))}px`;
+  
+  // Update year label based on scroll position
+  const totalYears = CURRENT_DATE.getFullYear() - BIRTH_DATE.getFullYear();
+  const currentYear = CURRENT_DATE.getFullYear() - Math.floor(scrollPercent * totalYears);
+  yearText.textContent = Math.max(BIRTH_DATE.getFullYear(), currentYear);
+}
 
 // Load projects from JSON file
 async function loadProjects() {
@@ -69,6 +95,9 @@ function renderTimelineView(data) {
   const timeline = document.createElement('div');
   timeline.className = 'timeline';
   
+  // Create position orb
+  createPositionOrb();
+  
   // Sort by date (oldest first for timeline)
   const sortedData = [...data].sort((a, b) => new Date(a.date) - new Date(b.date));
   
@@ -79,11 +108,13 @@ function renderTimelineView(data) {
     const marker = document.createElement('div');
     marker.className = 'timeline-marker';
     marker.style.top = `${timelinePosition}%`;
+    marker.dataset.projectId = proj.id;
     
     // Create project card
     const card = document.createElement('div');
     card.className = 'project-card';
     card.style.top = `${timelinePosition}%`;
+    card.dataset.projectId = proj.id;
     
     // Compact one-line display
     const projectYear = new Date(proj.date).getFullYear();
@@ -100,14 +131,38 @@ function renderTimelineView(data) {
     expandedContent.innerHTML = createExpandedContent(proj);
     card.appendChild(expandedContent);
     
+    // Mouse hover effects
+    card.addEventListener('mouseenter', () => {
+      marker.classList.add('active');
+      snapOrbToProject(card);
+    });
+    
+    card.addEventListener('mouseleave', () => {
+      if (!card.classList.contains('expanded')) {
+        marker.classList.remove('active');
+        updatePositionOrb(); // Return to scroll position
+      }
+    });
+    
+    marker.addEventListener('mouseenter', () => {
+      marker.classList.add('active');
+      snapOrbToProject(card);
+    });
+    
+    marker.addEventListener('mouseleave', () => {
+      if (!card.classList.contains('expanded')) {
+        marker.classList.remove('active');
+        updatePositionOrb(); // Return to scroll position
+      }
+    });
+    
     // Click to expand
     card.addEventListener('click', (e) => {
-      // Don't expand if clicking on media, links, or close button
       if (e.target.closest('.media-item, .external-link, .close-btn')) {
         return;
       }
-      e.stopPropagation(); // Prevent event bubbling
-      toggleExpanded(card);
+      e.stopPropagation();
+      toggleExpanded(card, marker);
     });
     
     // Close button
@@ -116,7 +171,7 @@ function renderTimelineView(data) {
     closeBtn.innerHTML = '×';
     closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      toggleExpanded(card, false);
+      toggleExpanded(card, marker, false);
     });
     card.appendChild(closeBtn);
     
@@ -126,12 +181,25 @@ function renderTimelineView(data) {
   
   content.appendChild(timeline);
   
-  // Update year label on scroll
-  updateYearLabel();
+  // Initial position orb update
+  updatePositionOrb();
+}
+
+function snapOrbToProject(card) {
+  if (!positionOrb) return;
+  
+  const cardRect = card.getBoundingClientRect();
+  const cardCenter = cardRect.top + (cardRect.height / 2);
+  positionOrb.style.top = `${cardCenter}px`;
 }
 
 function renderGridView(data) {
   content.className = 'grid-container';
+  
+  // Hide position orb in grid view
+  if (positionOrb) {
+    positionOrb.style.display = 'none';
+  }
   
   data.sort((a, b) => new Date(b.date) - new Date(a.date));
   
@@ -153,8 +221,12 @@ function renderGridView(data) {
       // Find and expand the clicked project
       setTimeout(() => {
         const timelineCard = Array.from(document.querySelectorAll('.project-card'))
-          .find(c => c.textContent.includes(proj.title));
-        if (timelineCard) toggleExpanded(timelineCard, true);
+          .find(c => c.dataset.projectId === proj.id);
+        const marker = Array.from(document.querySelectorAll('.timeline-marker'))
+          .find(m => m.dataset.projectId === proj.id);
+        if (timelineCard && marker) {
+          toggleExpanded(timelineCard, marker, true);
+        }
       }, 100);
     });
     
@@ -288,50 +360,28 @@ function createExpandedContent(proj) {
   return html;
 }
 
-function toggleExpanded(card, forceState = null) {
+function toggleExpanded(card, marker, forceState = null) {
   const isExpanded = forceState !== null ? forceState : !card.classList.contains('expanded');
   
-  // Close other expanded cards
+  // Close other expanded cards and reset their markers
   document.querySelectorAll('.project-card.expanded').forEach(c => {
     if (c !== card) {
       c.classList.remove('expanded');
-      // Reset any inline styles
-      c.style.position = '';
-      c.style.top = '';
-      c.style.left = '';
-      c.style.right = '';
-      c.style.width = '';
-      c.style.maxHeight = '';
-      c.style.transform = '';
+      const otherId = c.dataset.projectId;
+      const otherMarker = document.querySelector(`.timeline-marker[data-project-id="${otherId}"]`);
+      if (otherMarker) {
+        otherMarker.classList.remove('active');
+      }
     }
   });
   
   if (isExpanded) {
     card.classList.add('expanded');
+    marker.classList.add('active');
     expandedCard = card;
     
-    // Force positioning using inline styles to override everything
-    if (window.innerWidth <= 768) {
-      // Mobile: Full screen overlay
-      card.style.position = 'fixed';
-      card.style.top = '4rem';
-      card.style.left = '1rem';
-      card.style.right = '1rem';
-      card.style.width = 'auto';
-      card.style.maxHeight = 'calc(100vh - 5rem)';
-      card.style.zIndex = '1000';
-      card.style.transform = 'none';
-    } else {
-      // Desktop: Fixed to top-right
-      card.style.position = 'fixed';
-      card.style.top = '5vh';
-      card.style.right = '2rem';
-      card.style.left = 'auto';
-      card.style.width = 'min(500px, 40vw)';
-      card.style.maxHeight = '90vh';
-      card.style.zIndex = '1000';
-      card.style.transform = 'none';
-    }
+    // Snap orb to expanded project and keep it there
+    snapOrbToProject(card);
     
     // Add click-outside-to-close listener
     setTimeout(() => {
@@ -340,22 +390,14 @@ function toggleExpanded(card, forceState = null) {
     
   } else {
     card.classList.remove('expanded');
+    marker.classList.remove('active');
     expandedCard = null;
     document.removeEventListener('click', handleClickOutside);
     
-    // Reset all inline styles
-    card.style.position = '';
-    card.style.top = '';
-    card.style.left = '';
-    card.style.right = '';
-    card.style.width = '';
-    card.style.maxHeight = '';
-    card.style.transform = '';
-    card.style.zIndex = '';
+    // Return orb to scroll position
+    updatePositionOrb();
   }
 }
-
-// Remove the old positionExpandedCard function as it's no longer needed
 
 // Handle click outside to close expanded card
 function handleClickOutside(e) {
@@ -366,10 +408,14 @@ function handleClickOutside(e) {
                                   e.target === content || 
                                   e.target.classList.contains('timeline-container');
       if (isClickOnBackground) {
-        toggleExpanded(expandedCard, false);
+        const markerId = expandedCard.dataset.projectId;
+        const marker = document.querySelector(`.timeline-marker[data-project-id="${markerId}"]`);
+        toggleExpanded(expandedCard, marker, false);
       }
     } else {
-      toggleExpanded(expandedCard, false);
+      const markerId = expandedCard.dataset.projectId;
+      const marker = document.querySelector(`.timeline-marker[data-project-id="${markerId}"]`);
+      toggleExpanded(expandedCard, marker, false);
     }
   }
 }
@@ -446,20 +492,24 @@ function toggleFullscreen() {
   }
 }
 
-function updateYearLabel() {
-  const timelineHeight = window.innerHeight;
-  const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-  const totalYears = CURRENT_DATE.getFullYear() - BIRTH_DATE.getFullYear();
-  const currentYear = CURRENT_DATE.getFullYear() - Math.floor(scrollPercent * totalYears);
-  yearText.textContent = Math.max(BIRTH_DATE.getFullYear(), currentYear);
-}
-
 // Initialize
 loadProjects();
 
 // Toggle View
 toggle.addEventListener('click', () => {
   isGrid = !isGrid;
+  if (isGrid) {
+    // Hide position orb in grid view
+    if (positionOrb) {
+      positionOrb.style.display = 'none';
+    }
+  } else {
+    // Show position orb in timeline view
+    if (positionOrb) {
+      positionOrb.style.display = 'block';
+      updatePositionOrb();
+    }
+  }
   renderProjects(projectsData);
 });
 
@@ -469,8 +519,24 @@ modeBtn.addEventListener('click', () => {
   document.body.classList.toggle('dark');
 });
 
-// Scroll handler
-window.addEventListener('scroll', updateYearLabel);
+// Scroll handler for position orb
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking && !isGrid && !expandedCard) {
+    requestAnimationFrame(() => {
+      updatePositionOrb();
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+
+// Handle window resize
+window.addEventListener('resize', () => {
+  if (!isGrid && positionOrb) {
+    updatePositionOrb();
+  }
+});
 
 // Global functions for onclick handlers
 window.openMediaOverlay = openMediaOverlay;
