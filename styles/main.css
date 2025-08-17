@@ -103,6 +103,23 @@ body.light #controls button:hover {
   min-height: 200vh;
 }
 
+/* Desktop expanded cards - ensure they stay in viewport */
+@media (min-width: 769px) {
+  .project-card.expanded {
+    max-height: min(90vh, 800px);
+    top: auto;
+    bottom: auto;
+  }
+  
+  .project-card.expanded .expanded-content {
+    max-height: min(70vh, 650px);
+  }
+  
+  .expanded-scroll {
+    max-height: min(calc(70vh - 140px), 500px);
+  }
+}
+
 /* Timeline on Right */
 .timeline {
   position: fixed;
@@ -209,7 +226,7 @@ body.light .project-compact:hover {
 }
 
 .project-card.expanded .expanded-content {
-  max-height: 80vh;
+  max-height: min(70vh, 600px);
 }
 
 body.dark .project-card.expanded .expanded-content {
@@ -225,6 +242,8 @@ body.light .project-card.expanded .expanded-content {
   width: min(600px, calc(100vw - 8rem));
   z-index: 100;
   transform: translateY(-50%) translateX(-50px);
+  position: absolute;
+  max-height: 90vh;
 }
 
 .project-card.expanded .project-compact {
@@ -263,7 +282,7 @@ body.light .expanded-header { border-color: #ddd; }
 
 /* Scrollable Content Area */
 .expanded-scroll {
-  max-height: calc(80vh - 140px);
+  max-height: min(calc(70vh - 140px), 450px);
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -676,21 +695,22 @@ body.light .embed-container { border-color: #ccc; }
   /* Mobile Expanded View */
   .project-card.expanded {
     position: fixed;
-    top: 8rem;
+    top: 5rem;
     left: 0.75rem;
     right: 0.75rem;
     width: auto;
     transform: none;
     z-index: 1000;
-    max-height: calc(100vh - 9rem);
+    max-height: calc(100vh - 6rem);
+    bottom: auto;
   }
   
   .project-card.expanded .expanded-content {
-    max-height: calc(100vh - 12rem);
+    max-height: calc(100vh - 8rem);
   }
   
   .expanded-scroll {
-    max-height: calc(100vh - 16rem);
+    max-height: calc(100vh - 12rem);
   }
   
   .expanded-header {
