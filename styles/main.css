@@ -102,35 +102,36 @@ body.dark {
   display: none; /* Hide as it's not used in current implementation */
 }
 
-/* TIMELINE LAYOUT - NUCLEAR OPTION: ZERO-BASED POSITIONING */
+/* TIMELINE LAYOUT - RADICAL REDESIGN */
 .timeline-container {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  padding: 2rem 0 2rem 2rem; /* NO RIGHT PADDING */
+  padding: 2rem 20px 2rem 2rem;
   position: relative;
 }
 
-/* TIMELINE LINE - POSITIONED AT VIEWPORT EDGE */
+/* TIMELINE LINE - USING TRANSFORMS FOR PRECISION */
 .timeline-container::before {
   content: '';
   position: fixed;
-  right: 9px; /* 9px from edge = center of 18px marker */
+  right: 0;
   top: 60px;
   bottom: 0;
   width: 2px;
   background: var(--fg);
+  transform: translateX(-10px); /* Move 10px left from edge */
   z-index: 1;
 }
 
 .year-label {
   font-size: 0.9rem;
   opacity: 0.3;
-  margin: 1rem 18px 0.5rem 0; /* 18px = marker width */
+  margin: 1rem 20px 0.5rem 0;
   align-self: flex-end;
 }
 
-/* TIMELINE MARKERS - AT VIEWPORT EDGE */
+/* TIMELINE MARKERS - USING TRANSFORMS */
 .timeline-marker {
   width: 14px;
   height: 14px;
@@ -138,7 +139,8 @@ body.dark {
   border: 2px solid var(--fg);
   background: var(--bg);
   position: absolute;
-  right: 0px; /* FLUSH WITH VIEWPORT EDGE */
+  right: 0;
+  transform: translateX(-9px); /* Center on line at -10px */
   flex-shrink: 0;
   transition: box-shadow 0.3s ease;
   z-index: 2;
@@ -154,17 +156,17 @@ body.dark {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  margin-right: 18px; /* Exactly marker width */
+  margin-right: 20px;
 }
 
 /* CONNECTION LINE FROM CARD TO MARKER */
 .project-card::after {
   content: '';
   position: absolute;
-  width: 18px; /* Exactly to marker edge */
+  width: 20px;
   height: 2px;
   background: var(--fg);
-  right: -18px;
+  right: -20px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 1;
