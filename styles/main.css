@@ -1,4 +1,24 @@
-body {
+.timeline-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  position: relative;
+  width: 100%;
+}
+
+.timeline-marker.active {
+  box-shadow: 0 0 8px var(--fg);
+  background: var(--fg);
+}
+
+.timeline-marker:hover {
+  box-shadow: 0 0 12px var(--fg);
+}
+
+.project-card.expanded {
+  height: 400px;
+  overflow: hidden;
+}body {
   margin: 0;
   font-family: sans-serif;
   background: var(--bg);
@@ -82,43 +102,35 @@ body.dark {
   display: none; /* Hide as it's not used in current implementation */
 }
 
-/* TIMELINE LAYOUT - COMPLETELY REWRITTEN FOR PRECISION */
+/* TIMELINE LAYOUT - NUCLEAR OPTION: ZERO-BASED POSITIONING */
 .timeline-container {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  padding: 2rem 30px 2rem 2rem; /* Fixed right padding for markers */
+  padding: 2rem 0 2rem 2rem; /* NO RIGHT PADDING */
   position: relative;
 }
 
-/* TIMELINE LINE - POSITIONED ABSOLUTELY FOR PRECISION */
+/* TIMELINE LINE - POSITIONED AT VIEWPORT EDGE */
 .timeline-container::before {
   content: '';
   position: fixed;
-  right: 12px; /* MOVED LEFT - should go through marker centers */
+  right: 9px; /* 9px from edge = center of 18px marker */
   top: 60px;
   bottom: 0;
   width: 2px;
   background: var(--fg);
-  z-index: 1; /* Above background, below markers */
+  z-index: 1;
 }
 
 .year-label {
   font-size: 0.9rem;
   opacity: 0.3;
-  margin: 1rem 30px 0.5rem 0; /* Match container padding */
+  margin: 1rem 18px 0.5rem 0; /* 18px = marker width */
   align-self: flex-end;
 }
 
-.timeline-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 2rem;
-  position: relative;
-  width: 100%;
-}
-
-/* TIMELINE MARKERS - PRECISELY POSITIONED */
+/* TIMELINE MARKERS - AT VIEWPORT EDGE */
 .timeline-marker {
   width: 14px;
   height: 14px;
@@ -126,20 +138,11 @@ body.dark {
   border: 2px solid var(--fg);
   background: var(--bg);
   position: absolute;
-  right: 5px; /* ADJUSTED - centers marker on line at right: 12px */
+  right: 0px; /* FLUSH WITH VIEWPORT EDGE */
   flex-shrink: 0;
   transition: box-shadow 0.3s ease;
-  z-index: 2; /* Above timeline line */
-  box-sizing: border-box; /* Ensure consistent sizing */
-}
-
-.timeline-marker.active {
-  box-shadow: 0 0 8px var(--fg);
-  background: var(--fg);
-}
-
-.timeline-marker:hover {
-  box-shadow: 0 0 12px var(--fg);
+  z-index: 2;
+  box-sizing: border-box;
 }
 
 /* PROJECT CARDS */
@@ -151,19 +154,14 @@ body.dark {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  margin-right: 30px; /* Space for marker area */
-}
-
-.project-card.expanded {
-  height: 400px;
-  overflow: hidden;
+  margin-right: 18px; /* Exactly marker width */
 }
 
 /* CONNECTION LINE FROM CARD TO MARKER */
 .project-card::after {
   content: '';
   position: absolute;
-  width: 18px; /* ADJUSTED - connects to new marker position */
+  width: 18px; /* Exactly to marker edge */
   height: 2px;
   background: var(--fg);
   right: -18px;
