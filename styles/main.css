@@ -98,18 +98,20 @@ body.dark {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  padding: 2rem 30px 2rem 2rem;
+  padding: 2rem 40px 2rem 2rem;
   position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* TIMELINE LINE - Properly centered on markers */
+/* TIMELINE LINE - CRITICAL: Must be visible and properly positioned */
 .timeline-container::before {
   content: '';
   position: absolute;
-  right: 15px; /* Centers 3px line properly */
+  right: 34px; /* Position line properly from right edge */
   top: 0;
   bottom: 0;
-  width: 3px;
+  width: 2px; /* Make line visible */
   background: var(--fg);
   z-index: 1;
 }
@@ -122,7 +124,7 @@ body.dark {
   width: 100%;
 }
 
-/* TIMELINE MARKERS - Properly positioned to center on line */
+/* TIMELINE MARKERS - Centered on the line */
 .timeline-marker {
   width: 12px;
   height: 12px;
@@ -130,22 +132,25 @@ body.dark {
   border: 2px solid var(--fg);
   background: var(--bg);
   position: absolute;
-  right: 9px; /* Centers 12px marker on 3px line (9px + 6px = 15px center) */
+  right: 29px; /* Centers 12px marker on 2px line: 29px + 6px = 35px center */
+  top: 50%;
+  transform: translateY(-50%);
   flex-shrink: 0;
   transition: all 0.3s ease;
   z-index: 5;
   box-sizing: border-box;
 }
 
-/* PRESENT MOMENT MARKER - Half moon at top */
+/* PRESENT MOMENT MARKER - Half moon, positioned same as regular markers */
 .timeline-marker.present-moment {
   border-radius: 0 0 6px 6px;
   height: 6px;
-  margin-top: 3px;
   background: var(--bg);
   border-color: var(--fg);
   border-top: none;
-  right: 9px; /* Same positioning as regular markers */
+  right: 29px; /* Same as regular markers */
+  top: 0; /* Align to top of card instead of center */
+  transform: translateY(50%); /* Adjust vertical position */
 }
 
 .timeline-marker.active {
@@ -160,7 +165,7 @@ body.dark {
 .year-label {
   font-size: 0.9rem;
   opacity: 0.3;
-  margin: 1rem 30px 0.5rem 0;
+  margin: 1rem 40px 0.5rem 0;
   align-self: flex-end;
 }
 
@@ -173,17 +178,17 @@ body.dark {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  margin-right: 30px;
+  margin-right: 40px; /* Space for line and marker */
 }
 
 /* CONNECTION LINE FROM CARD TO MARKER */
 .project-card::after {
   content: '';
   position: absolute;
-  width: 29px;
+  width: 39px; /* Connect to marker */
   height: 2px;
   background: var(--fg);
-  right: -30px;
+  right: -40px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 3;
@@ -269,7 +274,7 @@ body.dark {
   display: block;
 }
 
-/* GLOWING ORB - Positioned to match markers */
+/* GLOWING ORB - HIGH Z-INDEX, IN FRONT OF EVERYTHING */
 .timeline-position-orb {
   position: absolute;
   width: 12px;
@@ -279,7 +284,7 @@ body.dark {
   pointer-events: none;
   transition: top 0.3s ease, left 0.3s ease;
   box-shadow: 0 0 12px var(--fg);
-  z-index: 20;
+  z-index: 20; /* Highest - in front of markers */
   display: none;
 }
 
@@ -606,40 +611,40 @@ button.flash {
   }
 
   .timeline-container {
-    padding: 2rem 35px 2rem 2rem;
+    padding: 2rem 30px 2rem 2rem;
     background: var(--bg);
   }
 
   /* Mobile timeline line positioning */
   .timeline-container::before {
-    right: 20px; /* Adjusted for mobile */
-    width: 3px;
+    right: 24px;
+    width: 2px;
     z-index: 1;
   }
 
   /* Mobile marker positioning */
   .timeline-marker {
-    right: 14px; /* Centers marker on mobile timeline */
+    right: 19px; /* Centers marker on mobile timeline */
   }
 
   .timeline-marker.present-moment {
-    right: 14px; /* Same positioning for present moment on mobile */
+    right: 19px; /* Same positioning for present moment on mobile */
   }
 
   .year-label {
-    margin-right: 35px;
+    margin-right: 30px;
     color: var(--fg);
   }
 
   .project-card {
-    margin-right: 35px;
+    margin-right: 30px;
     background: var(--bg);
     color: var(--fg);
   }
 
   .project-card::after {
-    width: 34px;
-    right: -35px;
+    width: 29px;
+    right: -30px;
     height: 2px;
     background: var(--fg);
     z-index: 3;
