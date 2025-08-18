@@ -102,13 +102,13 @@ body.dark {
   position: relative;
 }
 
-/* TIMELINE LINE - WILL BE DYNAMICALLY STOPPED AT PRESENT MOMENT */
+/* TIMELINE LINE - STARTS AT PRESENT MOMENT, GOES DOWN */
 .timeline-container::before {
   content: '';
   position: fixed;
   right: 20px;
-  top: 50px;
-  height: 100vh; /* Default full height, will be overridden by JS */
+  top: 50px; /* Will be dynamically set to Present Moment position */
+  bottom: 0; /* Goes down to bottom of page */
   width: 3px;
   background: var(--fg);
   z-index: 1;
