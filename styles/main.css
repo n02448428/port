@@ -149,8 +149,8 @@ body.dark {
   border-color: var(--fg);
   border-top: none;
   right: 29px; /* Same as regular markers */
-  top: 0; /* Align to top of card instead of center */
-  transform: translateY(50%); /* Adjust vertical position */
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .timeline-marker.active {
