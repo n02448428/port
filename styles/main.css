@@ -102,16 +102,16 @@ body.dark {
   position: relative;
 }
 
-/* TIMELINE LINE - STARTS AT PRESENT MOMENT, GOES DOWN */
+/* TIMELINE LINE - SCROLLS WITH CONTENT, NOT FIXED */
 .timeline-container::before {
   content: '';
-  position: fixed;
-  right: 20px;
-  top: 50px; /* Will be dynamically set to Present Moment position */
-  bottom: 0; /* Goes down to bottom of page */
+  position: absolute;
+  right: 17px; /* Centers on markers */
+  top: 0;
+  bottom: 0;
   width: 3px;
   background: var(--fg);
-  z-index: 2; /* Lower than connection lines */
+  z-index: 1;
 }
 
 .timeline-item {
@@ -122,29 +122,29 @@ body.dark {
   width: 100%;
 }
 
-/* TIMELINE MARKERS - REGULAR CIRCLES */
+/* TIMELINE MARKERS - SCROLL WITH CONTENT */
 .timeline-marker {
   width: 12px;
   height: 12px;
   border-radius: 50%;
   border: 2px solid var(--fg);
   background: var(--bg);
-  position: fixed;
-  right: 14px; /* Centers 12px marker on 3px line at 20px */
+  position: absolute;
+  right: 11px; /* Centers 12px marker on 3px line */
   flex-shrink: 0;
   transition: all 0.3s ease;
-  z-index: 15; /* Highest - should be on top of everything */
+  z-index: 5;
   box-sizing: border-box;
 }
 
-/* PRESENT MOMENT MARKER - HALF MOON (FLAT TOP, ROUND BOTTOM = ∪ SHAPE) */
+/* PRESENT MOMENT MARKER - HALF MOON */
 .timeline-marker.present-moment {
-  border-radius: 0 0 6px 6px; /* Flat top, round bottom */
-  height: 6px; /* Half height */
-  margin-top: 3px; /* Push down so flat edge is at top */
+  border-radius: 0 0 6px 6px;
+  height: 6px;
+  margin-top: 3px;
   background: var(--bg);
   border-color: var(--fg);
-  border-top: none; /* Remove top border for flat edge */
+  border-top: none;
 }
 
 .timeline-marker.active {
@@ -175,21 +175,20 @@ body.dark {
   margin-right: 30px;
 }
 
-/* CONNECTION LINE FROM CARD TO MARKER - FIXED VERSION */
+/* CONNECTION LINE FROM CARD TO MARKER - VISIBLE VERSION */
 .project-card::after {
   content: '';
   position: absolute;
-  width: 30px;
+  width: 29px;
   height: 2px;
-  background: var(--fg) !important;
-  right: -31px; /* Move slightly further out to clear the border */
+  background: var(--fg);
+  right: -30px;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 10 !important; /* Higher than timeline line but lower than markers */
-  display: block !important;
-  opacity: 0.7 !important;
-  visibility: visible !important;
-  pointer-events: none !important;
+  z-index: 3;
+  display: block;
+  opacity: 0.8;
+  pointer-events: none;
 }
 
 /* PRESENT MOMENT CARD - GREY TINT */
@@ -204,10 +203,10 @@ body.dark {
   box-shadow: none;
 }
 
-/* PRESENT MOMENT CONNECTION LINE - SLIGHTLY DIMMED */
+/* PRESENT MOMENT CONNECTION LINE */
 .project-card.present-moment::after {
-  background: rgba(128, 128, 128, 0.6) !important;
-  opacity: 0.5 !important;
+  background: rgba(128, 128, 128, 0.6);
+  opacity: 0.6;
 }
 
 .project-card.expanded {
@@ -269,8 +268,9 @@ body.dark {
   display: block;
 }
 
+/* GLOWING ORB - HIGH Z-INDEX, IN FRONT OF EVERYTHING */
 .timeline-position-orb {
-  position: fixed;
+  position: absolute;
   width: 12px;
   height: 12px;
   border-radius: 50%;
@@ -278,7 +278,7 @@ body.dark {
   pointer-events: none;
   transition: top 0.3s ease, left 0.3s ease;
   box-shadow: 0 0 12px var(--fg);
-  z-index: 4;
+  z-index: 20; /* Highest - in front of markers */
   display: none;
 }
 
@@ -610,15 +610,14 @@ button.flash {
   }
 
   .timeline-container::before {
-    right: 25px;
-    top: 60px;
+    right: 22px;
     width: 3px;
-    z-index: 2;
+    z-index: 1;
   }
 
   .timeline-marker {
-    right: 19px;
-    z-index: 15;
+    right: 16px;
+    z-index: 5;
   }
 
   .year-label {
@@ -633,17 +632,21 @@ button.flash {
   }
 
   .project-card::after {
-    width: 35px;
-    right: -36px; /* Adjust for mobile spacing */
+    width: 34px;
+    right: -35px;
     height: 2px;
-    background: var(--fg) !important;
-    z-index: 10 !important;
-    opacity: 0.7 !important;
+    background: var(--fg);
+    z-index: 3;
+    opacity: 0.8;
   }
 
   .project-card.present-moment::after {
-    background: rgba(128, 128, 128, 0.6) !important;
-    opacity: 0.5 !important;
+    background: rgba(128, 128, 128, 0.6);
+    opacity: 0.6;
+  }
+
+  .timeline-position-orb {
+    z-index: 20;
   }
 
   .grid-container {
