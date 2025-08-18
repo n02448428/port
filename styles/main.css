@@ -79,13 +79,13 @@ body.dark {
   align-items: flex-end;
   padding: 2rem;
   position: relative;
-  margin-right: 8px; /* Space for fixed timeline - matches timeline position */
+  margin-right: 25px; /* Space for markers + some margin */
 }
 
 .timeline-container::before {
   content: '';
   position: fixed;
-  right: 8px; /* Centered through 14px wide markers (14/2 = 7, plus 1px for border) */
+  right: 17px; /* Center of 14px marker with 2px border: 17px from right edge */
   top: 60px; /* Below fixed header */
   bottom: 0;
   width: 2px;
@@ -96,7 +96,7 @@ body.dark {
 .year-label {
   font-size: 0.9rem;
   opacity: 0.3;
-  margin: 1rem 8px 0.5rem 0; /* Match timeline position */
+  margin: 1rem 25px 0.5rem 0; /* Match container margin */
   align-self: flex-end;
 }
 
@@ -113,10 +113,11 @@ body.dark {
   height: 14px;
   border-radius: 50%;
   border: 2px solid var(--fg);
-  margin-left: 0; /* Align center with timeline at right: 8px */
+  margin-left: 0;
   position: relative;
   flex-shrink: 0;
   transition: box-shadow 0.3s ease;
+  background: var(--bg); /* Add background so line shows through */
 }
 
 .timeline-marker.active {
