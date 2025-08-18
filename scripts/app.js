@@ -40,14 +40,18 @@ const modeBtn = document.getElementById('toggleMode');
 const BIRTH_DATE = new Date('1989-09-07');
 const CURRENT_DATE = new Date();
 
-// Create position orb
+// Create position orb - SINGLE INSTANCE ONLY
 function createPositionOrb() {
-  if (!positionOrb) {
-    positionOrb = document.createElement('div');
-    positionOrb.className = 'timeline-position-orb';
-    document.body.appendChild(positionOrb);
-    console.log('✅ Position orb created');
+  // Remove any existing orb first
+  if (positionOrb) {
+    positionOrb.remove();
+    positionOrb = null;
   }
+  
+  positionOrb = document.createElement('div');
+  positionOrb.className = 'timeline-position-orb';
+  content.appendChild(positionOrb); // Append to content so it scrolls with timeline
+  console.log('✅ Position orb created');
 }
 
 // Function to get current date and time formatted like regular projects
@@ -250,11 +254,11 @@ function renderTimelineView(data) {
     marker.className = proj.isPresentMoment ? 'timeline-marker present-moment' : 'timeline-marker';
     marker.dataset.projectId = proj.id;
     
-    // Position the orb on Present Moment initially, but allow it to move
+    // Position the orb on Present Moment initially
     if (proj.isPresentMoment && isFirstItem) {
       setTimeout(() => {
         snapOrbToMarker(marker);
-      }, 100);
+      }, 50);
       isFirstItem = false;
     }
     
@@ -293,7 +297,7 @@ function renderTimelineView(data) {
         expandedContent.addEventListener('click', (e) => {
           const link = e.target.closest('.external-link');
           if (link) {
-            e.stopPropagation();
+            e.stopPropagatione.stopPropagation();
             window.open(link.href, '_blank');
           }
         });
@@ -305,60 +309,6 @@ function renderTimelineView(data) {
     item.appendChild(marker);
     content.appendChild(item);
   });
-  
-  // Debug connection lines after rendering
-  setTimeout(() => {
-    console.log('🔍 Debugging connection lines...');
-    const cards = document.querySelectorAll('.project-card');
-    console.log(`Found ${cards.length} project cards`);
-    
-    cards.forEach((card, index) => {
-      const computedStyle = window.getComputedStyle(card, '::after');
-      console.log(`Card ${index}:`, {
-        display: computedStyle.display,
-        content: computedStyle.content,
-        width: computedStyle.width,
-        height: computedStyle.height,
-        background: computedStyle.backgroundColor,
-        position: computedStyle.position,
-        right: computedStyle.right,
-        top: computedStyle.top
-      });
-    });
-  }, 500);
-  
-  // Start timeline AT Present Moment marker (flat edge) and go down
-  setTimeout(() => {
-    const presentMomentMarker = document.querySelector('.timeline-marker.present-moment');
-    if (presentMomentMarker) {
-      const markerRect = presentMomentMarker.getBoundingClientRect();
-      const markerTop = markerRect.top + window.scrollY; // TOP of half-moon (flat edge)
-      
-      // Create or update dynamic style to start timeline at Present Moment
-      let styleEl = document.getElementById('timeline-stop-style');
-      if (!styleEl) {
-        styleEl = document.createElement('style');
-        styleEl.id = 'timeline-stop-style';
-        document.head.appendChild(styleEl);
-      }
-      
-      styleEl.textContent = `
-        .timeline-container::before {
-          top: ${markerTop}px !important;
-          bottom: 0 !important;
-          height: auto !important;
-        }
-        
-        @media (max-width: 768px) {
-          .timeline-container::before {
-            top: ${markerTop}px !important;
-            bottom: 0 !important;
-            height: auto !important;
-          }
-        }
-      `;
-    }
-  }, 200);
 }
 
 function renderGridView(data) {
@@ -744,18 +694,25 @@ function openMediaOverlay(url, type) {
   }
 }
 
+// FIXED ORB POSITIONING - SCROLLS WITH TIMELINE
 function snapOrbToMarker(marker) {
   if (!positionOrb || !marker) return;
-  const rect = marker.getBoundingClientRect();
+  
+  const markerRect = marker.getBoundingClientRect();
+  const contentRect = content.getBoundingClientRect();
+  
+  // Position relative to content container (so it scrolls with timeline)
+  const relativeTop = markerRect.top - contentRect.top;
+  const relativeLeft = markerRect.left - contentRect.left;
   
   // For half-moon Present Moment: align orb's bottom with marker's top
   if (marker.classList.contains('present-moment')) {
-    positionOrb.style.top = `${rect.top + window.scrollY - 6}px`; // Move up by half orb height
-    positionOrb.style.left = `${rect.left}px`;
+    positionOrb.style.top = `${relativeTop - 6}px`; // Move up by half orb height
+    positionOrb.style.left = `${relativeLeft}px`;
   } else {
     // For regular circles: center orb on marker
-    positionOrb.style.top = `${rect.top + window.scrollY}px`;
-    positionOrb.style.left = `${rect.left}px`;
+    positionOrb.style.top = `${relativeTop}px`;
+    positionOrb.style.left = `${relativeLeft}px`;
   }
   
   positionOrb.style.display = 'block';
@@ -764,6 +721,7 @@ function snapOrbToMarker(marker) {
 function toggleExpanded(card, marker, forceState = null) {
   const isExpanded = forceState !== null ? forceState : !card.classList.contains('expanded');
   
+  // Close all other expanded cards first
   document.querySelectorAll('.project-card.expanded').forEach(c => {
     if (c !== card) {
       c.classList.remove('expanded');
@@ -776,6 +734,8 @@ function toggleExpanded(card, marker, forceState = null) {
     card.classList.add('expanded');
     marker.classList.add('active');
     expandedCard = card;
+    // Move orb to the expanded card's marker
+    snapOrbToMarker(marker);
     setTimeout(() => document.addEventListener('click', handleClickOutside), 100);
   } else {
     card.classList.remove('expanded');
