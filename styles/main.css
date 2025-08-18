@@ -44,11 +44,11 @@ body.dark {
   top: 0;
   left: 0;
   right: 0;
-  height: 51px; /* 1px taller to account for border */
+  height: 50px; /* BACK TO 50px */
   background: var(--bg);
   border-bottom: 1px solid var(--fg);
   display: flex;
-  align-items: stretch; /* Stretch children to full height */
+  align-items: stretch;
   padding: 0 1rem 0 1rem;
   z-index: 1000;
   white-space: nowrap;
@@ -88,13 +88,12 @@ body.dark {
   font-size: 1rem;
   border-left: none;
   min-width: 40px;
-  height: 51px; /* MATCH HEADER HEIGHT INCLUDING BORDER */
+  height: 100%; /* FILL PARENT HEIGHT */
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top: 1px solid var(--fg); /* ADD TOP BORDER */
-  border-bottom: 1px solid var(--fg); /* ADD BOTTOM BORDER */
-  margin-top: -1px; /* OVERLAP WITH HEADER BORDER */
+  border-top: none; /* NO TOP BORDER */
+  border-bottom: none; /* NO BOTTOM BORDER */
 }
 
 #controls button:first-child {
@@ -123,7 +122,7 @@ body.dark {
   position: relative;
 }
 
-/* TIMELINE LINE - MOVE FURTHER RIGHT */
+/* TIMELINE LINE - FINAL MICRO-ADJUSTMENT */
 .timeline-container::before {
   content: '';
   position: fixed;
@@ -132,7 +131,7 @@ body.dark {
   bottom: 0;
   width: 2px;
   background: var(--fg);
-  transform: translateX(-5px); /* MOVED FURTHER RIGHT - was -9px */
+  transform: translateX(-1px); /* MOVED EVEN FURTHER RIGHT - was -5px */
   z-index: 1;
 }
 
@@ -143,7 +142,7 @@ body.dark {
   align-self: flex-end;
 }
 
-/* TIMELINE MARKERS - ADJUST TO MATCH LINE */
+/* TIMELINE MARKERS - MATCH FINAL LINE POSITION */
 .timeline-marker {
   width: 14px;
   height: 14px;
@@ -152,7 +151,7 @@ body.dark {
   background: var(--bg);
   position: absolute;
   right: 0;
-  transform: translateX(-5px); /* MATCH LINE POSITION */
+  transform: translateX(-1px); /* MATCH FINAL LINE POSITION */
   flex-shrink: 0;
   transition: box-shadow 0.3s ease;
   z-index: 2;
