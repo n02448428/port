@@ -304,28 +304,24 @@ function renderTimelineView(data) {
     item.appendChild(card);
     item.appendChild(marker);
     content.appendChild(item);
-  });
-  
-  // Debug connection lines after rendering
-  setTimeout(() => {
-    console.log('🔍 Debugging connection lines...');
-    const cards = document.querySelectorAll('.project-card');
-    console.log(`Found ${cards.length} project cards`);
     
-    cards.forEach((card, index) => {
-      const computedStyle = window.getComputedStyle(card, '::after');
-      console.log(`Card ${index}:`, {
-        display: computedStyle.display,
-        content: computedStyle.content,
-        width: computedStyle.width,
-        height: computedStyle.height,
-        background: computedStyle.backgroundColor,
-        position: computedStyle.position,
-        right: computedStyle.right,
-        top: computedStyle.top
-      });
-    });
-  }, 500);
+    // CREATE CONNECTION LINE AS REAL ELEMENT (since CSS ::after isn't working)
+    const connectionLine = document.createElement('div');
+    connectionLine.className = 'connection-line';
+    connectionLine.style.position = 'absolute';
+    connectionLine.style.width = '30px';
+    connectionLine.style.height = '3px';
+    connectionLine.style.backgroundColor = proj.isPresentMoment ? '#888888' : 'var(--fg)';
+    connectionLine.style.right = '0px';
+    connectionLine.style.top = '50%';
+    connectionLine.style.transform = 'translateY(-50%)';
+    connectionLine.style.zIndex = '10';
+    connectionLine.style.pointerEvents = 'none';
+    
+    // Position the line between card and marker
+    item.style.position = 'relative';
+    item.appendChild(connectionLine);
+  });
   
   // Start timeline AT Present Moment marker (flat edge) and go down
   setTimeout(() => {
@@ -518,7 +514,6 @@ function renderGridView(data) {
     content.appendChild(card);
   });
 }
-
 function openGridOverlay(proj) {
   if (currentOverlay) currentOverlay.remove();
 
@@ -747,17 +742,9 @@ function openMediaOverlay(url, type) {
 function snapOrbToMarker(marker) {
   if (!positionOrb || !marker) return;
   const rect = marker.getBoundingClientRect();
-  
-  // For half-moon Present Moment: align orb's bottom with marker's top
-  if (marker.classList.contains('present-moment')) {
-    positionOrb.style.top = `${rect.top + window.scrollY - 6}px`; // Move up by half orb height
-    positionOrb.style.left = `${rect.left}px`;
-  } else {
-    // For regular circles: center orb on marker
-    positionOrb.style.top = `${rect.top + window.scrollY}px`;
-    positionOrb.style.left = `${rect.left}px`;
-  }
-  
+  // Center orb on all markers (including present moment)
+  positionOrb.style.top = `${rect.top + window.scrollY}px`;
+  positionOrb.style.left = `${rect.left}px`;
   positionOrb.style.display = 'block';
 }
 
