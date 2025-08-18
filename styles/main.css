@@ -137,14 +137,14 @@ body.dark {
   box-sizing: border-box;
 }
 
-/* PRESENT MOMENT MARKER - HALF MOON */
+/* PRESENT MOMENT MARKER - HALF MOON (ROUND TOP, FLAT BOTTOM) */
 .timeline-marker.present-moment {
-  border-radius: 12px 12px 0 0; /* Round bottom, flat top */
+  border-radius: 0 0 12px 12px; /* Flat top, round bottom */
   height: 6px; /* Half height */
-  margin-top: 3px; /* Center the half-circle */
+  margin-bottom: 3px; /* Center the half-circle */
   background: var(--bg);
   border-color: var(--fg);
-  border-bottom: none; /* Remove bottom border for flat edge */
+  border-top: none; /* Remove top border for flat edge */
 }
 
 .timeline-marker.active {
@@ -175,17 +175,18 @@ body.dark {
   margin-right: 30px;
 }
 
-/* CONNECTION LINE FROM CARD TO MARKER - ALWAYS VISIBLE */
+/* CONNECTION LINE FROM CARD TO MARKER - ALWAYS VISIBLE AND PROMINENT */
 .project-card::after {
   content: '';
   position: absolute;
   width: 30px;
-  height: 1px;
+  height: 2px; /* Make thicker for visibility */
   background: var(--fg);
   right: -30px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 2;
+  display: block; /* Ensure it's visible */
 }
 
 /* PRESENT MOMENT CARD - GREY TINT */
@@ -200,9 +201,11 @@ body.dark {
   box-shadow: none;
 }
 
-/* PRESENT MOMENT CONNECTION LINE - SLIGHTLY FADED */
+/* PRESENT MOMENT CONNECTION LINE - SLIGHTLY FADED BUT VISIBLE */
 .project-card.present-moment::after {
-  background: rgba(128, 128, 128, 0.6);
+  background: rgba(128, 128, 128, 0.8); /* More visible than before */
+  height: 2px; /* Same thickness as others */
+  display: block; /* Ensure it's visible */
 }
 
 .project-card.expanded {
