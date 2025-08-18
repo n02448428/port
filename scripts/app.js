@@ -50,19 +50,29 @@ function createPositionOrb() {
   }
 }
 
-// Function to get current date and time formatted
+// Function to get current date and time formatted like regular projects
 function getCurrentDateTime() {
   const now = new Date();
-  const options = { 
-    weekday: 'long', 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const day = now.getDate();
+  const month = monthNames[now.getMonth()];
+  const year = now.getFullYear();
+  const hours = now.getHours();
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const displayHours = hours % 12 || 12;
+  
+  const ordinal = (day) => {
+    if (day > 3 && day < 21) return 'th';
+    switch (day % 10) {
+      case 1: return 'st';
+      case 2: return 'nd';
+      case 3: return 'rd';
+      default: return 'th';
+    }
   };
-  return now.toLocaleDateString('en-US', options);
+  
+  return `${month} ${day}${ordinal(day)}, ${year} ${displayHours}:${minutes} ${ampm}`;
 }
 
 // Function to create Present Moment entry
@@ -72,8 +82,7 @@ function createPresentMoment() {
     title: 'Present Moment',
     type: 'now',
     status: 'ongoing',
-    description: `Current time: ${getCurrentDateTime()}`,
-    date: new Date().toISOString().split('T')[0], // Today's date
+    date: getCurrentDateTime(),
     isPresentMoment: true
   };
 }
@@ -155,18 +164,17 @@ function renderTimelineView(data) {
   // Add view indicator for timeline
   updateViewIndicator('Timeline');
   
-  // Create Present Moment entry and add it to the beginning
+  // Create Present Moment entry at the TOP (timeline ends at present)
   const presentMoment = createPresentMoment();
-  const allData = [presentMoment, ...data];
   
-  // Separate dated and undated projects (excluding present moment)
+  // Separate dated and undated projects
   const datedProjects = data.filter(proj => proj.date && !isNaN(new Date(proj.date).getTime()));
   const undatedProjects = data.filter(proj => !proj.date || isNaN(new Date(proj.date).getTime()));
   
   // Sort dated projects by date (newest first)
   const sortedData = datedProjects.sort((a, b) => new Date(b.date) - new Date(a.date));
   
-  // Combine: Present Moment + sorted dated + undated
+  // Order: Present Moment FIRST, then sorted projects, then undated
   const finalData = [presentMoment, ...sortedData, ...undatedProjects];
   
   let lastYear = null;
@@ -202,15 +210,13 @@ function renderTimelineView(data) {
     card.className = proj.isPresentMoment ? 'project-card present-moment' : 'project-card';
     card.dataset.projectId = proj.id;
     
-    // Compact display for present moment or regular projects
+    // Format for all projects (including present moment) - same layout
     if (proj.isPresentMoment) {
       card.innerHTML = `
         <div class="project-compact">
           <span class="project-type">[${proj.type}]</span>
-          <span class="project-title">${proj.title}</span>
-        </div>
-        <div class="present-time" style="font-size: 0.8rem; color: gray; margin-top: 0.3rem;">
-          ${proj.description}
+          <span class="project-title">${proj.title}</span>,
+          <span class="project-date" id="live-time">${proj.date}</span>
         </div>
       `;
     } else {
@@ -699,7 +705,7 @@ function toggleExpanded(card, marker, forceState = null) {
       const otherMarker = document.querySelector(`.timeline-marker[data-project-id="${c.dataset.projectId}"]`);
       if (otherMarker) otherMarker.classList.remove('active');
     }
-    });
+  });
   
   if (isExpanded) {
     card.classList.add('expanded');
@@ -750,10 +756,10 @@ if (modeBtn) {
   });
 }
 
-// Update present moment time every second
+// Update present moment time every minute (not every second to avoid performance issues)
 setInterval(() => {
-  const presentTimeElement = document.querySelector('.present-time');
-  if (presentTimeElement) {
-    presentTimeElement.textContent = `Current time: ${getCurrentDateTime()}`;
+  const liveTimeElement = document.getElementById('live-time');
+  if (liveTimeElement) {
+    liveTimeElement.textContent = getCurrentDateTime();
   }
-}, 1000);
+}, 60000); // Update every minute
