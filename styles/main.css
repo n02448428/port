@@ -137,6 +137,26 @@ body.dark {
   box-sizing: border-box;
 }
 
+/* PRESENT MOMENT MARKER - ALWAYS GLOWING */
+.timeline-marker.present-moment {
+  background: var(--fg);
+  box-shadow: 0 0 15px var(--fg);
+  transform: scale(1.3);
+  border-color: var(--fg);
+}
+
+/* PRESENT MOMENT CARD - NON-INTERACTIVE */
+.project-card.present-moment {
+  cursor: default;
+  opacity: 0.8;
+  background: rgba(var(--fg), 0.05);
+}
+
+.project-card.present-moment:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .timeline-marker.active {
   box-shadow: 0 0 10px var(--fg);
   background: var(--fg);
