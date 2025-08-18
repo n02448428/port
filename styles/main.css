@@ -93,23 +93,23 @@ body.dark {
   display: none;
 }
 
-/* TIMELINE LAYOUT - FIXED ALIGNMENT */
+/* TIMELINE LAYOUT - COMPLETELY RESTRUCTURED */
 .timeline-container {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  padding: 2rem 20px 2rem 2rem;
+  padding: 2rem 30px 2rem 2rem; /* More right padding for markers */
   position: relative;
 }
 
-/* TIMELINE LINE - THICKER AND PERFECTLY POSITIONED */
+/* TIMELINE LINE - FIXED POSITION FROM VIEWPORT */
 .timeline-container::before {
   content: '';
   position: fixed;
-  right: 13px; /* Centered on marker position */
+  right: 20px; /* Fixed distance from viewport edge */
   top: 50px;
   bottom: 0;
-  width: 4px; /* THICKER timeline */
+  width: 3px; /* Thick timeline */
   background: var(--fg);
   z-index: 1;
 }
@@ -122,35 +122,36 @@ body.dark {
   width: 100%;
 }
 
-/* TIMELINE MARKERS - PERFECTLY CENTERED ON LINE */
+/* TIMELINE MARKERS - FIXED POSITION FROM VIEWPORT */
 .timeline-marker {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  border: 2px solid var(--fg);
+  border: 3px solid var(--fg);
   background: var(--bg);
-  position: absolute;
-  right: 6px; /* Centers 14px marker on 4px line */
-  transform: none; /* Remove transform, use precise positioning */
+  position: fixed; /* FIXED TO VIEWPORT - THIS IS THE KEY FIX */
+  right: 12px; /* Centers 16px marker on 3px line at 20px */
   flex-shrink: 0;
-  transition: box-shadow 0.3s ease;
+  transition: all 0.3s ease;
   z-index: 3; /* Above timeline line */
   box-sizing: border-box;
 }
 
 .timeline-marker.active {
-  box-shadow: 0 0 8px var(--fg);
+  box-shadow: 0 0 10px var(--fg);
   background: var(--fg);
+  transform: scale(1.2);
 }
 
 .timeline-marker:hover {
-  box-shadow: 0 0 12px var(--fg);
+  box-shadow: 0 0 15px var(--fg);
+  transform: scale(1.1);
 }
 
 .year-label {
   font-size: 0.9rem;
   opacity: 0.3;
-  margin: 1rem 20px 0.5rem 0;
+  margin: 1rem 30px 0.5rem 0;
   align-self: flex-end;
 }
 
@@ -163,17 +164,17 @@ body.dark {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  margin-right: 20px;
+  margin-right: 30px; /* Space for connection line */
 }
 
-/* CONNECTION LINE FROM CARD TO MARKER - MATCHES BORDER */
+/* CONNECTION LINE FROM CARD TO MARKER */
 .project-card::after {
   content: '';
   position: absolute;
-  width: 20px;
+  width: 30px; /* Reaches to marker area */
   height: 1px; /* Match project border thickness */
   background: var(--fg);
-  right: -20px;
+  right: -30px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 2; /* Between card and marker */
@@ -240,13 +241,13 @@ body.dark {
 
 .timeline-position-orb {
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: var(--fg);
   pointer-events: none;
   transition: top 0.3s ease, left 0.3s ease;
-  box-shadow: 0 0 8px var(--fg);
+  box-shadow: 0 0 12px var(--fg);
   z-index: 4; /* Above everything */
 }
 
@@ -573,38 +574,35 @@ button.flash {
   }
 
   .timeline-container {
-    padding: 2rem 30px 2rem 2rem;
+    padding: 2rem 40px 2rem 2rem;
     background: var(--bg);
   }
 
-  /* MOBILE TIMELINE LINE - ADJUSTED FOR MOBILE PADDING */
   .timeline-container::before {
-    right: 23px; /* Centered on mobile marker position */
+    right: 25px;
     top: 60px;
-    width: 4px; /* Keep thicker line */
+    width: 3px;
   }
 
-  /* MOBILE TIMELINE MARKERS */
   .timeline-marker {
-    right: 16px; /* Centers marker on mobile timeline */
+    right: 17px;
   }
 
   .year-label {
-    margin-right: 30px;
+    margin-right: 40px;
     color: var(--fg);
   }
 
   .project-card {
-    margin-right: 30px;
+    margin-right: 40px;
     background: var(--bg);
     color: var(--fg);
   }
 
-  /* MOBILE CONNECTION LINES */
   .project-card::after {
-    width: 30px; /* Longer for mobile spacing */
-    right: -30px;
-    height: 1px; /* Match border thickness */
+    width: 40px;
+    right: -40px;
+    height: 1px;
     background: var(--fg);
   }
 
