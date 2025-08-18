@@ -305,14 +305,14 @@ function renderTimelineView(data) {
     item.appendChild(marker);
     content.appendChild(item);
     
-    // CREATE CONNECTION LINE AS REAL ELEMENT (since CSS ::after isn't working)
+    // CREATE CONNECTION LINE AS REAL ELEMENT - POSITIONED OUTSIDE BOX
     const connectionLine = document.createElement('div');
     connectionLine.className = 'connection-line';
     connectionLine.style.position = 'absolute';
     connectionLine.style.width = '30px';
     connectionLine.style.height = '3px';
     connectionLine.style.backgroundColor = proj.isPresentMoment ? '#888888' : 'var(--fg)';
-    connectionLine.style.right = '0px';
+    connectionLine.style.right = '-30px'; /* Position outside the timeline-item */
     connectionLine.style.top = '50%';
     connectionLine.style.transform = 'translateY(-50%)';
     connectionLine.style.zIndex = '10';
@@ -323,38 +323,8 @@ function renderTimelineView(data) {
     item.appendChild(connectionLine);
   });
   
-  // Start timeline AT Present Moment marker (flat edge) and go down
-  setTimeout(() => {
-    const presentMomentMarker = document.querySelector('.timeline-marker.present-moment');
-    if (presentMomentMarker) {
-      const markerRect = presentMomentMarker.getBoundingClientRect();
-      const markerTop = markerRect.top + window.scrollY; // TOP of half-moon (flat edge)
-      
-      // Create or update dynamic style to start timeline at Present Moment
-      let styleEl = document.getElementById('timeline-stop-style');
-      if (!styleEl) {
-        styleEl = document.createElement('style');
-        styleEl.id = 'timeline-stop-style';
-        document.head.appendChild(styleEl);
-      }
-      
-      styleEl.textContent = `
-        .timeline-container::before {
-          top: ${markerTop}px !important;
-          bottom: 0 !important;
-          height: auto !important;
-        }
-        
-        @media (max-width: 768px) {
-          .timeline-container::before {
-            top: ${markerTop}px !important;
-            bottom: 0 !important;
-            height: auto !important;
-          }
-        }
-      `;
-    }
-  }, 200);
+  // Remove timeline positioning since we're using absolute positioning now
+  // Timeline will start at first item automatically
 }
 
 function renderGridView(data) {
@@ -514,6 +484,7 @@ function renderGridView(data) {
     content.appendChild(card);
   });
 }
+
 function openGridOverlay(proj) {
   if (currentOverlay) currentOverlay.remove();
 
@@ -742,9 +713,11 @@ function openMediaOverlay(url, type) {
 function snapOrbToMarker(marker) {
   if (!positionOrb || !marker) return;
   const rect = marker.getBoundingClientRect();
-  // Center orb on all markers (including present moment)
-  positionOrb.style.top = `${rect.top + window.scrollY}px`;
-  positionOrb.style.left = `${rect.left}px`;
+  const containerRect = document.querySelector('.timeline-container').getBoundingClientRect();
+  
+  // Position relative to container, not viewport
+  positionOrb.style.top = `${rect.top - containerRect.top}px`;
+  positionOrb.style.left = `${rect.left - containerRect.left}px`;
   positionOrb.style.display = 'block';
 }
 
