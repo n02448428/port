@@ -304,12 +304,61 @@ function renderTimelineView(data) {
     item.appendChild(card);
     item.appendChild(marker);
     content.appendChild(item);
-    
-    // CREATE CLEAN CONNECTION LINE SYSTEM
-    const connectionLine = document.createElement('div');
-    connectionLine.className = proj.isPresentMoment ? 'connection-line present-moment' : 'connection-line';
-    item.appendChild(connectionLine);
   });
+  
+  // Debug connection lines after rendering
+  setTimeout(() => {
+    console.log('🔍 Debugging connection lines...');
+    const cards = document.querySelectorAll('.project-card');
+    console.log(`Found ${cards.length} project cards`);
+    
+    cards.forEach((card, index) => {
+      const computedStyle = window.getComputedStyle(card, '::after');
+      console.log(`Card ${index}:`, {
+        display: computedStyle.display,
+        content: computedStyle.content,
+        width: computedStyle.width,
+        height: computedStyle.height,
+        background: computedStyle.backgroundColor,
+        position: computedStyle.position,
+        right: computedStyle.right,
+        top: computedStyle.top
+      });
+    });
+  }, 500);
+  
+  // Start timeline AT Present Moment marker (flat edge) and go down
+  setTimeout(() => {
+    const presentMomentMarker = document.querySelector('.timeline-marker.present-moment');
+    if (presentMomentMarker) {
+      const markerRect = presentMomentMarker.getBoundingClientRect();
+      const markerTop = markerRect.top + window.scrollY; // TOP of half-moon (flat edge)
+      
+      // Create or update dynamic style to start timeline at Present Moment
+      let styleEl = document.getElementById('timeline-stop-style');
+      if (!styleEl) {
+        styleEl = document.createElement('style');
+        styleEl.id = 'timeline-stop-style';
+        document.head.appendChild(styleEl);
+      }
+      
+      styleEl.textContent = `
+        .timeline-container::before {
+          top: ${markerTop}px !important;
+          bottom: 0 !important;
+          height: auto !important;
+        }
+        
+        @media (max-width: 768px) {
+          .timeline-container::before {
+            top: ${markerTop}px !important;
+            bottom: 0 !important;
+            height: auto !important;
+          }
+        }
+      `;
+    }
+  }, 200);
 }
 
 function renderGridView(data) {
@@ -697,17 +746,18 @@ function openMediaOverlay(url, type) {
 
 function snapOrbToMarker(marker) {
   if (!positionOrb || !marker) return;
+  const rect = marker.getBoundingClientRect();
   
-  // Get marker position relative to timeline container
-  const markerRect = marker.getBoundingClientRect();
-  const containerRect = marker.closest('.timeline-container').getBoundingClientRect();
+  // For half-moon Present Moment: align orb's bottom with marker's top
+  if (marker.classList.contains('present-moment')) {
+    positionOrb.style.top = `${rect.top + window.scrollY - 6}px`; // Move up by half orb height
+    positionOrb.style.left = `${rect.left}px`;
+  } else {
+    // For regular circles: center orb on marker
+    positionOrb.style.top = `${rect.top + window.scrollY}px`;
+    positionOrb.style.left = `${rect.left}px`;
+  }
   
-  // Position orb relative to container
-  const relativeTop = markerRect.top - containerRect.top + marker.closest('.timeline-container').scrollTop;
-  const relativeLeft = markerRect.left - containerRect.left;
-  
-  positionOrb.style.top = `${relativeTop}px`;
-  positionOrb.style.left = `${relativeLeft}px`;
   positionOrb.style.display = 'block';
 }
 
