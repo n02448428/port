@@ -422,7 +422,7 @@ function createExpandedContent(proj) {
     html += `<div class="content-section"><h4>Story</h4><p>${proj.story}</p></div>`;
   }
   
-  // Links - Fixed the processing logic
+  // Links - COMPLETELY REWRITTEN to handle all edge cases
   if (proj.links || (proj.external_link_names && proj.external_link_urls)) {
     html += `<div class="content-section"><h4>Links</h4><ul>`;
     let links = [];
@@ -430,39 +430,48 @@ function createExpandedContent(proj) {
     if (proj.links && Array.isArray(proj.links)) {
       links = proj.links.map(link => {
         if (typeof link === 'string') {
-          // Handle malformed links like "url1|url2"
           const [name, url] = link.includes('|') ? link.split('|') : [link, link];
           return { name: name || url, url: url || '#' };
         }
         return { name: link.name || link.url || 'Link', url: link.url || '#' };
       });
     } else if (proj.external_link_names && proj.external_link_urls) {
-      // Handle arrays or strings
+      // Parse names
       let names = [];
-      let urls = [];
-      
       if (Array.isArray(proj.external_link_names)) {
-        names = proj.external_link_names;
+        names = proj.external_link_names.map(n => String(n || ''));
       } else if (typeof proj.external_link_names === 'string') {
-        names = proj.external_link_names.split('|').length > 1 ? 
+        names = proj.external_link_names.includes('|') ? 
                proj.external_link_names.split('|') : 
                proj.external_link_names.split(',');
+        names = names.map(n => String(n || '').trim());
       }
       
+      // Parse URLs - handle both array and string formats, including pipe-separated strings within arrays
+      let urls = [];
       if (Array.isArray(proj.external_link_urls)) {
-        urls = proj.external_link_urls;
+        // Flatten any pipe-separated URLs within array elements
+        proj.external_link_urls.forEach(urlItem => {
+          if (typeof urlItem === 'string' && urlItem.includes('|')) {
+            urls.push(...urlItem.split('|').map(u => u.trim()));
+          } else {
+            urls.push(String(urlItem || ''));
+          }
+        });
       } else if (typeof proj.external_link_urls === 'string') {
-        urls = proj.external_link_urls.split('|').length > 1 ? 
+        urls = proj.external_link_urls.includes('|') ? 
                proj.external_link_urls.split('|') : 
                proj.external_link_urls.split(',');
+        urls = urls.map(u => String(u || '').trim());
       }
       
-      // Create links array, ensuring we handle each name/url safely
-      links = names.map((name, i) => {
-        const safeName = (typeof name === 'string' ? name.trim() : String(name || '')) || urls[i] || 'Link';
-        const safeUrl = (typeof urls[i] === 'string' ? urls[i].trim() : String(urls[i] || '')) || '#';
-        return { name: safeName, url: safeUrl };
-      });
+      // Create links by pairing names with URLs
+      const maxLength = Math.max(names.length, urls.length);
+      for (let i = 0; i < maxLength; i++) {
+        const name = names[i] || urls[i] || 'Link';
+        const url = urls[i] || '#';
+        links.push({ name, url });
+      }
     }
     
     links.forEach(link => {
