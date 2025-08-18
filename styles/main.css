@@ -51,17 +51,26 @@ body.dark {
 
 #controls {
   display: flex;
-  gap: 10px;
+  gap: 0; /* Remove gaps between buttons */
 }
 
 #controls button {
   background: var(--bg);
   border: 1px solid var(--fg);
   color: var(--fg);
-  padding: 5px 10px;
+  padding: 8px 12px;
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  border-left: none; /* Remove left border except for first */
+  min-width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#controls button:first-child {
+  border-left: 1px solid var(--fg); /* Keep left border on first button */
 }
 
 #controls button:hover {
@@ -86,7 +95,7 @@ body.dark {
 .timeline-container::before {
   content: '';
   position: fixed;
-  right: 21px; /* Precisely centered through 18px total marker width (30px - 9px center) */
+  right: 12px; /* MOVED LEFT - should go through marker centers */
   top: 60px;
   bottom: 0;
   width: 2px;
@@ -117,7 +126,7 @@ body.dark {
   border: 2px solid var(--fg);
   background: var(--bg);
   position: absolute;
-  right: 12px; /* Positions marker so its center aligns with line at right: 21px */
+  right: 5px; /* ADJUSTED - centers marker on line at right: 12px */
   flex-shrink: 0;
   transition: box-shadow 0.3s ease;
   z-index: 2; /* Above timeline line */
@@ -154,10 +163,10 @@ body.dark {
 .project-card::after {
   content: '';
   position: absolute;
-  width: 21px; /* Connects to marker center */
+  width: 18px; /* ADJUSTED - connects to new marker position */
   height: 2px;
   background: var(--fg);
-  right: -21px;
+  right: -18px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 1;
