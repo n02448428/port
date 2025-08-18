@@ -24,7 +24,7 @@
   background: var(--bg);
   color: var(--fg);
   transition: background 0.3s, color 0.3s;
-  padding-top: 60px; /* Space for fixed header */
+  padding-top: 50px; /* ADJUSTED for shorter header */
 }
 
 body.light {
@@ -44,11 +44,11 @@ body.dark {
   top: 0;
   left: 0;
   right: 0;
-  height: 50px; /* BACK TO 50px */
+  height: 40px; /* REDUCED from 50px */
   background: var(--bg);
   border-bottom: 1px solid var(--fg);
   display: flex;
-  align-items: stretch;
+  align-items: center; /* CENTER VERTICALLY */
   padding: 0 1rem 0 1rem;
   z-index: 1000;
   white-space: nowrap;
@@ -88,12 +88,12 @@ body.dark {
   font-size: 1rem;
   border-left: none;
   min-width: 40px;
-  height: 100%; /* FILL PARENT HEIGHT */
+  height: 40px; /* MATCH NEW HEADER HEIGHT */
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top: none; /* NO TOP BORDER */
-  border-bottom: none; /* NO BOTTOM BORDER */
+  border-top: none;
+  border-bottom: none;
 }
 
 #controls button:first-child {
@@ -122,16 +122,16 @@ body.dark {
   position: relative;
 }
 
-/* TIMELINE LINE - FINAL PRECISION ADJUSTMENT */
+/* TIMELINE LINE - ADJUST FOR NEW HEADER HEIGHT */
 .timeline-container::before {
   content: '';
   position: fixed;
   right: 0;
-  top: 60px;
+  top: 50px; /* ADJUSTED for shorter header */
   bottom: 0;
   width: 2px;
   background: var(--fg);
-  transform: translateX(1px); /* MOVED TO POSITIVE - crossing into circle territory */
+  transform: translateX(1px);
   z-index: 1;
 }
 
@@ -252,7 +252,7 @@ body.dark {
 /* Grid view */
 .grid-controls {
   position: fixed;
-  top: 60px;
+  top: 50px; /* ADJUSTED for shorter header */
   left: 0;
   right: 0;
   background: var(--bg);
@@ -261,11 +261,72 @@ body.dark {
   display: flex;
   align-items: center;
   gap: 1rem;
-  font-size: 0.8rem; /* Small font */
+  font-size: 0.8rem;
+  justify-content: space-between; /* SPACE BETWEEN FOR LAYOUT */
+}
+
+/* VIEW INDICATOR */
+.view-indicator {
+  font-style: italic;
+  color: gray;
+  font-size: 0.75rem;
+  margin-left: auto; /* PUSH TO RIGHT */
+}
+
+/* CUSTOM DROPDOWN STYLING */
+.filter-dropdown {
+  position: relative;
+  display: inline-block;
 }
 
 .filter-select {
+  background: var(--bg);
+  border: 1px solid var(--fg);
+  color: var(--fg);
+  padding: 4px 8px;
   font-size: 0.8rem;
+  cursor: pointer;
+  appearance: none;
+  min-width: 120px;
+}
+
+.filter-select:focus {
+  outline: none;
+  box-shadow: 0 0 3px var(--fg);
+}
+
+/* CHECKBOX DROPDOWN (will be implemented in JS) */
+.checkbox-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: var(--bg);
+  border: 1px solid var(--fg);
+  border-top: none;
+  min-width: 200px;
+  z-index: 1000;
+  display: none;
+}
+
+.checkbox-dropdown.open {
+  display: block;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.checkbox-item:hover {
+  background: rgba(var(--fg), 0.1);
+}
+
+.checkbox-item input[type="checkbox"] {
+  margin-right: 8px;
+  accent-color: var(--fg);
 }
 
 .grid-container {
