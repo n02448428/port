@@ -49,9 +49,9 @@ body.dark {
   border-bottom: 1px solid var(--fg);
   display: flex;
   align-items: center;
-  padding: 0 1rem;
+  padding: 0 1rem 0 1rem; /* Only left padding for logo */
   z-index: 1000;
-  white-space: nowrap; /* Ensure all on one line */
+  white-space: nowrap;
 }
 
 #logo {
@@ -71,26 +71,37 @@ body.dark {
 
 #controls {
   display: flex;
-  gap: 0; /* Remove gaps between buttons */
+  gap: 0;
+  height: 100%; /* Fill header height */
+  margin: 0; /* No margin */
+  padding: 0; /* No padding */
 }
 
 #controls button {
   background: var(--bg);
   border: 1px solid var(--fg);
   color: var(--fg);
-  padding: 8px 12px;
+  padding: 0;
+  margin: 0;
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
   font-size: 1rem;
-  border-left: none; /* Remove left border except for first */
+  border-left: none;
   min-width: 40px;
+  height: 50px; /* Full header height */
   display: flex;
   align-items: center;
   justify-content: center;
+  border-top: none; /* Remove top border to align with header */
+  border-bottom: none; /* Remove bottom border to align with header */
 }
 
 #controls button:first-child {
-  border-left: 1px solid var(--fg); /* Keep left border on first button */
+  border-left: 1px solid var(--fg);
+}
+
+#controls button:last-child {
+  border-right: none; /* Remove right border to be flush with edge */
 }
 
 #controls button:hover {
@@ -120,7 +131,7 @@ body.dark {
   bottom: 0;
   width: 2px;
   background: var(--fg);
-  transform: translateX(-10px); /* Move 10px left from edge */
+  transform: translateX(-9px); /* MOVED RIGHT 1px - now centers through markers */
   z-index: 1;
 }
 
