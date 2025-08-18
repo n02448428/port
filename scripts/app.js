@@ -305,6 +305,36 @@ function renderTimelineView(data) {
     item.appendChild(marker);
     content.appendChild(item);
   });
+  
+  // Stop timeline at Present Moment marker
+  setTimeout(() => {
+    const presentMomentMarker = document.querySelector('.timeline-marker.present-moment');
+    if (presentMomentMarker) {
+      const markerRect = presentMomentMarker.getBoundingClientRect();
+      const markerBottom = markerRect.bottom + window.scrollY;
+      
+      // Create or update dynamic style to stop timeline
+      let styleEl = document.getElementById('timeline-stop-style');
+      if (!styleEl) {
+        styleEl = document.createElement('style');
+        styleEl.id = 'timeline-stop-style';
+        document.head.appendChild(styleEl);
+      }
+      
+      styleEl.textContent = `
+        .timeline-container::before {
+          height: ${markerBottom - 50}px !important;
+          bottom: auto !important;
+        }
+        
+        @media (max-width: 768px) {
+          .timeline-container::before {
+            height: ${markerBottom - 60}px !important;
+          }
+        }
+      `;
+    }
+  }, 100);
 }
 
 function renderGridView(data) {
