@@ -1,4 +1,25 @@
-console.log('🚀 Script loaded successfully');
+// Add this function to handle view indicators
+function updateViewIndicator(viewName) {
+  // Remove existing indicator
+  const existingIndicator = document.querySelector('.view-indicator-fixed');
+  if (existingIndicator) existingIndicator.remove();
+  
+  // Create new indicator
+  const viewIndicator = document.createElement('div');
+  viewIndicator.className = 'view-indicator-fixed';
+  viewIndicator.style.position = 'fixed';
+  viewIndicator.style.top = '50px';
+  viewIndicator.style.right = '1rem';
+  viewIndicator.style.fontSize = '0.75rem';
+  viewIndicator.style.fontStyle = 'italic';
+  viewIndicator.style.color = 'gray';
+  viewIndicator.style.zIndex = '999';
+  viewIndicator.style.height = '40px'; // Same as controls height
+  viewIndicator.style.display = 'flex';
+  viewIndicator.style.alignItems = 'center';
+  viewIndicator.textContent = viewName;
+  document.body.appendChild(viewIndicator);
+}console.log('🚀 Script loaded successfully');
 
 let isGrid = false;
 let expandedCard = null;
@@ -102,21 +123,7 @@ function renderTimelineView(data) {
   createPositionOrb();
   
   // Add view indicator for timeline
-  const viewIndicator = document.createElement('div');
-  viewIndicator.style.position = 'fixed';
-  viewIndicator.style.top = '50px';
-  viewIndicator.style.right = '1rem';
-  viewIndicator.style.fontSize = '0.75rem';
-  viewIndicator.style.fontStyle = 'italic';
-  viewIndicator.style.color = 'gray';
-  viewIndicator.style.zIndex = '999';
-  viewIndicator.textContent = 'Timeline';
-  document.body.appendChild(viewIndicator);
-  
-  // Remove indicator when switching views
-  const existingIndicator = document.querySelector('.timeline-view-indicator');
-  if (existingIndicator) existingIndicator.remove();
-  viewIndicator.className = 'timeline-view-indicator';
+  updateViewIndicator('Timeline');
   
   // Rest of timeline rendering code...
   
@@ -421,11 +428,8 @@ function renderGridView(data) {
   
   controls.appendChild(leftControls);
   
-  // View indicator on the right
-  const viewIndicator = document.createElement('div');
-  viewIndicator.className = 'view-indicator';
-  viewIndicator.textContent = 'Vault';
-  controls.appendChild(viewIndicator);
+  // View indicator on the right - REMOVE, using fixed indicator instead
+  updateViewIndicator('Vault');
   
   content.appendChild(controls);
   
