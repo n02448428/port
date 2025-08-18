@@ -14,12 +14,14 @@ function updateViewIndicator(viewName) {
   viewIndicator.style.fontStyle = 'italic';
   viewIndicator.style.color = 'gray';
   viewIndicator.style.zIndex = '999';
-  viewIndicator.style.height = '40px'; // Same as controls height
+  viewIndicator.style.height = '40px';
   viewIndicator.style.display = 'flex';
   viewIndicator.style.alignItems = 'center';
   viewIndicator.textContent = viewName;
   document.body.appendChild(viewIndicator);
-}console.log('🚀 Script loaded successfully');
+}
+
+console.log('🚀 Script loaded successfully');
 
 let isGrid = false;
 let expandedCard = null;
@@ -28,7 +30,7 @@ let currentMediaOverlay = null;
 let positionOrb = null;
 let currentOverlay = null;
 let filterTypes = [];
-let itemSize = 220; // Default minmax size
+let itemSize = 220;
 
 const content = document.getElementById('content');
 const toggle = document.getElementById('toggleView');
@@ -46,6 +48,34 @@ function createPositionOrb() {
     document.body.appendChild(positionOrb);
     console.log('✅ Position orb created');
   }
+}
+
+// Function to get current date and time formatted
+function getCurrentDateTime() {
+  const now = new Date();
+  const options = { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  };
+  return now.toLocaleDateString('en-US', options);
+}
+
+// Function to create Present Moment entry
+function createPresentMoment() {
+  return {
+    id: 'present-moment',
+    title: 'Present Moment',
+    type: 'now',
+    status: 'ongoing',
+    description: `Current time: ${getCurrentDateTime()}`,
+    date: new Date().toISOString().split('T')[0], // Today's date
+    isPresentMoment: true
+  };
 }
 
 // Load projects from JSON file
@@ -125,27 +155,42 @@ function renderTimelineView(data) {
   // Add view indicator for timeline
   updateViewIndicator('Timeline');
   
-  // Rest of timeline rendering code...
+  // Create Present Moment entry and add it to the beginning
+  const presentMoment = createPresentMoment();
+  const allData = [presentMoment, ...data];
   
-  // Separate dated and undated projects
+  // Separate dated and undated projects (excluding present moment)
   const datedProjects = data.filter(proj => proj.date && !isNaN(new Date(proj.date).getTime()));
   const undatedProjects = data.filter(proj => !proj.date || isNaN(new Date(proj.date).getTime()));
   
   // Sort dated projects by date (newest first)
   const sortedData = datedProjects.sort((a, b) => new Date(b.date) - new Date(a.date));
   
-  let lastYear = null;
+  // Combine: Present Moment + sorted dated + undated
+  const finalData = [presentMoment, ...sortedData, ...undatedProjects];
   
-  sortedData.forEach((proj) => {
-    const projectYear = new Date(proj.date).getFullYear();
-    
-    // Year label
-    if (projectYear !== lastYear) {
-      const yearLabel = document.createElement('div');
-      yearLabel.className = 'year-label';
-      yearLabel.innerText = projectYear;
-      content.appendChild(yearLabel);
-      lastYear = projectYear;
+  let lastYear = null;
+  let isFirstItem = true;
+  
+  finalData.forEach((proj) => {
+    // Skip year labels for present moment
+    if (!proj.isPresentMoment) {
+      const projectYear = proj.date ? new Date(proj.date).getFullYear() : 'Undated';
+      
+      // Year label
+      if (projectYear !== lastYear && projectYear !== 'Undated') {
+        const yearLabel = document.createElement('div');
+        yearLabel.className = 'year-label';
+        yearLabel.innerText = projectYear;
+        content.appendChild(yearLabel);
+        lastYear = projectYear;
+      } else if (projectYear === 'Undated' && lastYear !== 'Undated') {
+        const undatedLabel = document.createElement('div');
+        undatedLabel.className = 'year-label';
+        undatedLabel.innerText = 'Undated';
+        content.appendChild(undatedLabel);
+        lastYear = 'Undated';
+      }
     }
     
     // Timeline item wrapper
@@ -154,94 +199,21 @@ function renderTimelineView(data) {
     
     // Card
     const card = document.createElement('div');
-    card.className = 'project-card';
+    card.className = proj.isPresentMoment ? 'project-card present-moment' : 'project-card';
     card.dataset.projectId = proj.id;
     
-    // Compact display: [type] title, date (no close button)
-    card.innerHTML = `
-      <div class="project-compact">
-        <span class="project-type">[${proj.type}]</span>
-        <span class="project-title">${proj.title}</span>,
-        <span class="project-date">${formatDate(proj.date)}</span>
-      </div>
-    `;
-    
-    // Expanded content
-    const expandedContent = document.createElement('div');
-    expandedContent.className = 'expanded-content';
-    expandedContent.innerHTML = createExpandedContent(proj);
-    card.appendChild(expandedContent);
-    
-    // Close button (only in expanded view)
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'close-btn';
-    closeBtn.innerHTML = '×';
-    closeBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleExpanded(card, marker, false);
-    });
-    card.appendChild(closeBtn);
-    
-    // Marker
-    const marker = document.createElement('div');
-    marker.className = 'timeline-marker';
-    marker.dataset.projectId = proj.id;
-    
-    // Hover
-    card.addEventListener('mouseenter', () => {
-      marker.classList.add('active');
-      snapOrbToMarker(marker);
-    });
-    card.addEventListener('mouseleave', () => {
-      if (!card.classList.contains('expanded')) {
-        marker.classList.remove('active');
-      }
-    });
-    
-    // Click expand and media handling
-    card.addEventListener('click', (e) => {
-      const mediaItem = e.target.closest('.media-item');
-      if (mediaItem) {
-        e.stopPropagation();
-        openMediaOverlay(mediaItem.dataset.url, mediaItem.dataset.type);
-        return;
-      }
-      
-      if (e.target.closest('.external-link, .close-btn')) return;
-      e.stopPropagation();
-      toggleExpanded(card, marker);
-    });
-    
-    // Ensure expanded content is clickable
-    expandedContent.addEventListener('click', (e) => {
-      const link = e.target.closest('.external-link');
-      if (link) {
-        e.stopPropagation();
-        window.open(link.href, '_blank');
-      }
-    });
-    
-    // Append
-    item.appendChild(card);
-    item.appendChild(marker);
-    content.appendChild(item);
-  });
-  
-  // Undated section
-  if (undatedProjects.length > 0) {
-    const undatedLabel = document.createElement('div');
-    undatedLabel.className = 'year-label';
-    undatedLabel.innerText = 'Undated';
-    content.appendChild(undatedLabel);
-    
-    undatedProjects.sort((a, b) => a.title.localeCompare(b.title)).forEach(proj => {
-      const item = document.createElement('div');
-      item.className = 'timeline-item';
-      
-      const card = document.createElement('div');
-      card.className = 'project-card';
-      card.dataset.projectId = proj.id;
-      
+    // Compact display for present moment or regular projects
+    if (proj.isPresentMoment) {
+      card.innerHTML = `
+        <div class="project-compact">
+          <span class="project-type">[${proj.type}]</span>
+          <span class="project-title">${proj.title}</span>
+        </div>
+        <div class="present-time" style="font-size: 0.8rem; color: gray; margin-top: 0.3rem;">
+          ${proj.description}
+        </div>
+      `;
+    } else {
       card.innerHTML = `
         <div class="project-compact">
           <span class="project-type">[${proj.type}]</span>
@@ -250,11 +222,13 @@ function renderTimelineView(data) {
         </div>
       `;
       
+      // Expanded content (only for regular projects)
       const expandedContent = document.createElement('div');
       expandedContent.className = 'expanded-content';
       expandedContent.innerHTML = createExpandedContent(proj);
       card.appendChild(expandedContent);
       
+      // Close button (only for expandable projects)
       const closeBtn = document.createElement('button');
       closeBtn.className = 'close-btn';
       closeBtn.innerHTML = '×';
@@ -263,11 +237,24 @@ function renderTimelineView(data) {
         toggleExpanded(card, marker, false);
       });
       card.appendChild(closeBtn);
-      
-      const marker = document.createElement('div');
-      marker.className = 'timeline-marker';
-      marker.dataset.projectId = proj.id;
-      
+    }
+    
+    // Marker
+    const marker = document.createElement('div');
+    marker.className = proj.isPresentMoment ? 'timeline-marker present-moment' : 'timeline-marker';
+    marker.dataset.projectId = proj.id;
+    
+    // Position the present moment marker and orb on page load
+    if (proj.isPresentMoment && isFirstItem) {
+      setTimeout(() => {
+        marker.classList.add('active');
+        snapOrbToMarker(marker);
+      }, 100);
+      isFirstItem = false;
+    }
+    
+    // Hover (only for regular projects)
+    if (!proj.isPresentMoment) {
       card.addEventListener('mouseenter', () => {
         marker.classList.add('active');
         snapOrbToMarker(marker);
@@ -278,6 +265,7 @@ function renderTimelineView(data) {
         }
       });
       
+      // Click expand and media handling (only for regular projects)
       card.addEventListener('click', (e) => {
         const mediaItem = e.target.closest('.media-item');
         if (mediaItem) {
@@ -291,19 +279,24 @@ function renderTimelineView(data) {
         toggleExpanded(card, marker);
       });
       
-      expandedContent.addEventListener('click', (e) => {
-        const link = e.target.closest('.external-link');
-        if (link) {
-          e.stopPropagation();
-          window.open(link.href, '_blank');
-        }
-      });
-      
-      item.appendChild(card);
-      item.appendChild(marker);
-      content.appendChild(item);
-    });
-  }
+      // Ensure expanded content is clickable
+      const expandedContent = card.querySelector('.expanded-content');
+      if (expandedContent) {
+        expandedContent.addEventListener('click', (e) => {
+          const link = e.target.closest('.external-link');
+          if (link) {
+            e.stopPropagation();
+            window.open(link.href, '_blank');
+          }
+        });
+      }
+    }
+    
+    // Append
+    item.appendChild(card);
+    item.appendChild(marker);
+    content.appendChild(item);
+  });
 }
 
 function renderGridView(data) {
@@ -414,7 +407,7 @@ function renderGridView(data) {
   // Size slider
   const sizeSlider = document.createElement('input');
   sizeSlider.type = 'range';
-  sizeSlider.min = '80'; // MUCH SMALLER MINIMUM
+  sizeSlider.min = '80';
   sizeSlider.max = '400';
   sizeSlider.value = itemSize;
   sizeSlider.addEventListener('input', (e) => {
@@ -428,7 +421,7 @@ function renderGridView(data) {
   
   controls.appendChild(leftControls);
   
-  // View indicator on the right - REMOVE, using fixed indicator instead
+  // View indicator on the right
   updateViewIndicator('Vault');
   
   content.appendChild(controls);
@@ -605,7 +598,7 @@ function createExpandedContent(proj) {
   // Other fields
   let otherHtml = '';
   Object.entries(proj).forEach(([key, value]) => {
-    if (['id', 'title', 'type', 'date', 'status', 'description', 'story', 'links', 'media', 'external_link_names', 'external_link_urls'].includes(key)) return;
+    if (['id', 'title', 'type', 'date', 'status', 'description', 'story', 'links', 'media', 'external_link_names', 'external_link_urls', 'isPresentMoment'].includes(key)) return;
     otherHtml += `<p><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${value}</p>`;
   });
   if (otherHtml) {
@@ -692,8 +685,9 @@ function openMediaOverlay(url, type) {
 function snapOrbToMarker(marker) {
   if (!positionOrb || !marker) return;
   const rect = marker.getBoundingClientRect();
-  positionOrb.style.top = `${rect.top + window.scrollY + 1}px`;
-  positionOrb.style.left = `${rect.left + 1}px`;
+  positionOrb.style.top = `${rect.top + window.scrollY}px`;
+  positionOrb.style.left = `${rect.left}px`;
+  positionOrb.style.display = 'block';
 }
 
 function toggleExpanded(card, marker, forceState = null) {
@@ -705,7 +699,7 @@ function toggleExpanded(card, marker, forceState = null) {
       const otherMarker = document.querySelector(`.timeline-marker[data-project-id="${c.dataset.projectId}"]`);
       if (otherMarker) otherMarker.classList.remove('active');
     }
-  });
+    });
   
   if (isExpanded) {
     card.classList.add('expanded');
@@ -755,3 +749,11 @@ if (modeBtn) {
     document.body.classList.toggle('dark');
   });
 }
+
+// Update present moment time every second
+setInterval(() => {
+  const presentTimeElement = document.querySelector('.present-time');
+  if (presentTimeElement) {
+    presentTimeElement.textContent = `Current time: ${getCurrentDateTime()}`;
+  }
+}, 1000);
