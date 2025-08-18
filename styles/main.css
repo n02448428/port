@@ -102,13 +102,13 @@ body.dark {
   position: relative;
 }
 
-/* TIMELINE LINE - SOLID AND ALWAYS VISIBLE */
+/* TIMELINE LINE - WILL BE DYNAMICALLY STOPPED AT PRESENT MOMENT */
 .timeline-container::before {
   content: '';
   position: fixed;
   right: 20px;
   top: 50px;
-  bottom: 0;
+  height: 100vh; /* Default full height, will be overridden by JS */
   width: 3px;
   background: var(--fg);
   z-index: 1;
@@ -137,11 +137,11 @@ body.dark {
   box-sizing: border-box;
 }
 
-/* PRESENT MOMENT MARKER - HALF MOON (ROUND TOP, FLAT BOTTOM) */
+/* PRESENT MOMENT MARKER - HALF MOON (FLAT TOP, ROUND BOTTOM = ∪ SHAPE) */
 .timeline-marker.present-moment {
-  border-radius: 0 0 12px 12px; /* Flat top, round bottom */
+  border-radius: 0 0 6px 6px; /* Flat top, round bottom */
   height: 6px; /* Half height */
-  margin-bottom: 3px; /* Center the half-circle */
+  margin-top: 3px; /* Push down so flat edge is at top */
   background: var(--bg);
   border-color: var(--fg);
   border-top: none; /* Remove top border for flat edge */
@@ -175,18 +175,19 @@ body.dark {
   margin-right: 30px;
 }
 
-/* CONNECTION LINE FROM CARD TO MARKER - ALWAYS VISIBLE AND PROMINENT */
+/* CONNECTION LINE FROM CARD TO MARKER - FORCE VISIBLE */
 .project-card::after {
   content: '';
   position: absolute;
   width: 30px;
-  height: 2px; /* Make thicker for visibility */
-  background: var(--fg);
+  height: 3px; /* Even thicker */
+  background: var(--fg) !important; /* Force color */
   right: -30px;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 2;
-  display: block; /* Ensure it's visible */
+  z-index: 10; /* Higher z-index */
+  display: block !important; /* Force display */
+  opacity: 1 !important; /* Force opacity */
 }
 
 /* PRESENT MOMENT CARD - GREY TINT */
@@ -201,11 +202,12 @@ body.dark {
   box-shadow: none;
 }
 
-/* PRESENT MOMENT CONNECTION LINE - SLIGHTLY FADED BUT VISIBLE */
+/* PRESENT MOMENT CONNECTION LINE - FORCE VISIBLE */
 .project-card.present-moment::after {
-  background: rgba(128, 128, 128, 0.8); /* More visible than before */
-  height: 2px; /* Same thickness as others */
-  display: block; /* Ensure it's visible */
+  background: rgba(128, 128, 128, 0.9) !important; /* Force visible */
+  height: 3px !important; /* Same thickness */
+  display: block !important; /* Force display */
+  opacity: 1 !important; /* Force opacity */
 }
 
 .project-card.expanded {
