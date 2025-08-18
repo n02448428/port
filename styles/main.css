@@ -137,11 +137,11 @@ body.dark {
   box-sizing: border-box;
 }
 
-/* PRESENT MOMENT MARKER - HALF MOON (FLAT TOP, ROUND BOTTOM = ∪ SHAPE) */
+/* PRESENT MOMENT MARKER - HALF MOON MOVED DOWN */
 .timeline-marker.present-moment {
   border-radius: 0 0 6px 6px; /* Flat top, round bottom */
   height: 6px; /* Half height */
-  margin-top: 3px; /* Push down so flat edge is at top */
+  margin-top: 6px; /* Move down more to align with orb */
   background: var(--bg);
   border-color: var(--fg);
   border-top: none; /* Remove top border for flat edge */
@@ -175,19 +175,23 @@ body.dark {
   margin-right: 30px;
 }
 
-/* CONNECTION LINE FROM CARD TO MARKER - FORCE VISIBLE */
+/* CONNECTION LINE FROM CARD TO MARKER - NUCLEAR OPTION FOR VISIBILITY */
 .project-card::after {
   content: '';
   position: absolute;
   width: 30px;
-  height: 3px; /* Even thicker */
-  background: var(--fg) !important; /* Force color */
+  height: 4px; /* Even thicker */
+  background: #ff0000 !important; /* BRIGHT RED for debugging */
+  border: 1px solid #00ff00 !important; /* GREEN border for extra visibility */
   right: -30px;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 10; /* Higher z-index */
-  display: block !important; /* Force display */
-  opacity: 1 !important; /* Force opacity */
+  z-index: 9999 !important; /* Maximum z-index */
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: none !important;
+  box-shadow: 0 0 5px #ffffff !important; /* White glow */
 }
 
 /* PRESENT MOMENT CARD - GREY TINT */
@@ -202,12 +206,16 @@ body.dark {
   box-shadow: none;
 }
 
-/* PRESENT MOMENT CONNECTION LINE - FORCE VISIBLE */
+/* PRESENT MOMENT CONNECTION LINE - NUCLEAR OPTION FOR VISIBILITY */
 .project-card.present-moment::after {
-  background: rgba(128, 128, 128, 0.9) !important; /* Force visible */
-  height: 3px !important; /* Same thickness */
-  display: block !important; /* Force display */
-  opacity: 1 !important; /* Force opacity */
+  background: #ffff00 !important; /* BRIGHT YELLOW for present moment */
+  border: 1px solid #ff00ff !important; /* MAGENTA border */
+  height: 4px !important;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  z-index: 9999 !important;
+  box-shadow: 0 0 5px #ffffff !important;
 }
 
 .project-card.expanded {
