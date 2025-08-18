@@ -122,7 +122,7 @@ body.dark {
   position: relative;
 }
 
-/* TIMELINE LINE - FINAL MICRO-ADJUSTMENT */
+/* TIMELINE LINE - FINAL PRECISION ADJUSTMENT */
 .timeline-container::before {
   content: '';
   position: fixed;
@@ -131,7 +131,7 @@ body.dark {
   bottom: 0;
   width: 2px;
   background: var(--fg);
-  transform: translateX(-1px); /* MOVED EVEN FURTHER RIGHT - was -5px */
+  transform: translateX(1px); /* MOVED TO POSITIVE - crossing into circle territory */
   z-index: 1;
 }
 
@@ -142,7 +142,7 @@ body.dark {
   align-self: flex-end;
 }
 
-/* TIMELINE MARKERS - MATCH FINAL LINE POSITION */
+/* TIMELINE MARKERS - MATCH FINAL PRECISION */
 .timeline-marker {
   width: 14px;
   height: 14px;
@@ -151,7 +151,7 @@ body.dark {
   background: var(--bg);
   position: absolute;
   right: 0;
-  transform: translateX(-1px); /* MATCH FINAL LINE POSITION */
+  transform: translateX(1px); /* MATCH FINAL LINE - POSITIVE VALUE */
   flex-shrink: 0;
   transition: box-shadow 0.3s ease;
   z-index: 2;
