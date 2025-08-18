@@ -250,28 +250,30 @@ function renderTimelineView(data) {
     marker.className = proj.isPresentMoment ? 'timeline-marker present-moment' : 'timeline-marker';
     marker.dataset.projectId = proj.id;
     
-    // Position the present moment marker and orb on page load
+    // Position the orb on Present Moment initially, but allow it to move
     if (proj.isPresentMoment && isFirstItem) {
       setTimeout(() => {
-        marker.classList.add('active');
         snapOrbToMarker(marker);
       }, 100);
       isFirstItem = false;
     }
     
-    // Hover (only for regular projects)
+    // Hover for ALL projects (including present moment)
+    card.addEventListener('mouseenter', () => {
+      // Remove active from all other markers first
+      document.querySelectorAll('.timeline-marker.active').forEach(m => m.classList.remove('active'));
+      marker.classList.add('active');
+      snapOrbToMarker(marker);
+    });
+    
+    card.addEventListener('mouseleave', () => {
+      if (!card.classList.contains('expanded')) {
+        marker.classList.remove('active');
+      }
+    });
+    
+    // Click expand and media handling (only for regular projects)
     if (!proj.isPresentMoment) {
-      card.addEventListener('mouseenter', () => {
-        marker.classList.add('active');
-        snapOrbToMarker(marker);
-      });
-      card.addEventListener('mouseleave', () => {
-        if (!card.classList.contains('expanded')) {
-          marker.classList.remove('active');
-        }
-      });
-      
-      // Click expand and media handling (only for regular projects)
       card.addEventListener('click', (e) => {
         const mediaItem = e.target.closest('.media-item');
         if (mediaItem) {
@@ -303,6 +305,9 @@ function renderTimelineView(data) {
     item.appendChild(marker);
     content.appendChild(item);
   });
+  
+  // Setup dynamic timeline height after all items are rendered
+  setupTimelineHeight();
 }
 
 function renderGridView(data) {
