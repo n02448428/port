@@ -106,7 +106,7 @@ body.dark {
 .timeline-container::before {
   content: '';
   position: absolute;
-  right: 24px; /* Centers 3px line on 12px markers (24px from right edge) */
+  right: 15px; /* Centers 3px line properly */
   top: 0;
   bottom: 0;
   width: 3px;
@@ -130,7 +130,7 @@ body.dark {
   border: 2px solid var(--fg);
   background: var(--bg);
   position: absolute;
-  right: 18px; /* Centers 12px marker on 3px line (18px + 6px = 24px center) */
+  right: 9px; /* Centers 12px marker on 3px line (9px + 6px = 15px center) */
   flex-shrink: 0;
   transition: all 0.3s ease;
   z-index: 5;
@@ -145,7 +145,7 @@ body.dark {
   background: var(--bg);
   border-color: var(--fg);
   border-top: none;
-  right: 18px; /* Same positioning as regular markers */
+  right: 9px; /* Same positioning as regular markers */
 }
 
 .timeline-marker.active {
@@ -612,18 +612,18 @@ button.flash {
 
   /* Mobile timeline line positioning */
   .timeline-container::before {
-    right: 29px; /* Adjusted for mobile */
+    right: 20px; /* Adjusted for mobile */
     width: 3px;
     z-index: 1;
   }
 
   /* Mobile marker positioning */
   .timeline-marker {
-    right: 23px; /* Centers marker on mobile timeline */
+    right: 14px; /* Centers marker on mobile timeline */
   }
 
   .timeline-marker.present-moment {
-    right: 23px; /* Same positioning for present moment on mobile */
+    right: 14px; /* Same positioning for present moment on mobile */
   }
 
   .year-label {
