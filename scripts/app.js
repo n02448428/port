@@ -306,12 +306,12 @@ function renderTimelineView(data) {
     content.appendChild(item);
   });
   
-  // Stop timeline at Present Moment marker
+  // Stop timeline at Present Moment marker TOP (flat edge)
   setTimeout(() => {
     const presentMomentMarker = document.querySelector('.timeline-marker.present-moment');
     if (presentMomentMarker) {
       const markerRect = presentMomentMarker.getBoundingClientRect();
-      const markerBottom = markerRect.bottom + window.scrollY;
+      const markerTop = markerRect.top + window.scrollY; // TOP of half-moon
       
       // Create or update dynamic style to stop timeline
       let styleEl = document.getElementById('timeline-stop-style');
@@ -323,18 +323,17 @@ function renderTimelineView(data) {
       
       styleEl.textContent = `
         .timeline-container::before {
-          height: ${markerBottom - 50}px !important;
-          bottom: auto !important;
+          height: ${markerTop - 50}px !important;
         }
         
         @media (max-width: 768px) {
           .timeline-container::before {
-            height: ${markerBottom - 60}px !important;
+            height: ${markerTop - 60}px !important;
           }
         }
       `;
     }
-  }, 100);
+  }, 200);
 }
 
 function renderGridView(data) {
