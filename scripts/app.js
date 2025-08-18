@@ -306,14 +306,14 @@ function renderTimelineView(data) {
     content.appendChild(item);
   });
   
-  // Stop timeline at Present Moment marker TOP (flat edge)
+  // Start timeline AT Present Moment marker (flat edge) and go down
   setTimeout(() => {
     const presentMomentMarker = document.querySelector('.timeline-marker.present-moment');
     if (presentMomentMarker) {
       const markerRect = presentMomentMarker.getBoundingClientRect();
-      const markerTop = markerRect.top + window.scrollY; // TOP of half-moon
+      const markerTop = markerRect.top + window.scrollY; // TOP of half-moon (flat edge)
       
-      // Create or update dynamic style to stop timeline
+      // Create or update dynamic style to start timeline at Present Moment
       let styleEl = document.getElementById('timeline-stop-style');
       if (!styleEl) {
         styleEl = document.createElement('style');
@@ -323,12 +323,16 @@ function renderTimelineView(data) {
       
       styleEl.textContent = `
         .timeline-container::before {
-          height: ${markerTop - 50}px !important;
+          top: ${markerTop}px !important;
+          bottom: 0 !important;
+          height: auto !important;
         }
         
         @media (max-width: 768px) {
           .timeline-container::before {
-            height: ${markerTop - 60}px !important;
+            top: ${markerTop}px !important;
+            bottom: 0 !important;
+            height: auto !important;
           }
         }
       `;
