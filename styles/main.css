@@ -122,39 +122,42 @@ body.dark {
   width: 100%;
 }
 
-/* TIMELINE MARKERS - FIXED POSITION FROM VIEWPORT */
+/* TIMELINE MARKERS - SMALLER AND FIXED POSITION */
 .timeline-marker {
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  border: 3px solid var(--fg);
+  border: 2px solid var(--fg);
   background: var(--bg);
-  position: fixed; /* FIXED TO VIEWPORT - THIS IS THE KEY FIX */
-  right: 12px; /* Centers 16px marker on 3px line at 20px */
+  position: fixed; /* FIXED TO VIEWPORT */
+  right: 14px; /* Centers 12px marker on 3px line at 20px */
   flex-shrink: 0;
   transition: all 0.3s ease;
   z-index: 3; /* Above timeline line */
   box-sizing: border-box;
 }
 
-/* PRESENT MOMENT MARKER - ALWAYS GLOWING */
+/* PRESENT MOMENT MARKER - NO PERMANENT GLOW */
 .timeline-marker.present-moment {
-  background: var(--fg);
-  box-shadow: 0 0 15px var(--fg);
-  transform: scale(1.3);
+  background: var(--bg);
   border-color: var(--fg);
 }
 
-/* PRESENT MOMENT CARD - NON-INTERACTIVE */
+/* PRESENT MOMENT CARD - GREY TINT AND INACTIVE */
 .project-card.present-moment {
   cursor: default;
-  opacity: 0.8;
-  background: rgba(var(--fg), 0.05);
+  background: rgba(128, 128, 128, 0.15); /* Grey tint */
+  border-color: rgba(var(--fg), 0.6); /* Slightly faded border */
 }
 
 .project-card.present-moment:hover {
   transform: none;
   box-shadow: none;
+}
+
+/* PRESENT MOMENT CONNECTION LINE - VISIBLE */
+.project-card.present-moment::after {
+  background: rgba(var(--fg), 0.6); /* Slightly faded like border */
 }
 
 .timeline-marker.active {
@@ -261,14 +264,15 @@ body.dark {
 
 .timeline-position-orb {
   position: absolute;
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--fg);
   pointer-events: none;
   transition: top 0.3s ease, left 0.3s ease;
   box-shadow: 0 0 12px var(--fg);
   z-index: 4; /* Above everything */
+  display: none; /* Hidden by default, shown when positioning */
 }
 
 /* Grid view */
@@ -594,36 +598,40 @@ button.flash {
   }
 
   .timeline-container {
-    padding: 2rem 40px 2rem 2rem;
+    padding: 2rem 25px 2rem 2rem;
     background: var(--bg);
   }
 
   .timeline-container::before {
-    right: 25px;
+    right: 20px;
     top: 60px;
     width: 3px;
   }
 
   .timeline-marker {
-    right: 17px;
+    right: 14px; /* Centers 12px marker on 3px line */
   }
 
   .year-label {
-    margin-right: 40px;
+    margin-right: 25px;
     color: var(--fg);
   }
 
   .project-card {
-    margin-right: 40px;
+    margin-right: 25px;
     background: var(--bg);
     color: var(--fg);
   }
 
   .project-card::after {
-    width: 40px;
-    right: -40px;
+    width: 25px;
+    right: -25px;
     height: 1px;
     background: var(--fg);
+  }
+
+  .project-card.present-moment::after {
+    background: rgba(var(--fg), 0.6);
   }
 
   .grid-container {
