@@ -1,30 +1,10 @@
-.timeline-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 2rem;
-  position: relative;
-  width: 100%;
-}
-
-.timeline-marker.active {
-  box-shadow: 0 0 8px var(--fg);
-  background: var(--fg);
-}
-
-.timeline-marker:hover {
-  box-shadow: 0 0 12px var(--fg);
-}
-
-.project-card.expanded {
-  height: 400px;
-  overflow: hidden;
-}body {
+body {
   margin: 0;
   font-family: sans-serif;
   background: var(--bg);
   color: var(--fg);
   transition: background 0.3s, color 0.3s;
-  padding-top: 50px; /* ADJUSTED for shorter header */
+  padding-top: 50px;
 }
 
 body.light {
@@ -44,11 +24,11 @@ body.dark {
   top: 0;
   left: 0;
   right: 0;
-  height: 40px; /* REDUCED from 50px */
+  height: 40px;
   background: var(--bg);
   border-bottom: 1px solid var(--fg);
   display: flex;
-  align-items: center; /* CENTER VERTICALLY */
+  align-items: center;
   padding: 0 1rem 0 1rem;
   z-index: 1000;
   white-space: nowrap;
@@ -72,9 +52,9 @@ body.dark {
 #controls {
   display: flex;
   gap: 0;
-  height: 100%; /* Fill header height */
-  margin: 0; /* No margin */
-  padding: 0; /* No padding */
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 #controls button {
@@ -88,7 +68,7 @@ body.dark {
   font-size: 1rem;
   border-left: none;
   min-width: 40px;
-  height: 40px; /* MATCH NEW HEADER HEIGHT */
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -101,7 +81,7 @@ body.dark {
 }
 
 #controls button:last-child {
-  border-right: none; /* Remove right border to be flush with edge */
+  border-right: none;
 }
 
 #controls button:hover {
@@ -110,10 +90,10 @@ body.dark {
 }
 
 #yearLabel {
-  display: none; /* Hide as it's not used in current implementation */
+  display: none;
 }
 
-/* TIMELINE LAYOUT - RADICAL REDESIGN */
+/* TIMELINE LAYOUT - FIXED ALIGNMENT */
 .timeline-container {
   display: flex;
   flex-direction: column;
@@ -122,27 +102,27 @@ body.dark {
   position: relative;
 }
 
-/* TIMELINE LINE - ADJUST FOR NEW HEADER HEIGHT */
+/* TIMELINE LINE - THICKER AND PERFECTLY POSITIONED */
 .timeline-container::before {
   content: '';
   position: fixed;
-  right: 0;
-  top: 50px; /* ADJUSTED for shorter header */
+  right: 13px; /* Centered on marker position */
+  top: 50px;
   bottom: 0;
-  width: 2px;
+  width: 4px; /* THICKER timeline */
   background: var(--fg);
-  transform: translateX(1px);
   z-index: 1;
 }
 
-.year-label {
-  font-size: 0.9rem;
-  opacity: 0.3;
-  margin: 1rem 20px 0.5rem 0;
-  align-self: flex-end;
+.timeline-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  position: relative;
+  width: 100%;
 }
 
-/* TIMELINE MARKERS - MATCH FINAL PRECISION */
+/* TIMELINE MARKERS - PERFECTLY CENTERED ON LINE */
 .timeline-marker {
   width: 14px;
   height: 14px;
@@ -150,12 +130,28 @@ body.dark {
   border: 2px solid var(--fg);
   background: var(--bg);
   position: absolute;
-  right: 0;
-  transform: translateX(1px); /* MATCH FINAL LINE - POSITIVE VALUE */
+  right: 6px; /* Centers 14px marker on 4px line */
+  transform: none; /* Remove transform, use precise positioning */
   flex-shrink: 0;
   transition: box-shadow 0.3s ease;
-  z-index: 2;
+  z-index: 3; /* Above timeline line */
   box-sizing: border-box;
+}
+
+.timeline-marker.active {
+  box-shadow: 0 0 8px var(--fg);
+  background: var(--fg);
+}
+
+.timeline-marker:hover {
+  box-shadow: 0 0 12px var(--fg);
+}
+
+.year-label {
+  font-size: 0.9rem;
+  opacity: 0.3;
+  margin: 1rem 20px 0.5rem 0;
+  align-self: flex-end;
 }
 
 /* PROJECT CARDS */
@@ -170,17 +166,22 @@ body.dark {
   margin-right: 20px;
 }
 
-/* CONNECTION LINE FROM CARD TO MARKER */
+/* CONNECTION LINE FROM CARD TO MARKER - MATCHES BORDER */
 .project-card::after {
   content: '';
   position: absolute;
   width: 20px;
-  height: 2px;
+  height: 1px; /* Match project border thickness */
   background: var(--fg);
   right: -20px;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 1;
+  z-index: 2; /* Between card and marker */
+}
+
+.project-card.expanded {
+  height: 400px;
+  overflow: hidden;
 }
 
 .project-compact {
@@ -191,7 +192,7 @@ body.dark {
 }
 
 .project-type {
-  font-size: 0.6rem; /* Even smaller grey text */
+  font-size: 0.6rem;
   color: gray;
 }
 
@@ -201,7 +202,7 @@ body.dark {
 
 .project-date {
   font-style: italic;
-  font-size: 0.9rem; /* Slightly smaller than title */
+  font-size: 0.9rem;
 }
 
 .expanded-content {
@@ -230,7 +231,7 @@ body.dark {
   color: var(--fg);
   font-size: 1.2rem;
   cursor: pointer;
-  display: none; /* Hide by default, show when expanded */
+  display: none;
 }
 
 .project-card.expanded .close-btn {
@@ -246,13 +247,13 @@ body.dark {
   pointer-events: none;
   transition: top 0.3s ease, left 0.3s ease;
   box-shadow: 0 0 8px var(--fg);
-  z-index: 3; /* Above everything */
+  z-index: 4; /* Above everything */
 }
 
 /* Grid view */
 .grid-controls {
   position: fixed;
-  top: 50px; /* ADJUSTED for shorter header */
+  top: 50px;
   left: 0;
   right: 0;
   background: var(--bg);
@@ -262,18 +263,16 @@ body.dark {
   align-items: center;
   gap: 1rem;
   font-size: 0.8rem;
-  justify-content: space-between; /* SPACE BETWEEN FOR LAYOUT */
+  justify-content: space-between;
 }
 
-/* VIEW INDICATOR */
 .view-indicator {
   font-style: italic;
   color: gray;
   font-size: 0.75rem;
-  margin-left: auto; /* PUSH TO RIGHT */
+  margin-left: auto;
 }
 
-/* CUSTOM DROPDOWN STYLING */
 .filter-dropdown {
   position: relative;
   display: inline-block;
@@ -295,7 +294,6 @@ body.dark {
   box-shadow: 0 0 3px var(--fg);
 }
 
-/* CHECKBOX DROPDOWN (will be implemented in JS) */
 .checkbox-dropdown {
   position: absolute;
   top: 100%;
@@ -343,7 +341,7 @@ body.dark {
   transition: transform 0.2s ease;
   overflow: hidden;
   position: relative;
-  aspect-ratio: 1 / 1; /* Square like iOS Photos */
+  aspect-ratio: 1 / 1;
 }
 
 .grid-card:hover {
@@ -374,7 +372,7 @@ body.dark {
 }
 
 .grid-title .project-type {
-  font-size: 0.6rem; /* Even smaller grey text */
+  font-size: 0.6rem;
   color: gray;
 }
 
@@ -384,7 +382,7 @@ body.dark {
 
 .grid-title .project-date {
   font-style: italic;
-  font-size: 0.9rem; /* Slightly smaller than title */
+  font-size: 0.9rem;
 }
 
 .grid-overlay {
@@ -410,7 +408,6 @@ body.dark {
   position: relative;
 }
 
-/* Media overlay */
 .media-overlay {
   position: fixed;
   top: 0;
@@ -461,7 +458,6 @@ body.dark {
   cursor: pointer;
 }
 
-/* Media gallery */
 .media-gallery {
   display: flex;
   flex-wrap: wrap;
@@ -487,25 +483,21 @@ body.dark {
   text-align: center;
 }
 
-/* External links */
 .external-link {
   color: var(--fg);
   text-decoration: underline;
   cursor: pointer;
 }
 
-/* Flash effect */
 button.flash {
   background: var(--fg) !important;
   color: var(--bg) !important;
 }
 
-/* Variable for grid item size */
 :root {
   --grid-item-size: 220px;
 }
 
-/* Content sections */
 .content-section {
   margin-bottom: 1.5rem;
 }
@@ -532,11 +524,11 @@ button.flash {
   font-size: 0.9rem;
 }
 
-/* Mobile adjustments */
+/* MOBILE ADJUSTMENTS */
 @media (max-width: 768px) {
   body {
-    padding-top: 60px; /* Space for fixed header */
-    background: var(--bg); /* Explicitly set background */
+    padding-top: 60px;
+    background: var(--bg);
   }
 
   .header {
@@ -544,8 +536,8 @@ button.flash {
     padding: 0 0.5rem;
     background: var(--bg);
     color: var(--fg);
-    flex-wrap: nowrap; /* Prevent wrapping */
-    overflow: hidden; /* Hide overflow if needed */
+    flex-wrap: nowrap;
+    overflow: hidden;
   }
 
   #logo {
@@ -560,7 +552,7 @@ button.flash {
     flex-grow: 1;
     text-align: center;
     margin: 0 0.5rem;
-    white-space: nowrap; /* Ensure no wrapping */
+    white-space: nowrap;
   }
 
   #controls {
@@ -581,34 +573,38 @@ button.flash {
   }
 
   .timeline-container {
-    padding: 2rem 30px 2rem 2rem; /* Same as desktop */
+    padding: 2rem 30px 2rem 2rem;
     background: var(--bg);
   }
 
+  /* MOBILE TIMELINE LINE - ADJUSTED FOR MOBILE PADDING */
+  .timeline-container::before {
+    right: 23px; /* Centered on mobile marker position */
+    top: 60px;
+    width: 4px; /* Keep thicker line */
+  }
+
+  /* MOBILE TIMELINE MARKERS */
   .timeline-marker {
-    right: 12px; /* Same as desktop */
+    right: 16px; /* Centers marker on mobile timeline */
   }
 
   .year-label {
-    margin-right: 30px; /* Same as desktop */
+    margin-right: 30px;
     color: var(--fg);
   }
 
   .project-card {
-    margin-right: 30px; /* Same as desktop */
+    margin-right: 30px;
     background: var(--bg);
     color: var(--fg);
   }
 
+  /* MOBILE CONNECTION LINES */
   .project-card::after {
-    width: 21px; /* Same as desktop */
-    right: -21px;
-    background: var(--fg);
-  }
-
-  .timeline-container::before {
-    right: 21px; /* Same as desktop */
-    top: 60px; /* Below fixed header */
+    width: 30px; /* Longer for mobile spacing */
+    right: -30px;
+    height: 1px; /* Match border thickness */
     background: var(--fg);
   }
 
@@ -629,10 +625,17 @@ button.flash {
   .grid-controls {
     flex-direction: column;
     background: var(--bg);
+    top: 60px;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
   }
 
   .filter-wrapper label {
     color: var(--fg);
+  }
+
+  .filter-select {
+    font-size: 0.8rem;
   }
 
   .grid-overlay {
@@ -667,15 +670,5 @@ button.flash {
   .youtube-thumb {
     background: var(--fg);
     color: var(--bg);
-  }
-
-  .grid-controls {
-    top: 60px;
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
-  }
-
-  .filter-select {
-    font-size: 0.8rem;
   }
 }
