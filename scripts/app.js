@@ -315,7 +315,9 @@ function renderGridView(data) {
   content.className = 'grid-container';
   content.innerHTML = '';
   
-  if (positionOrb) positionOrb.style.display = 'none';
+  if (positionOrb) {
+    positionOrb.style.display = 'none';
+  }
   
   // Filter and slider controls
   const controls = document.createElement('div');
@@ -694,17 +696,17 @@ function openMediaOverlay(url, type) {
   }
 }
 
-// FIXED ORB POSITIONING - RELATIVE TO CONTENT, NOT VIEWPORT
+// FIXED: Orb positioning that scrolls with content and is always in front
 function snapOrbToMarker(marker) {
   if (!positionOrb || !marker) return;
   
-  // Get marker position relative to its container
+  // Get marker position relative to the content container
+  const containerRect = content.getBoundingClientRect();
   const markerRect = marker.getBoundingClientRect();
-  const contentRect = content.getBoundingClientRect();
   
-  // Calculate position relative to content container
-  const relativeTop = markerRect.top - contentRect.top;
-  const relativeLeft = markerRect.left - contentRect.left;
+  // Calculate position relative to the content container
+  const relativeTop = markerRect.top - containerRect.top;
+  const relativeLeft = markerRect.left - containerRect.left;
   
   // For half-moon Present Moment: align orb's bottom with marker's top
   if (marker.classList.contains('present-moment')) {
@@ -735,8 +737,10 @@ function toggleExpanded(card, marker, forceState = null) {
     card.classList.add('expanded');
     marker.classList.add('active');
     expandedCard = card;
-    // Move orb to the expanded card's marker
+    
+    // FIXED: Move orb to expanded project's marker
     snapOrbToMarker(marker);
+    
     setTimeout(() => document.addEventListener('click', handleClickOutside), 100);
   } else {
     card.classList.remove('expanded');
