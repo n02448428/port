@@ -137,11 +137,11 @@ body.dark {
   box-sizing: border-box;
 }
 
-/* PRESENT MOMENT MARKER - HALF MOON RESTORED TO WORKING POSITION */
+/* PRESENT MOMENT MARKER - HALF MOON (FLAT TOP, ROUND BOTTOM = ∪ SHAPE) */
 .timeline-marker.present-moment {
   border-radius: 0 0 6px 6px; /* Flat top, round bottom */
   height: 6px; /* Half height */
-  margin-top: 3px; /* Restore previous working position */
+  margin-top: 3px; /* Push down so flat edge is at top */
   background: var(--bg);
   border-color: var(--fg);
   border-top: none; /* Remove top border for flat edge */
