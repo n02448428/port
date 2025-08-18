@@ -101,6 +101,25 @@ function renderTimelineView(data) {
   
   createPositionOrb();
   
+  // Add view indicator for timeline
+  const viewIndicator = document.createElement('div');
+  viewIndicator.style.position = 'fixed';
+  viewIndicator.style.top = '50px';
+  viewIndicator.style.right = '1rem';
+  viewIndicator.style.fontSize = '0.75rem';
+  viewIndicator.style.fontStyle = 'italic';
+  viewIndicator.style.color = 'gray';
+  viewIndicator.style.zIndex = '999';
+  viewIndicator.textContent = 'Timeline';
+  document.body.appendChild(viewIndicator);
+  
+  // Remove indicator when switching views
+  const existingIndicator = document.querySelector('.timeline-view-indicator');
+  if (existingIndicator) existingIndicator.remove();
+  viewIndicator.className = 'timeline-view-indicator';
+  
+  // Rest of timeline rendering code...
+  
   // Separate dated and undated projects
   const datedProjects = data.filter(proj => proj.date && !isNaN(new Date(proj.date).getTime()));
   const undatedProjects = data.filter(proj => !proj.date || isNaN(new Date(proj.date).getTime()));
@@ -290,31 +309,105 @@ function renderGridView(data) {
   const controls = document.createElement('div');
   controls.className = 'grid-controls';
   
-  // Filter types as dropdown
-  const filterSelect = document.createElement('select');
-  filterSelect.className = 'filter-select';
-  filterSelect.addEventListener('change', () => {
-    filterTypes = filterSelect.value ? [filterSelect.value] : [];
+  // Left side controls
+  const leftControls = document.createElement('div');
+  leftControls.style.display = 'flex';
+  leftControls.style.alignItems = 'center';
+  leftControls.style.gap = '1rem';
+  
+  // Custom checkbox dropdown instead of select
+  const filterContainer = document.createElement('div');
+  filterContainer.className = 'filter-dropdown';
+  
+  const filterButton = document.createElement('button');
+  filterButton.className = 'filter-select';
+  filterButton.textContent = 'All Types';
+  filterButton.style.background = 'var(--bg)';
+  filterButton.style.border = '1px solid var(--fg)';
+  filterButton.style.color = 'var(--fg)';
+  filterButton.style.padding = '4px 8px';
+  filterButton.style.cursor = 'pointer';
+  
+  const dropdownMenu = document.createElement('div');
+  dropdownMenu.className = 'checkbox-dropdown';
+  
+  // Add "All" option
+  const allItem = document.createElement('div');
+  allItem.className = 'checkbox-item';
+  const allCheckbox = document.createElement('input');
+  allCheckbox.type = 'checkbox';
+  allCheckbox.checked = filterTypes.length === 0;
+  allCheckbox.addEventListener('change', () => {
+    if (allCheckbox.checked) {
+      filterTypes = [];
+      // Uncheck all other checkboxes
+      dropdownMenu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        if (cb !== allCheckbox) cb.checked = false;
+      });
+    } else {
+      // If unchecking "All", don't do anything special
+    }
+    updateFilterButton();
     renderGridView(projectsData);
   });
-  const defaultOption = document.createElement('option');
-  defaultOption.value = '';
-  defaultOption.innerText = 'All Types';
-  filterSelect.appendChild(defaultOption);
+  allItem.appendChild(allCheckbox);
+  allItem.appendChild(document.createTextNode('All'));
+  dropdownMenu.appendChild(allItem);
   
+  // Add type options
   const uniqueTypes = getUniqueTypes();
   uniqueTypes.forEach(type => {
-    const option = document.createElement('option');
-    option.value = type;
-    option.innerText = type;
-    filterSelect.appendChild(option);
+    const item = document.createElement('div');
+    item.className = 'checkbox-item';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = filterTypes.includes(type);
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        if (!filterTypes.includes(type)) filterTypes.push(type);
+        allCheckbox.checked = false;
+      } else {
+        const index = filterTypes.indexOf(type);
+        if (index > -1) filterTypes.splice(index, 1);
+        if (filterTypes.length === 0) allCheckbox.checked = true;
+      }
+      updateFilterButton();
+      renderGridView(projectsData);
+    });
+    item.appendChild(checkbox);
+    item.appendChild(document.createTextNode(type));
+    dropdownMenu.appendChild(item);
   });
-  controls.appendChild(filterSelect);
+  
+  function updateFilterButton() {
+    if (filterTypes.length === 0) {
+      filterButton.textContent = 'All Types';
+    } else if (filterTypes.length === 1) {
+      filterButton.textContent = filterTypes[0];
+    } else {
+      filterButton.textContent = `${filterTypes.length} selected`;
+    }
+  }
+  
+  filterButton.addEventListener('click', () => {
+    dropdownMenu.classList.toggle('open');
+  });
+  
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!filterContainer.contains(e.target)) {
+      dropdownMenu.classList.remove('open');
+    }
+  });
+  
+  filterContainer.appendChild(filterButton);
+  filterContainer.appendChild(dropdownMenu);
+  leftControls.appendChild(filterContainer);
   
   // Size slider
   const sizeSlider = document.createElement('input');
   sizeSlider.type = 'range';
-  sizeSlider.min = '150';
+  sizeSlider.min = '80'; // MUCH SMALLER MINIMUM
   sizeSlider.max = '400';
   sizeSlider.value = itemSize;
   sizeSlider.addEventListener('input', (e) => {
@@ -322,17 +415,24 @@ function renderGridView(data) {
     document.documentElement.style.setProperty('--grid-item-size', `${itemSize}px`);
   });
   const sliderLabel = document.createElement('label');
-  sliderLabel.innerText = 'Item Size:';
+  sliderLabel.innerText = 'Size:';
   sliderLabel.appendChild(sizeSlider);
-  controls.appendChild(sliderLabel);
+  leftControls.appendChild(sliderLabel);
+  
+  controls.appendChild(leftControls);
+  
+  // View indicator on the right
+  const viewIndicator = document.createElement('div');
+  viewIndicator.className = 'view-indicator';
+  viewIndicator.textContent = 'Vault';
+  controls.appendChild(viewIndicator);
   
   content.appendChild(controls);
   
-  // Separate dated and undated projects
+  // Rest of the grid rendering code...
   const datedProjects = data.filter(proj => proj.date && !isNaN(new Date(proj.date).getTime()));
   const undatedProjects = data.filter(proj => !proj.date || isNaN(new Date(proj.date).getTime()));
   
-  // Sort dated projects by date (newest first)
   const sortedData = datedProjects.sort((a, b) => new Date(b.date) - new Date(a.date));
   const filteredData = [...sortedData, ...undatedProjects.sort((a, b) => a.title.localeCompare(b.title))]
     .filter(proj => filterTypes.length === 0 || filterTypes.includes(proj.type));
@@ -341,7 +441,6 @@ function renderGridView(data) {
     const card = document.createElement('div');
     card.className = 'grid-card';
     
-    // Name and first image or blank
     const firstMedia = proj.media && proj.media.length > 0 ? proj.media[0] : null;
     const isImage = firstMedia && getMediaType(firstMedia) === 'image';
     card.innerHTML = `
