@@ -305,26 +305,11 @@ function renderTimelineView(data) {
     item.appendChild(marker);
     content.appendChild(item);
     
-    // CREATE CONNECTION LINE AS REAL ELEMENT - POSITIONED OUTSIDE BOX
+    // CREATE CLEAN CONNECTION LINE SYSTEM
     const connectionLine = document.createElement('div');
-    connectionLine.className = 'connection-line';
-    connectionLine.style.position = 'absolute';
-    connectionLine.style.width = '30px';
-    connectionLine.style.height = '3px';
-    connectionLine.style.backgroundColor = proj.isPresentMoment ? '#888888' : 'var(--fg)';
-    connectionLine.style.right = '-30px'; /* Position outside the timeline-item */
-    connectionLine.style.top = '50%';
-    connectionLine.style.transform = 'translateY(-50%)';
-    connectionLine.style.zIndex = '10';
-    connectionLine.style.pointerEvents = 'none';
-    
-    // Position the line between card and marker
-    item.style.position = 'relative';
+    connectionLine.className = proj.isPresentMoment ? 'connection-line present-moment' : 'connection-line';
     item.appendChild(connectionLine);
   });
-  
-  // Remove timeline positioning since we're using absolute positioning now
-  // Timeline will start at first item automatically
 }
 
 function renderGridView(data) {
@@ -712,12 +697,17 @@ function openMediaOverlay(url, type) {
 
 function snapOrbToMarker(marker) {
   if (!positionOrb || !marker) return;
-  const rect = marker.getBoundingClientRect();
-  const containerRect = document.querySelector('.timeline-container').getBoundingClientRect();
   
-  // Position relative to container, not viewport
-  positionOrb.style.top = `${rect.top - containerRect.top}px`;
-  positionOrb.style.left = `${rect.left - containerRect.left}px`;
+  // Get marker position relative to timeline container
+  const markerRect = marker.getBoundingClientRect();
+  const containerRect = marker.closest('.timeline-container').getBoundingClientRect();
+  
+  // Position orb relative to container
+  const relativeTop = markerRect.top - containerRect.top + marker.closest('.timeline-container').scrollTop;
+  const relativeLeft = markerRect.left - containerRect.left;
+  
+  positionOrb.style.top = `${relativeTop}px`;
+  positionOrb.style.left = `${relativeLeft}px`;
   positionOrb.style.display = 'block';
 }
 
