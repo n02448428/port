@@ -87,59 +87,6 @@ function createPresentMoment() {
   };
 }
 
-// Function to dynamically set timeline height to stop at Present Moment marker
-function adjustTimelineHeight() {
-  const presentMomentMarker = document.querySelector('.timeline-marker.present-moment');
-  const timelineLine = document.querySelector('.timeline-container');
-  
-  if (presentMomentMarker && timelineLine) {
-    const markerRect = presentMomentMarker.getBoundingClientRect();
-    const markerTop = markerRect.top + window.scrollY;
-    
-    // Create or update the dynamic timeline style
-    let styleEl = document.getElementById('dynamic-timeline-style');
-    if (!styleEl) {
-      styleEl = document.createElement('style');
-      styleEl.id = 'dynamic-timeline-style';
-      document.head.appendChild(styleEl);
-    }
-    
-    // Set timeline to end at Present Moment marker center
-    const timelineEndPoint = markerTop + 6; // Center of 12px marker
-    
-    styleEl.textContent = `
-      .timeline-container::before {
-        height: ${timelineEndPoint - 50}px !important; /* From header bottom to marker */
-        bottom: auto !important;
-      }
-      
-      @media (max-width: 768px) {
-        .timeline-container::before {
-          height: ${timelineEndPoint - 60}px !important; /* From mobile header bottom to marker */
-        }
-      }
-    `;
-  }
-}
-
-// Call this function after rendering timeline and on window resize
-function setupTimelineHeight() {
-  // Initial setup
-  setTimeout(adjustTimelineHeight, 200);
-  
-  // Adjust on window resize
-  window.addEventListener('resize', () => {
-    setTimeout(adjustTimelineHeight, 100);
-  });
-  
-  // Adjust on scroll (in case layout shifts)
-  let scrollTimeout;
-  window.addEventListener('scroll', () => {
-    clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(adjustTimelineHeight, 50);
-  });
-}
-
 // Load projects from JSON file
 async function loadProjects() {
   console.log('🔍 Starting to load projects...');
@@ -358,9 +305,6 @@ function renderTimelineView(data) {
     item.appendChild(marker);
     content.appendChild(item);
   });
-  
-  // Setup dynamic timeline height after all items are rendered
-  setupTimelineHeight();
 }
 
 function renderGridView(data) {
