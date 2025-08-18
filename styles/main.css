@@ -93,23 +93,23 @@ body.dark {
   display: none;
 }
 
-/* TIMELINE LAYOUT - COMPLETELY RESTRUCTURED */
+/* TIMELINE LAYOUT */
 .timeline-container {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  padding: 2rem 30px 2rem 2rem; /* More right padding for markers */
+  padding: 2rem 30px 2rem 2rem;
   position: relative;
 }
 
-/* TIMELINE LINE - FIXED POSITION FROM VIEWPORT */
+/* TIMELINE LINE - SOLID AND ALWAYS VISIBLE */
 .timeline-container::before {
   content: '';
   position: fixed;
-  right: 20px; /* Fixed distance from viewport edge */
+  right: 20px;
   top: 50px;
   bottom: 0;
-  width: 3px; /* Thick timeline */
+  width: 3px;
   background: var(--fg);
   z-index: 1;
 }
@@ -122,53 +122,38 @@ body.dark {
   width: 100%;
 }
 
-/* TIMELINE MARKERS - SMALLER AND FIXED POSITION */
+/* TIMELINE MARKERS - REGULAR CIRCLES */
 .timeline-marker {
   width: 12px;
   height: 12px;
   border-radius: 50%;
   border: 2px solid var(--fg);
   background: var(--bg);
-  position: fixed; /* FIXED TO VIEWPORT */
+  position: fixed;
   right: 14px; /* Centers 12px marker on 3px line at 20px */
   flex-shrink: 0;
   transition: all 0.3s ease;
-  z-index: 3; /* Above timeline line */
+  z-index: 3;
   box-sizing: border-box;
 }
 
-/* PRESENT MOMENT MARKER - NO PERMANENT GLOW */
+/* PRESENT MOMENT MARKER - HALF MOON */
 .timeline-marker.present-moment {
+  border-radius: 12px 12px 0 0; /* Round bottom, flat top */
+  height: 6px; /* Half height */
+  margin-top: 3px; /* Center the half-circle */
   background: var(--bg);
   border-color: var(--fg);
-}
-
-/* PRESENT MOMENT CARD - GREY TINT AND INACTIVE */
-.project-card.present-moment {
-  cursor: default;
-  background: rgba(128, 128, 128, 0.15); /* Grey tint */
-  border-color: rgba(var(--fg), 0.6); /* Slightly faded border */
-}
-
-.project-card.present-moment:hover {
-  transform: none;
-  box-shadow: none;
-}
-
-/* PRESENT MOMENT CONNECTION LINE - VISIBLE */
-.project-card.present-moment::after {
-  background: rgba(var(--fg), 0.6); /* Slightly faded like border */
+  border-bottom: none; /* Remove bottom border for flat edge */
 }
 
 .timeline-marker.active {
-  box-shadow: 0 0 10px var(--fg);
+  box-shadow: 0 0 8px var(--fg);
   background: var(--fg);
-  transform: scale(1.2);
 }
 
 .timeline-marker:hover {
-  box-shadow: 0 0 15px var(--fg);
-  transform: scale(1.1);
+  box-shadow: 0 0 12px var(--fg);
 }
 
 .year-label {
@@ -187,20 +172,37 @@ body.dark {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  margin-right: 30px; /* Space for connection line */
+  margin-right: 30px;
 }
 
-/* CONNECTION LINE FROM CARD TO MARKER */
+/* CONNECTION LINE FROM CARD TO MARKER - ALWAYS VISIBLE */
 .project-card::after {
   content: '';
   position: absolute;
-  width: 30px; /* Reaches to marker area */
-  height: 1px; /* Match project border thickness */
+  width: 30px;
+  height: 1px;
   background: var(--fg);
   right: -30px;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 2; /* Between card and marker */
+  z-index: 2;
+}
+
+/* PRESENT MOMENT CARD - GREY TINT */
+.project-card.present-moment {
+  cursor: default;
+  background: rgba(128, 128, 128, 0.15);
+  border-color: rgba(128, 128, 128, 0.6);
+}
+
+.project-card.present-moment:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* PRESENT MOMENT CONNECTION LINE - SLIGHTLY FADED */
+.project-card.present-moment::after {
+  background: rgba(128, 128, 128, 0.6);
 }
 
 .project-card.expanded {
@@ -263,7 +265,7 @@ body.dark {
 }
 
 .timeline-position-orb {
-  position: absolute;
+  position: fixed;
   width: 12px;
   height: 12px;
   border-radius: 50%;
@@ -271,8 +273,8 @@ body.dark {
   pointer-events: none;
   transition: top 0.3s ease, left 0.3s ease;
   box-shadow: 0 0 12px var(--fg);
-  z-index: 4; /* Above everything */
-  display: none; /* Hidden by default, shown when positioning */
+  z-index: 4;
+  display: none;
 }
 
 /* Grid view */
@@ -598,40 +600,40 @@ button.flash {
   }
 
   .timeline-container {
-    padding: 2rem 25px 2rem 2rem;
+    padding: 2rem 35px 2rem 2rem;
     background: var(--bg);
   }
 
   .timeline-container::before {
-    right: 20px;
+    right: 25px;
     top: 60px;
     width: 3px;
   }
 
   .timeline-marker {
-    right: 14px; /* Centers 12px marker on 3px line */
+    right: 19px;
   }
 
   .year-label {
-    margin-right: 25px;
+    margin-right: 35px;
     color: var(--fg);
   }
 
   .project-card {
-    margin-right: 25px;
+    margin-right: 35px;
     background: var(--bg);
     color: var(--fg);
   }
 
   .project-card::after {
-    width: 25px;
-    right: -25px;
+    width: 35px;
+    right: -35px;
     height: 1px;
     background: var(--fg);
   }
 
   .project-card.present-moment::after {
-    background: rgba(var(--fg), 0.6);
+    background: rgba(128, 128, 128, 0.6);
   }
 
   .grid-container {
