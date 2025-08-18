@@ -694,14 +694,15 @@ function openMediaOverlay(url, type) {
   }
 }
 
-// FIXED ORB POSITIONING - SCROLLS WITH TIMELINE
+// FIXED ORB POSITIONING - RELATIVE TO CONTENT, NOT VIEWPORT
 function snapOrbToMarker(marker) {
   if (!positionOrb || !marker) return;
   
+  // Get marker position relative to its container
   const markerRect = marker.getBoundingClientRect();
   const contentRect = content.getBoundingClientRect();
   
-  // Position relative to content container (so it scrolls with timeline)
+  // Calculate position relative to content container
   const relativeTop = markerRect.top - contentRect.top;
   const relativeLeft = markerRect.left - contentRect.left;
   
