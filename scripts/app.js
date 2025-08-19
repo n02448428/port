@@ -1,382 +1,239 @@
-// Add this function to handle view indicators
-function updateViewIndicator(viewName) {
-  // Remove existing indicator
-  const existingIndicator = document.querySelector('.view-indicator-fixed');
-  if (existingIndicator) existingIndicator.remove();
+// Portfolio Timeline App - Refined Version
+let isGrid = false, expandedCard = null, projectsData = [], currentOverlay = null, 
+    positionOrb = null, filterTypes = [], itemSize = 220;
+
+const content = document.getElementById('content'),
+      toggle = document.getElementById('toggleView'),
+      modeBtn = document.getElementById('toggleMode');
+
+// Utils
+const formatDate = dateStr => {
+  if (!dateStr || isNaN(new Date(dateStr).getTime())) return 'Undated';
+  const date = new Date(dateStr), day = date.getDate(), year = date.getFullYear(),
+        months = ['January','February','March','April','May','June','July','August','September','October','November','December'],
+        ordinals = day > 3 && day < 21 ? 'th' : ['th','st','nd','rd'][day % 10] || 'th';
+  return `${months[date.getMonth()]} ${day}${ordinals}, ${year}`;
+};
+
+const getCurrentDateTime = () => {
+  const now = new Date(), day = now.getDate(), year = now.getFullYear(),
+        months = ['January','February','March','April','May','June','July','August','September','October','November','December'],
+        hours = now.getHours(), minutes = now.getMinutes().toString().padStart(2, '0'),
+        ampm = hours >= 12 ? 'PM' : 'AM', displayHours = hours % 12 || 12,
+        ordinals = day > 3 && day < 21 ? 'th' : ['th','st','nd','rd'][day % 10] || 'th';
+  return `${months[now.getMonth()]} ${day}${ordinals}, ${year} ${displayHours}:${minutes} ${ampm}`;
+};
+
+const createPresentMoment = () => ({
+  id: 'present-moment', title: 'Present Moment', type: 'now', 
+  status: 'ongoing', date: getCurrentDateTime(), isPresentMoment: true
+});
+
+const updateViewIndicator = viewName => {
+  document.querySelector('.view-indicator-fixed')?.remove();
+  const indicator = Object.assign(document.createElement('div'), {
+    className: 'view-indicator-fixed', textContent: viewName
+  });
+  Object.assign(indicator.style, {
+    position: 'fixed', top: '50px', right: '1rem', fontSize: '0.75rem',
+    fontStyle: 'italic', color: 'gray', zIndex: '999', height: '40px',
+    display: 'flex', alignItems: 'center'
+  });
+  document.body.appendChild(indicator);
+};
+
+const createPositionOrb = () => {
+  positionOrb?.remove();
+  positionOrb = Object.assign(document.createElement('div'), {className: 'timeline-position-orb'});
+  content.appendChild(positionOrb);
+};
+
+const snapOrbToMarker = marker => {
+  if (!positionOrb || !marker) return;
+  const containerRect = content.getBoundingClientRect(),
+        markerRect = marker.getBoundingClientRect(),
+        relativeTop = markerRect.top - containerRect.top,
+        relativeLeft = markerRect.left - containerRect.left;
   
-  // Create new indicator
-  const viewIndicator = document.createElement('div');
-  viewIndicator.className = 'view-indicator-fixed';
-  viewIndicator.style.position = 'fixed';
-  viewIndicator.style.top = '50px';
-  viewIndicator.style.right = '1rem';
-  viewIndicator.style.fontSize = '0.75rem';
-  viewIndicator.style.fontStyle = 'italic';
-  viewIndicator.style.color = 'gray';
-  viewIndicator.style.zIndex = '999';
-  viewIndicator.style.height = '40px';
-  viewIndicator.style.display = 'flex';
-  viewIndicator.style.alignItems = 'center';
-  viewIndicator.textContent = viewName;
-  document.body.appendChild(viewIndicator);
-}
+  Object.assign(positionOrb.style, {
+    top: `${relativeTop - (marker.classList.contains('present-moment') ? 6 : 0)}px`,
+    left: `${relativeLeft}px`, display: 'block'
+  });
+};
 
-console.log('🚀 Script loaded successfully');
-
-let isGrid = false;
-let expandedCard = null;
-let projectsData = [];
-let currentMediaOverlay = null;
-let positionOrb = null;
-let currentOverlay = null;
-let filterTypes = [];
-let itemSize = 220;
-
-const content = document.getElementById('content');
-const toggle = document.getElementById('toggleView');
-const modeBtn = document.getElementById('toggleMode');
-
-// Birth date for timeline calculation (unused but kept for reference)
-const BIRTH_DATE = new Date('1989-09-07');
-const CURRENT_DATE = new Date();
-
-// Create position orb - SINGLE INSTANCE ONLY
-function createPositionOrb() {
-  // Remove any existing orb first
-  if (positionOrb) {
-    positionOrb.remove();
-    positionOrb = null;
-  }
-  
-  positionOrb = document.createElement('div');
-  positionOrb.className = 'timeline-position-orb';
-  content.appendChild(positionOrb); // Append to content so it scrolls with timeline
-  console.log('✅ Position orb created');
-}
-
-// Function to get current date and time formatted like regular projects
-function getCurrentDateTime() {
-  const now = new Date();
-  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  const day = now.getDate();
-  const month = monthNames[now.getMonth()];
-  const year = now.getFullYear();
-  const hours = now.getHours();
-  const minutes = now.getMinutes().toString().padStart(2, '0');
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  const displayHours = hours % 12 || 12;
-  
-  const ordinal = (day) => {
-    if (day > 3 && day < 21) return 'th';
-    switch (day % 10) {
-      case 1: return 'st';
-      case 2: return 'nd';
-      case 3: return 'rd';
-      default: return 'th';
-    }
-  };
-  
-  return `${month} ${day}${ordinal(day)}, ${year} ${displayHours}:${minutes} ${ampm}`;
-}
-
-// Function to create Present Moment entry
-function createPresentMoment() {
-  return {
-    id: 'present-moment',
-    title: 'Present Moment',
-    type: 'now',
-    status: 'ongoing',
-    date: getCurrentDateTime(),
-    isPresentMoment: true
-  };
-}
-
-// Load projects from JSON file
-async function loadProjects() {
-  console.log('🔍 Starting to load projects...');
-  
+// Data Loading
+const loadProjects = async () => {
   try {
     const response = await fetch('data/projects.json');
-    console.log('📡 Response status:', response.status);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    
-    const data = await response.json();
-    console.log('✅ Data loaded successfully:', data);
-    console.log('📊 Number of projects:', data.length);
-    
-    projectsData = data;
-    renderProjects(data);
-    
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    projectsData = await response.json();
+    renderProjects(projectsData);
   } catch (error) {
-    console.error('❌ Error loading projects:', error);
     content.innerHTML = `<div class="error-message">
       <p>Error loading projects: ${error.message}</p>
       <p>Make sure your Google Sheet is set up and the GitHub Action has run successfully.</p>
     </div>`;
   }
-}
+};
 
-function getUniqueTypes() {
-  const types = new Set();
-  projectsData.forEach(proj => {
-    if (proj.type) types.add(proj.type);
-  });
-  return Array.from(types);
-}
+const getUniqueTypes = () => [...new Set(projectsData.map(p => p.type).filter(Boolean))];
 
-function formatDate(dateStr) {
-  if (!dateStr || isNaN(new Date(dateStr).getTime())) return 'Undated';
-  const date = new Date(dateStr);
-  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  const day = date.getDate();
-  const month = monthNames[date.getMonth()];
-  const year = date.getFullYear();
-  const ordinal = (day) => {
-    if (day > 3 && day < 21) return 'th';
-    switch (day % 10) {
-      case 1: return 'st';
-      case 2: return 'nd';
-      case 3: return 'rd';
-      default: return 'th';
-    }
-  };
-  return `${month} ${day}${ordinal(day)}, ${year}`;
-}
-
-function renderProjects(data) {
-  if (!data || data.length === 0) {
+const renderProjects = data => {
+  if (!data?.length) {
     content.innerHTML = '<div class="error-message"><p>No projects found. Add data to your Google Sheet and run the GitHub Action!</p></div>';
     return;
   }
-  
-  if (isGrid) {
-    renderGridView(data);
-  } else {
-    renderTimelineView(data);
-  }
-}
+  isGrid ? renderGridView(data) : renderTimelineView(data);
+};
 
-function renderTimelineView(data) {
+// Timeline View
+const renderTimelineView = data => {
   content.className = 'timeline-container';
   content.innerHTML = '';
-  
   createPositionOrb();
-  
-  // Add view indicator for timeline
   updateViewIndicator('Timeline');
   
-  // Create Present Moment entry at the TOP (timeline ends at present)
-  const presentMoment = createPresentMoment();
+  const datedProjects = data.filter(p => p.date && !isNaN(new Date(p.date).getTime()))
+                          .sort((a, b) => new Date(b.date) - new Date(a.date)),
+        undatedProjects = data.filter(p => !p.date || isNaN(new Date(p.date).getTime())),
+        finalData = [createPresentMoment(), ...datedProjects, ...undatedProjects];
   
-  // Separate dated and undated projects
-  const datedProjects = data.filter(proj => proj.date && !isNaN(new Date(proj.date).getTime()));
-  const undatedProjects = data.filter(proj => !proj.date || isNaN(new Date(proj.date).getTime()));
+  let lastYear = null, isFirstItem = true;
   
-  // Sort dated projects by date (newest first)
-  const sortedData = datedProjects.sort((a, b) => new Date(b.date) - new Date(a.date));
-  
-  // Order: Present Moment FIRST, then sorted projects, then undated
-  const finalData = [presentMoment, ...sortedData, ...undatedProjects];
-  
-  let lastYear = null;
-  let isFirstItem = true;
-  
-  finalData.forEach((proj) => {
-    // Skip year labels for present moment
+  finalData.forEach(proj => {
     if (!proj.isPresentMoment) {
       const projectYear = proj.date ? new Date(proj.date).getFullYear() : 'Undated';
-      
-      // Year label
-      if (projectYear !== lastYear && projectYear !== 'Undated') {
-        const yearLabel = document.createElement('div');
-        yearLabel.className = 'year-label';
-        yearLabel.innerText = projectYear;
+      if (projectYear !== lastYear) {
+        const yearLabel = Object.assign(document.createElement('div'), {
+          className: 'year-label', innerText: projectYear
+        });
         content.appendChild(yearLabel);
         lastYear = projectYear;
-      } else if (projectYear === 'Undated' && lastYear !== 'Undated') {
-        const undatedLabel = document.createElement('div');
-        undatedLabel.className = 'year-label';
-        undatedLabel.innerText = 'Undated';
-        content.appendChild(undatedLabel);
-        lastYear = 'Undated';
       }
     }
     
-    // Timeline item wrapper
     const item = document.createElement('div');
     item.className = 'timeline-item';
     
-    // Card
-    const card = document.createElement('div');
-    card.className = proj.isPresentMoment ? 'project-card present-moment' : 'project-card';
+    const card = Object.assign(document.createElement('div'), {
+      className: proj.isPresentMoment ? 'project-card present-moment' : 'project-card'
+    });
     card.dataset.projectId = proj.id;
     
-    // Format for all projects (including present moment) - same layout
-    if (proj.isPresentMoment) {
-      card.innerHTML = `
-        <div class="project-compact">
-          <span class="project-type">[${proj.type}]</span>
-          <span class="project-title">${proj.title}</span>,
-          <span class="project-date" id="live-time">${proj.date}</span>
-        </div>
-      `;
-    } else {
-      card.innerHTML = `
-        <div class="project-compact">
-          <span class="project-type">[${proj.type}]</span>
-          <span class="project-title">${proj.title}</span>,
-          <span class="project-date">${formatDate(proj.date)}</span>
-        </div>
-      `;
-      
-      // Expanded content (only for regular projects)
-      const expandedContent = document.createElement('div');
-      expandedContent.className = 'expanded-content';
-      expandedContent.innerHTML = createExpandedContent(proj);
+    card.innerHTML = `
+      <div class="project-compact">
+        <span class="project-type">[${proj.type}]</span>
+        <span class="project-title">${proj.title}</span>,
+        <span class="project-date"${proj.isPresentMoment ? ' id="live-time"' : ''}>${proj.isPresentMoment ? proj.date : formatDate(proj.date)}</span>
+      </div>
+    `;
+    
+    if (!proj.isPresentMoment) {
+      const expandedContent = Object.assign(document.createElement('div'), {
+        className: 'expanded-content', innerHTML: createExpandedContent(proj)
+      });
       card.appendChild(expandedContent);
       
-      // Close button (only for expandable projects)
-      const closeBtn = document.createElement('button');
-      closeBtn.className = 'close-btn';
-      closeBtn.innerHTML = '×';
-      closeBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleExpanded(card, marker, false);
+      const closeBtn = Object.assign(document.createElement('button'), {
+        className: 'close-btn', innerHTML: '×'
       });
+      closeBtn.onclick = e => { e.stopPropagation(); toggleExpanded(card, marker, false); };
       card.appendChild(closeBtn);
     }
     
-    // Marker
-    const marker = document.createElement('div');
-    marker.className = proj.isPresentMoment ? 'timeline-marker present-moment' : 'timeline-marker';
+    const marker = Object.assign(document.createElement('div'), {
+      className: proj.isPresentMoment ? 'timeline-marker present-moment' : 'timeline-marker'
+    });
     marker.dataset.projectId = proj.id;
     
-    // Position the orb on Present Moment initially
     if (proj.isPresentMoment && isFirstItem) {
-      setTimeout(() => {
-        snapOrbToMarker(marker);
-      }, 50);
+      setTimeout(() => snapOrbToMarker(marker), 50);
       isFirstItem = false;
     }
     
-    // Hover for ALL projects (including present moment)
-    card.addEventListener('mouseenter', () => {
-      // Remove active from all other markers first
+    card.onmouseenter = () => {
       document.querySelectorAll('.timeline-marker.active').forEach(m => m.classList.remove('active'));
       marker.classList.add('active');
       snapOrbToMarker(marker);
-    });
+    };
     
-    card.addEventListener('mouseleave', () => {
-      if (!card.classList.contains('expanded')) {
-        marker.classList.remove('active');
-      }
-    });
+    card.onmouseleave = () => {
+      if (!card.classList.contains('expanded')) marker.classList.remove('active');
+    };
     
-    // Click expand and media handling (only for regular projects)
     if (!proj.isPresentMoment) {
-      card.addEventListener('click', (e) => {
+      card.onclick = e => {
         const mediaItem = e.target.closest('.media-item');
         if (mediaItem) {
           e.stopPropagation();
           openMediaOverlay(mediaItem.dataset.url, mediaItem.dataset.type);
           return;
         }
-        
         if (e.target.closest('.external-link, .close-btn')) return;
         e.stopPropagation();
         toggleExpanded(card, marker);
-      });
-      
-      // Ensure expanded content is clickable
-      const expandedContent = card.querySelector('.expanded-content');
-      if (expandedContent) {
-        expandedContent.addEventListener('click', (e) => {
-          const link = e.target.closest('.external-link');
-          if (link) {
-            e.stopPropagatione.stopPropagation();
-            window.open(link.href, '_blank');
-          }
-        });
-      }
+      };
     }
     
-    // Append
-    item.appendChild(card);
-    item.appendChild(marker);
+    item.append(card, marker);
     content.appendChild(item);
   });
-}
+};
 
-function renderGridView(data) {
+// Grid View
+const renderGridView = data => {
   content.className = 'grid-container';
   content.innerHTML = '';
+  positionOrb && (positionOrb.style.display = 'none');
+  updateViewIndicator('Vault');
   
-  if (positionOrb) {
-    positionOrb.style.display = 'none';
-  }
-  
-  // Filter and slider controls
   const controls = document.createElement('div');
   controls.className = 'grid-controls';
   
-  // Left side controls
-  const leftControls = document.createElement('div');
-  leftControls.style.display = 'flex';
-  leftControls.style.alignItems = 'center';
-  leftControls.style.gap = '1rem';
-  
-  // Custom checkbox dropdown instead of select
+  // Filter dropdown
   const filterContainer = document.createElement('div');
   filterContainer.className = 'filter-dropdown';
   
-  const filterButton = document.createElement('button');
-  filterButton.className = 'filter-select';
-  filterButton.textContent = 'All Types';
-  filterButton.style.background = 'var(--bg)';
-  filterButton.style.border = '1px solid var(--fg)';
-  filterButton.style.color = 'var(--fg)';
-  filterButton.style.padding = '4px 8px';
-  filterButton.style.cursor = 'pointer';
+  const filterButton = Object.assign(document.createElement('button'), {
+    className: 'filter-select', textContent: 'All Types'
+  });
   
   const dropdownMenu = document.createElement('div');
   dropdownMenu.className = 'checkbox-dropdown';
   
+  const updateFilterButton = () => {
+    filterButton.textContent = filterTypes.length === 0 ? 'All Types' :
+                              filterTypes.length === 1 ? filterTypes[0] :
+                              `${filterTypes.length} selected`;
+  };
+  
   // Add "All" option
   const allItem = document.createElement('div');
   allItem.className = 'checkbox-item';
-  const allCheckbox = document.createElement('input');
-  allCheckbox.type = 'checkbox';
-  allCheckbox.checked = filterTypes.length === 0;
-  allCheckbox.addEventListener('change', () => {
+  const allCheckbox = Object.assign(document.createElement('input'), {
+    type: 'checkbox', checked: filterTypes.length === 0
+  });
+  allCheckbox.onchange = () => {
     if (allCheckbox.checked) {
       filterTypes = [];
-      // Uncheck all other checkboxes
       dropdownMenu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
         if (cb !== allCheckbox) cb.checked = false;
       });
-    } else {
-      // If unchecking "All", don't do anything special
     }
     updateFilterButton();
     renderGridView(projectsData);
-  });
-  allItem.appendChild(allCheckbox);
-  allItem.appendChild(document.createTextNode('All'));
+  };
+  allItem.append(allCheckbox, document.createTextNode('All'));
   dropdownMenu.appendChild(allItem);
   
   // Add type options
-  const uniqueTypes = getUniqueTypes();
-  uniqueTypes.forEach(type => {
+  getUniqueTypes().forEach(type => {
     const item = document.createElement('div');
     item.className = 'checkbox-item';
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.checked = filterTypes.includes(type);
-    checkbox.addEventListener('change', () => {
+    const checkbox = Object.assign(document.createElement('input'), {
+      type: 'checkbox', checked: filterTypes.includes(type)
+    });
+    checkbox.onchange = () => {
       if (checkbox.checked) {
         if (!filterTypes.includes(type)) filterTypes.push(type);
         allCheckbox.checked = false;
@@ -387,73 +244,47 @@ function renderGridView(data) {
       }
       updateFilterButton();
       renderGridView(projectsData);
-    });
-    item.appendChild(checkbox);
-    item.appendChild(document.createTextNode(type));
+    };
+    item.append(checkbox, document.createTextNode(type));
     dropdownMenu.appendChild(item);
   });
   
-  function updateFilterButton() {
-    if (filterTypes.length === 0) {
-      filterButton.textContent = 'All Types';
-    } else if (filterTypes.length === 1) {
-      filterButton.textContent = filterTypes[0];
-    } else {
-      filterButton.textContent = `${filterTypes.length} selected`;
-    }
-  }
+  filterButton.onclick = () => dropdownMenu.classList.toggle('open');
+  document.onclick = e => {
+    if (!filterContainer.contains(e.target)) dropdownMenu.classList.remove('open');
+  };
   
-  filterButton.addEventListener('click', () => {
-    dropdownMenu.classList.toggle('open');
-  });
-  
-  // Close dropdown when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!filterContainer.contains(e.target)) {
-      dropdownMenu.classList.remove('open');
-    }
-  });
-  
-  filterContainer.appendChild(filterButton);
-  filterContainer.appendChild(dropdownMenu);
-  leftControls.appendChild(filterContainer);
+  filterContainer.append(filterButton, dropdownMenu);
   
   // Size slider
-  const sizeSlider = document.createElement('input');
-  sizeSlider.type = 'range';
-  sizeSlider.min = '80';
-  sizeSlider.max = '400';
-  sizeSlider.value = itemSize;
-  sizeSlider.addEventListener('input', (e) => {
-    itemSize = parseInt(e.target.value);
-    document.documentElement.style.setProperty('--grid-item-size', `${itemSize}px`);
-  });
   const sliderLabel = document.createElement('label');
   sliderLabel.innerText = 'Size:';
+  const sizeSlider = Object.assign(document.createElement('input'), {
+    type: 'range', min: '80', max: '400', value: itemSize
+  });
+  sizeSlider.oninput = e => {
+    itemSize = parseInt(e.target.value);
+    document.documentElement.style.setProperty('--grid-item-size', `${itemSize}px`);
+  };
   sliderLabel.appendChild(sizeSlider);
-  leftControls.appendChild(sliderLabel);
   
-  controls.appendChild(leftControls);
-  
-  // View indicator on the right
-  updateViewIndicator('Vault');
-  
+  controls.append(filterContainer, sliderLabel);
   content.appendChild(controls);
   
-  // Rest of the grid rendering code...
-  const datedProjects = data.filter(proj => proj.date && !isNaN(new Date(proj.date).getTime()));
-  const undatedProjects = data.filter(proj => !proj.date || isNaN(new Date(proj.date).getTime()));
-  
-  const sortedData = datedProjects.sort((a, b) => new Date(b.date) - new Date(a.date));
-  const filteredData = [...sortedData, ...undatedProjects.sort((a, b) => a.title.localeCompare(b.title))]
-    .filter(proj => filterTypes.length === 0 || filterTypes.includes(proj.type));
+  // Grid items
+  const datedProjects = data.filter(p => p.date && !isNaN(new Date(p.date).getTime()))
+                           .sort((a, b) => new Date(b.date) - new Date(a.date)),
+        undatedProjects = data.filter(p => !p.date || isNaN(new Date(p.date).getTime()))
+                             .sort((a, b) => a.title.localeCompare(b.title)),
+        filteredData = [...datedProjects, ...undatedProjects]
+                       .filter(p => filterTypes.length === 0 || filterTypes.includes(p.type));
   
   filteredData.forEach(proj => {
     const card = document.createElement('div');
     card.className = 'grid-card';
-    
-    const firstMedia = proj.media && proj.media.length > 0 ? proj.media[0] : null;
+    const firstMedia = proj.media?.[0];
     const isImage = firstMedia && getMediaType(firstMedia) === 'image';
+    
     card.innerHTML = `
       <div class="grid-image" style="${isImage ? `background-image: url('${firstMedia}');` : 'background-color: gray;'}"></div>
       <div class="grid-title">
@@ -463,57 +294,53 @@ function renderGridView(data) {
       </div>
     `;
     
-    card.addEventListener('click', () => {
-      openGridOverlay(proj);
-    });
-    
+    card.onclick = () => openGridOverlay(proj);
     content.appendChild(card);
   });
-}
+};
 
-function openGridOverlay(proj) {
-  if (currentOverlay) currentOverlay.remove();
-
+// Overlays and Media
+const openGridOverlay = proj => {
+  currentOverlay?.remove();
   const overlay = document.createElement('div');
   overlay.className = 'grid-overlay';
   
-  const overlayCard = document.createElement('div');
-  overlayCard.className = 'overlay-card expanded';
-  overlayCard.innerHTML = createExpandedContent(proj);
-  
-  // Close button
-  const closeBtn = document.createElement('button');
-  closeBtn.className = 'close-btn';
-  closeBtn.innerHTML = '×';
-  closeBtn.addEventListener('click', () => {
-    overlay.remove();
-    currentOverlay = null;
+  const overlayCard = Object.assign(document.createElement('div'), {
+    className: 'overlay-card expanded', innerHTML: createExpandedContent(proj)
   });
+  
+  const closeBtn = Object.assign(document.createElement('button'), {
+    className: 'close-btn', innerHTML: '×'
+  });
+  closeBtn.onclick = () => { overlay.remove(); currentOverlay = null; };
   overlayCard.appendChild(closeBtn);
   
-  // Media handling
-  overlayCard.addEventListener('click', (e) => {
+  overlayCard.onclick = e => {
     const mediaItem = e.target.closest('.media-item');
     if (mediaItem) {
       e.stopPropagation();
       openMediaOverlay(mediaItem.dataset.url, mediaItem.dataset.type);
     }
-  });
+  };
   
   overlay.appendChild(overlayCard);
   document.body.appendChild(overlay);
   currentOverlay = overlay;
   
-  // Close on outside click
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) {
-      overlay.remove();
-      currentOverlay = null;
-    }
-  });
-}
+  overlay.onclick = e => {
+    if (e.target === overlay) { overlay.remove(); currentOverlay = null; }
+  };
+};
 
-function createExpandedContent(proj) {
+const getMediaType = url => {
+  if (typeof url !== 'string') return 'unknown';
+  if (url.match(/\.(jpeg|jpg|gif|png|webp)$/i)) return 'image';
+  if (url.match(/\.(mp4|webm|ogg)$/i)) return 'video';
+  if (url.match(/(youtube\.com|youtu\.be)/i)) return 'youtube';
+  return 'unknown';
+};
+
+const createExpandedContent = proj => {
   let html = `
     <div class="expanded-header">
       <h2>${proj.title}</h2>
@@ -525,14 +352,10 @@ function createExpandedContent(proj) {
     <div class="expanded-scroll">
   `;
   
-  if (proj.description) {
-    html += `<div class="content-section"><h4>Description</h4><p>${proj.description}</p></div>`;
-  }
-  if (proj.story) {
-    html += `<div class="content-section"><h4>Story</h4><p>${proj.story}</p></div>`;
-  }
+  if (proj.description) html += `<div class="content-section"><h4>Description</h4><p>${proj.description}</p></div>`;
+  if (proj.story) html += `<div class="content-section"><h4>Story</h4><p>${proj.story}</p></div>`;
   
-  // Links - COMPLETELY REWRITTEN to handle all edge cases
+  // Links handling
   if (proj.links || (proj.external_link_names && proj.external_link_urls)) {
     html += `<div class="content-section"><h4>Links</h4><ul>`;
     let links = [];
@@ -546,21 +369,19 @@ function createExpandedContent(proj) {
         return { name: link.name || link.url || 'Link', url: link.url || '#' };
       });
     } else if (proj.external_link_names && proj.external_link_urls) {
-      // Parse names
-      let names = [];
+      // Parse names and URLs with comprehensive handling
+      let names = [], urls = [];
+      
       if (Array.isArray(proj.external_link_names)) {
         names = proj.external_link_names.map(n => String(n || ''));
       } else if (typeof proj.external_link_names === 'string') {
         names = proj.external_link_names.includes('|') ? 
                proj.external_link_names.split('|') : 
                proj.external_link_names.split(',');
-        names = names.map(n => String(n || '').trim());
+        names = names.map(n => n.trim());
       }
       
-      // Parse URLs - handle both array and string formats, including pipe-separated strings within arrays
-      let urls = [];
       if (Array.isArray(proj.external_link_urls)) {
-        // Flatten any pipe-separated URLs within array elements
         proj.external_link_urls.forEach(urlItem => {
           if (typeof urlItem === 'string' && urlItem.includes('|')) {
             urls.push(...urlItem.split('|').map(u => u.trim()));
@@ -572,15 +393,12 @@ function createExpandedContent(proj) {
         urls = proj.external_link_urls.includes('|') ? 
                proj.external_link_urls.split('|') : 
                proj.external_link_urls.split(',');
-        urls = urls.map(u => String(u || '').trim());
+        urls = urls.map(u => u.trim());
       }
       
-      // Create links by pairing names with URLs
       const maxLength = Math.max(names.length, urls.length);
       for (let i = 0; i < maxLength; i++) {
-        const name = names[i] || urls[i] || 'Link';
-        const url = urls[i] || '#';
-        links.push({ name, url });
+        links.push({ name: names[i] || urls[i] || 'Link', url: urls[i] || '#' });
       }
     }
     
@@ -612,49 +430,33 @@ function createExpandedContent(proj) {
   // Other fields
   let otherHtml = '';
   Object.entries(proj).forEach(([key, value]) => {
-    if (['id', 'title', 'type', 'date', 'status', 'description', 'story', 'links', 'media', 'external_link_names', 'external_link_urls', 'isPresentMoment'].includes(key)) return;
-    otherHtml += `<p><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${value}</p>`;
+    if (!['id', 'title', 'type', 'date', 'status', 'description', 'story', 'links', 'media', 'external_link_names', 'external_link_urls', 'isPresentMoment'].includes(key)) {
+      otherHtml += `<p><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${value}</p>`;
+    }
   });
-  if (otherHtml) {
-    html += `<div class="content-section"><h4>Other Details</h4>${otherHtml}</div>`;
-  }
+  if (otherHtml) html += `<div class="content-section"><h4>Other Details</h4>${otherHtml}</div>`;
   
-  html += '</div>';
-  return html;
-}
+  return html + '</div>';
+};
 
-function getMediaType(url) {
-  if (typeof url !== 'string') return 'unknown';
-  if (url.match(/\.(jpeg|jpg|gif|png|webp)$/i)) return 'image';
-  if (url.match(/\.(mp4|webm|ogg)$/i)) return 'video';
-  if (url.match(/(youtube\.com|youtu\.be)/i)) return 'youtube';
-  return 'unknown';
-}
-
-function extractYoutubeId(url) {
-  const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-  const match = url.match(regExp);
+const extractYoutubeId = url => {
+  const match = url.match(/^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/);
   return (match && match[2].length === 11) ? match[2] : null;
-}
+};
 
-function openMediaOverlay(url, type) {
-  if (currentMediaOverlay) currentMediaOverlay.remove();
-
+const openMediaOverlay = (url, type) => {
+  currentOverlay?.remove();
   const overlay = document.createElement('div');
   overlay.className = 'media-overlay';
   
   let content = '';
-  if (type === 'image') {
-    content = `<img src="${url}" alt="Media">`;
-  } else if (type === 'video') {
-    content = `<video src="${url}" controls autoplay loop></video>`;
-  } else if (type === 'youtube') {
+  if (type === 'image') content = `<img src="${url}" alt="Media">`;
+  else if (type === 'video') content = `<video src="${url}" controls autoplay loop></video>`;
+  else if (type === 'youtube') {
     const videoId = extractYoutubeId(url);
-    if (videoId) {
-      content = `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
-    } else {
-      content = `<p>Invalid YouTube URL</p>`;
-    }
+    content = videoId ? 
+      `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` :
+      `<p>Invalid YouTube URL</p>`;
   }
 
   overlay.innerHTML = `
@@ -666,70 +468,34 @@ function openMediaOverlay(url, type) {
   `;
   
   document.body.appendChild(overlay);
-  currentMediaOverlay = overlay;
+  currentOverlay = overlay;
 
-  const closeBtn = overlay.querySelector('.close-overlay');
-  closeBtn.addEventListener('click', () => {
-    overlay.remove();
-    currentMediaOverlay = null;
-  });
+  overlay.querySelector('.close-overlay').onclick = () => {
+    overlay.remove(); currentOverlay = null;
+  };
+  overlay.onclick = e => {
+    if (e.target === overlay) { overlay.remove(); currentOverlay = null; }
+  };
 
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) {
-      overlay.remove();
-      currentMediaOverlay = null;
-    }
-  });
-
-  const fullscreenBtn = overlay.querySelector('.fullscreen-btn');
-  const mediaElem = overlay.querySelector('img, video, iframe');
+  const fullscreenBtn = overlay.querySelector('.fullscreen-btn'),
+        mediaElem = overlay.querySelector('img, video, iframe');
   if (fullscreenBtn && mediaElem) {
-    fullscreenBtn.addEventListener('click', () => {
-      if (mediaElem.requestFullscreen) {
-        mediaElem.requestFullscreen();
-      } else if (mediaElem.webkitRequestFullscreen) {
-        mediaElem.webkitRequestFullscreen();
-      } else if (mediaElem.msRequestFullscreen) {
-        mediaElem.msRequestFullscreen();
-      }
-    });
+    fullscreenBtn.onclick = () => {
+      if (mediaElem.requestFullscreen) mediaElem.requestFullscreen();
+      else if (mediaElem.webkitRequestFullscreen) mediaElem.webkitRequestFullscreen();
+      else if (mediaElem.msRequestFullscreen) mediaElem.msRequestFullscreen();
+    };
   }
-}
+};
 
-// FIXED: Orb positioning that scrolls with content and is always in front
-function snapOrbToMarker(marker) {
-  if (!positionOrb || !marker) return;
-  
-  // Get marker position relative to the content container
-  const containerRect = content.getBoundingClientRect();
-  const markerRect = marker.getBoundingClientRect();
-  
-  // Calculate position relative to the content container
-  const relativeTop = markerRect.top - containerRect.top;
-  const relativeLeft = markerRect.left - containerRect.left;
-  
-  // For half-moon Present Moment: align orb's bottom with marker's top
-  if (marker.classList.contains('present-moment')) {
-    positionOrb.style.top = `${relativeTop - 6}px`; // Move up by half orb height
-    positionOrb.style.left = `${relativeLeft}px`;
-  } else {
-    // For regular circles: center orb on marker
-    positionOrb.style.top = `${relativeTop}px`;
-    positionOrb.style.left = `${relativeLeft}px`;
-  }
-  
-  positionOrb.style.display = 'block';
-}
-
-function toggleExpanded(card, marker, forceState = null) {
+const toggleExpanded = (card, marker, forceState = null) => {
   const isExpanded = forceState !== null ? forceState : !card.classList.contains('expanded');
   
-  // Close all other expanded cards first
   document.querySelectorAll('.project-card.expanded').forEach(c => {
     if (c !== card) {
       c.classList.remove('expanded');
       const otherMarker = document.querySelector(`.timeline-marker[data-project-id="${c.dataset.projectId}"]`);
-      if (otherMarker) otherMarker.classList.remove('active');
+      otherMarker?.classList.remove('active');
     }
   });
   
@@ -737,10 +503,7 @@ function toggleExpanded(card, marker, forceState = null) {
     card.classList.add('expanded');
     marker.classList.add('active');
     expandedCard = card;
-    
-    // FIXED: Move orb to expanded project's marker
     snapOrbToMarker(marker);
-    
     setTimeout(() => document.addEventListener('click', handleClickOutside), 100);
   } else {
     card.classList.remove('expanded');
@@ -748,48 +511,39 @@ function toggleExpanded(card, marker, forceState = null) {
     expandedCard = null;
     document.removeEventListener('click', handleClickOutside);
   }
-}
+};
 
-function handleClickOutside(e) {
+const handleClickOutside = e => {
   if (expandedCard && !expandedCard.contains(e.target)) {
-    const markerId = expandedCard.dataset.projectId;
-    const marker = document.querySelector(`.timeline-marker[data-project-id="${markerId}"]`);
+    const marker = document.querySelector(`.timeline-marker[data-project-id="${expandedCard.dataset.projectId}"]`);
     if (marker) toggleExpanded(expandedCard, marker, false);
   }
-}
+};
 
-// Flash effect for buttons
+// Event Listeners
 document.querySelectorAll('button').forEach(btn => {
-  btn.addEventListener('click', () => {
+  btn.onclick = () => {
     btn.classList.add('flash');
     setTimeout(() => btn.classList.remove('flash'), 100);
-  });
+  };
 });
 
-// Init
-loadProjects();
+toggle?.addEventListener('click', () => {
+  isGrid = !isGrid;
+  if (positionOrb) positionOrb.style.display = isGrid ? 'none' : 'block';
+  renderProjects(projectsData);
+});
 
-// Toggle View
-if (toggle) {
-  toggle.addEventListener('click', () => {
-    isGrid = !isGrid;
-    if (positionOrb) positionOrb.style.display = isGrid ? 'none' : 'block';
-    renderProjects(projectsData);
-  });
-}
+modeBtn?.addEventListener('click', () => {
+  document.body.classList.toggle('light');
+  document.body.classList.toggle('dark');
+});
 
-// Dark/Light Mode
-if (modeBtn) {
-  modeBtn.addEventListener('click', () => {
-    document.body.classList.toggle('light');
-    document.body.classList.toggle('dark');
-  });
-}
-
-// Update present moment time every minute (not every second to avoid performance issues)
+// Update live time
 setInterval(() => {
   const liveTimeElement = document.getElementById('live-time');
-  if (liveTimeElement) {
-    liveTimeElement.textContent = getCurrentDateTime();
-  }
-}, 60000); // Update every minute
+  if (liveTimeElement) liveTimeElement.textContent = getCurrentDateTime();
+}, 60000);
+
+// Initialize
+loadProjects();
