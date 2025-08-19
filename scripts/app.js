@@ -178,6 +178,19 @@ const renderTimelineView = data => {
     item.append(card, marker);
     content.appendChild(item);
   });
+
+  // Dynamically adjust timeline line to start at top of first marker and end at bottom of last marker
+  const timelineContainer = document.querySelector('.timeline-container');
+  const timelineMarkers = document.querySelectorAll('.timeline-marker');
+  if (timelineMarkers.length > 0) {
+    const firstMarkerRect = timelineMarkers[0].getBoundingClientRect();
+    const lastMarkerRect = timelineMarkers[timelineMarkers.length - 1].getBoundingClientRect();
+    const containerRect = timelineContainer.getBoundingClientRect();
+    const topOffset = firstMarkerRect.top - containerRect.top;
+    const height = lastMarkerRect.bottom - firstMarkerRect.top;
+    timelineContainer.style.setProperty('--timeline-top', `${topOffset}px`);
+    timelineContainer.style.setProperty('--timeline-height', `${height}px`);
+  }
 };
 
 // Grid View

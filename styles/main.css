@@ -1,13 +1,17 @@
-/* TIMELINE POSITIONING VALUES - Change these to adjust timeline:
-   Marker position: 18px from right
-   Line position: 23px from right (centers on markers)
-   Connection width: 17px
-   Right padding: 30px
-*/
+/* TIMELINE POSITIONING VALUES - Change these to adjust timeline: */
 
 :root {
   --bg: #000; --fg: #fff; --bg-rgb: 0,0,0;
   --grid-item-size: 220px;
+  --right-padding: 30px;
+  --marker-size: 12px;
+  --line-width: 2px;
+  --marker-right: 0px;
+  --connection-width: calc(var(--right-padding) - var(--marker-right) - (var(--marker-size) / 2));
+  --connection-right: calc(-1 * var(--connection-width));
+  --line-right: 35px;
+  --timeline-top: 0;
+  --timeline-height: auto;
 }
 body.light { --bg: #fff; --fg: #000; --bg-rgb: 255,255,255; }
 
@@ -41,34 +45,35 @@ button.flash { background: var(--fg) !important; color: var(--bg) !important; }
 /* TIMELINE */
 .timeline-container {
   display: flex; flex-direction: column; align-items: flex-end;
-  padding: 2rem 30px 2rem 2rem; position: relative; max-width: 1200px; margin: 0 auto;
+  padding: 2rem var(--right-padding) 2rem 2rem; position: relative; max-width: 1200px; margin: 0 auto;
 }
 .timeline-container::before {
-  content: ''; position: absolute; right: 23px; top: 0; bottom: 0;
-  width: 2px; background: var(--fg); z-index: 1;
+  content: ''; position: absolute; right: var(--line-right); top: var(--timeline-top);
+  height: var(--timeline-height); bottom: auto;
+  width: var(--line-width); background: var(--fg); z-index: 1;
 }
 .timeline-item { display: flex; align-items: center; margin-bottom: 2rem; position: relative; width: 100%; }
 
 .timeline-marker {
-  width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--fg);
-  background: var(--bg); position: absolute; right: 18px; top: 50%;
+  width: var(--marker-size); height: var(--marker-size); border-radius: 50%; border: 2px solid var(--fg);
+  background: var(--bg); position: absolute; right: var(--marker-right); top: 50%;
   transform: translateY(-50%); transition: all .3s ease; z-index: 5;
 }
 .timeline-marker.present-moment {
-  border-radius: 0 0 6px 6px; height: 6px; border-top: none;
+  border-radius: 0 0 6px 6px; height: calc(var(--marker-size) / 2); border-top: none;
 }
 .timeline-marker.active { box-shadow: 0 0 8px var(--fg); background: var(--fg); }
 .timeline-marker:hover { box-shadow: 0 0 12px var(--fg); }
 
-.year-label { font-size: .9rem; opacity: .3; margin: 1rem 30px .5rem 0; align-self: flex-end; }
+.year-label { font-size: .9rem; opacity: .3; margin: 1rem var(--right-padding) .5rem 0; align-self: flex-end; }
 
 .project-card {
   flex: 1; border: 1px solid var(--fg); padding: .5rem 1rem; cursor: pointer;
-  transition: all .3s ease; position: relative; overflow: hidden; margin-right: 30px;
+  transition: all .3s ease; position: relative; margin-right: var(--right-padding);
 }
 .project-card::after {
-  content: ''; position: absolute; width: 17px; height: 2px; background: var(--fg);
-  right: -18px; top: 50%; transform: translateY(-50%); z-index: 3; opacity: .8;
+  content: ''; position: absolute; width: var(--connection-width); height: 2px; background: var(--fg);
+  right: var(--connection-right); top: 50%; transform: translateY(-50%); z-index: 3; opacity: .8;
 }
 .project-card.present-moment {
   cursor: default; background: rgba(128,128,128,.15); border-color: rgba(128,128,128,.6);
@@ -184,12 +189,16 @@ button.flash { background: var(--fg) !important; color: var(--bg) !important; }
   #controls { gap: 5px; }
   #controls button { padding: 4px 8px; font-size: .8rem; }
   
-  .timeline-container { padding: 2rem 30px 2rem 2rem; }
-  .timeline-container::before { right: 24px; }
-  .timeline-marker, .timeline-marker.present-moment { right: 19px; }
-  .year-label { margin-right: 30px; }
-  .project-card { margin-right: 30px; }
-  .project-card::after { width: 29px; right: -30px; }
+  :root {
+    --marker-right: 19px;
+    --line-right: calc(19px + (var(--marker-size) / 2) - (var(--line-width) / 2));
+    --connection-width: calc(var(--right-padding) - 19px - (var(--marker-size) / 2));
+    --connection-right: calc(-1 * var(--connection-width));
+  }
+  
+  .timeline-container { padding: 2rem var(--right-padding) 2rem 2rem; }
+  .year-label { margin-right: var(--right-padding); }
+  .project-card { margin-right: var(--right-padding); }
   
   .grid-controls { flex-direction: column; top: 60px; }
 }
