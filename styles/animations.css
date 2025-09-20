@@ -1,8 +1,9 @@
-/* Portfolio Animations - SAFE VERSION - FULLY RESPONSIVE */
+/* Portfolio Animations - MINIMAL SAFE VERSION */
+/* Only adds hover effects and positioning fixes - NO layout changes */
 
-/* ===== POSITIONING FIXES - RESPONSIVE ===== */
+/* ===== POSITIONING FIX ONLY ===== */
 
-/* Fixed view indicator positioning - works on all screens */
+/* Fix view indicator overlap with grid controls */
 .view-indicator-fixed {
   position: fixed !important;
   top: 50px !important;
@@ -16,299 +17,57 @@
   align-items: center !important;
   pointer-events: none !important;
   opacity: 0.6 !important;
-  white-space: nowrap !important;
 }
 
-/* Ensure grid controls don't overlap - responsive */
-.grid-controls {
-  margin-bottom: 1rem !important;
-  padding-bottom: 0.5rem !important;
-  flex-wrap: wrap !important;
-  gap: 0.5rem !important;
-}
-
-/* Tablet positioning adjustments */
-@media (max-width: 1024px) {
-  .view-indicator-fixed {
-    right: 1.5rem !important;
-    font-size: 0.7rem !important;
-  }
-}
-
-/* Mobile positioning adjustments */
 @media (max-width: 768px) {
   .view-indicator-fixed {
     right: 1rem !important;
     top: 110px !important;
-    font-size: 0.65rem !important;
-  }
-  
-  .grid-controls {
-    flex-direction: column !important;
-    gap: 0.75rem !important;
-    padding: 0.75rem !important;
+    font-size: 0.7rem !important;
   }
 }
 
-/* Small mobile adjustments */
-@media (max-width: 480px) {
-  .view-indicator-fixed {
-    right: 0.5rem !important;
-    top: 120px !important;
-    font-size: 0.6rem !important;
-  }
+/* ===== SAFE HOVER EFFECTS ONLY ===== */
+/* These only enhance existing elements, never hide or break them */
+
+.project-card:not(.present-moment):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
 }
 
-/* ===== RESPONSIVE HOVER EFFECTS ===== */
-
-/* Card hover effects - responsive and touch-friendly */
-.project-card:not(.present-moment) {
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+.grid-card:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
 }
 
-/* Only apply hover effects on non-touch devices */
-@media (hover: hover) {
-  .project-card:not(.present-moment):hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
-  }
-  
-  .grid-card:hover {
-    transform: translateY(-2px) scale(1.01);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  }
-  
-  button:hover, .splash-btn:hover {
-    transform: translateY(-1px);
-  }
-  
-  .timeline-marker:hover {
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 0 15px var(--fg);
-  }
-  
-  #controls button:hover {
-    transform: scale(1.05);
-  }
+button:hover, .splash-btn:hover {
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
 }
 
-/* Touch device interactions */
-@media (hover: none) {
-  .project-card:not(.present-moment):active {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
-  }
-  
-  .grid-card:active {
-    transform: translateY(-1px) scale(1.005);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  }
-  
-  button:active, .splash-btn:active {
-    transform: scale(0.98);
-  }
+.timeline-marker:hover {
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 0 15px var(--fg);
+  transition: all 0.3s ease;
 }
 
-.grid-card {
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* ===== RESPONSIVE BUTTON INTERACTIONS ===== */
-
-button, .splash-btn {
-  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
-  /* Ensure buttons are touch-friendly on mobile */
-  min-height: 44px;
-  min-width: 44px;
-}
-
-/* Mobile button sizing */
-@media (max-width: 768px) {
-  .splash-btn {
-    min-height: 48px !important;
-    padding: 1rem 1.5rem !important;
-    font-size: 0.9rem !important;
-  }
-  
-  #controls button {
-    min-height: 44px !important;
-    min-width: 44px !important;
-  }
-}
-
-button:active, .splash-btn:active {
-  transform: scale(0.98);
-}
-
-/* ===== RESPONSIVE SEARCH AND FORM ELEMENTS ===== */
-
-input[type="text"] {
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
-  /* Ensure proper sizing on mobile */
-  min-height: 36px;
-  font-size: 16px; /* Prevents zoom on iOS */
+#controls button:hover {
+  transform: scale(1.05);
+  transition: all 0.2s ease;
 }
 
 input[type="text"]:focus {
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
-  outline: none;
+  transition: box-shadow 0.3s ease;
 }
 
-/* Mobile form adjustments */
-@media (max-width: 768px) {
-  input[type="text"] {
-    min-height: 44px !important;
-    font-size: 16px !important;
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-}
+/* ===== ACCESSIBILITY ===== */
 
-/* ===== RESPONSIVE TIMELINE ELEMENTS ===== */
-
-.timeline-position-orb {
-  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.timeline-marker {
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  /* Ensure markers are touch-friendly */
-  min-width: 44px;
-  min-height: 44px;
-}
-
-/* Mobile timeline adjustments */
-@media (max-width: 768px) {
-  .timeline-marker {
-    min-width: 48px !important;
-    min-height: 48px !important;
-  }
-  
-  .timeline-position-orb {
-    width: 16px !important;
-    height: 16px !important;
-  }
-}
-
-/* ===== RESPONSIVE OVERLAY ANIMATIONS ===== */
-
-.grid-overlay, .media-overlay, .splash-overlay {
-  transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
-  /* Ensure overlays work properly on mobile */
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-}
-
-.overlay-card, .overlay-content {
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  /* Responsive overlay sizing */
-  max-width: 90vw;
-  max-height: 90vh;
-}
-
-.splash-content {
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  /* Ensure splash is properly sized on all devices */
-  max-width: min(70vw, 600px);
-  max-height: 80vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-}
-
-/* Mobile overlay adjustments */
-@media (max-width: 768px) {
-  .splash-content {
-    max-width: 95vw !important;
-    max-height: 90vh !important;
-    padding: 2rem 1.5rem !important;
-  }
-  
-  .overlay-card {
-    max-width: 95vw !important;
-    max-height: 85vh !important;
-    margin: 1rem !important;
-  }
-}
-
-/* Small mobile overlay adjustments */
-@media (max-width: 480px) {
-  .splash-content {
-    max-width: 98vw !important;
-    padding: 1.5rem 1rem !important;
-  }
-}
-
-/* ===== RESPONSIVE DROPDOWN ANIMATIONS ===== */
-
-.links-dropdown {
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  /* Ensure dropdown works on all screen sizes */
-  min-width: 200px;
-  max-width: 90vw;
-}
-
-/* Mobile dropdown adjustments */
-@media (max-width: 768px) {
-  .links-dropdown {
-    min-width: 180px !important;
-    left: 50% !important;
-    transform: translateX(-50%) translateY(10px) !important;
-  }
-  
-  .links-dropdown.open {
-    transform: translateX(-50%) translateY(0) !important;
-  }
-}
-
-/* ===== RESPONSIVE HEADER ELEMENTS ===== */
-
-#controls button {
-  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
-  /* Ensure header buttons are accessible on all devices */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ===== PERFORMANCE AND ACCESSIBILITY ===== */
-
-/* Optimize animations for better performance */
-.timeline-item, .grid-card, .project-card, .timeline-marker {
-  will-change: auto; /* Only set will-change when animating */
-}
-
-/* Reduce motion for accessibility and low-power devices */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .view-indicator-fixed {
-    opacity: 1 !important;
-    font-weight: bold !important;
-  }
-  
-  input[type="text"]:focus {
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.8) !important;
-  }
-}
-
-/* Dark mode optimizations */
-@media (prefers-color-scheme: dark) {
-  .grid-overlay, .media-overlay, .splash-overlay {
-    background: rgba(0, 0, 0, 0.9);
-  }
-}
-
-/* Light mode optimizations */
-@media (prefers-color-scheme: light) {
-  .grid-overlay, .media-overlay, .splash-overlay {
-    background: rgba(255, 255, 255, 0.9);
+  * {
+    transition: none !important;
+    transform: none !important;
   }
 }
