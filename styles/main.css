@@ -15,6 +15,17 @@
 }
 body.light { --bg: #fff; --fg: #000; --bg-rgb: 255,255,255; }
 
+/* HIDE ALL SCROLLBARS */
+/* Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: none;
+}
+
 * { box-sizing: border-box; }
 body {
   margin: 0; font-family: sans-serif; background: var(--bg); color: var(--fg);
@@ -35,10 +46,10 @@ body {
   padding: 0; margin: 0; cursor: pointer; transition: background .3s, color .3s;
   font-size: 1rem; border-left: none; min-width: 40px; height: 40px;
   display: flex; align-items: center; justify-content: center;
-  border-top: none; border-bottom: none;
+  border-top: none; border-bottom: 1px solid var(--fg);
 }
 #controls button:first-child { border-left: 1px solid var(--fg); }
-#controls button:last-child { border-right: none; }
+#controls button:last-child { border-right: 1px solid var(--fg); }
 #controls button:hover { background: var(--fg); color: var(--bg); }
 button.flash { background: var(--fg) !important; color: var(--bg) !important; }
 
@@ -69,16 +80,26 @@ button.flash { background: var(--fg) !important; color: var(--bg) !important; }
 
 .project-card {
   flex: 1; border: 1px solid var(--fg); padding: .5rem 1rem; cursor: pointer;
-  transition: all .3s ease; position: relative; margin-right: var(--right-padding);
+  transition: margin-right 0.3s ease, box-shadow .3s ease; position: relative; margin-right: var(--right-padding);
 }
 .project-card::after {
   content: ''; position: absolute; width: var(--connection-width); height: 2px; background: var(--fg);
   right: var(--connection-right); top: 50%; transform: translateY(-50%); z-index: 3; opacity: .8;
+  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1), right 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* NEW: Hover effect - right edge moves inward, tail adjusts to maintain connection */
+.project-card:not(.present-moment):hover {
+  margin-right: calc(var(--right-padding) + 15px);
+  box-shadow: 0 0 15px rgba(255,255,255,0.1);
+}
+.project-card:not(.present-moment):hover::after {
+  width: calc(var(--connection-width) + 15px);
+  right: calc(var(--connection-right) - 15px);
 }
 .project-card.present-moment {
   cursor: default; background: rgba(128,128,128,.15); border-color: rgba(128,128,128,.6);
 }
-.project-card.present-moment:hover { transform: none; box-shadow: none; }
+.project-card.present-moment:hover { box-shadow: none; }
 .project-card.present-moment::after { background: rgba(128,128,128,.6); opacity: .6; }
 .project-card.expanded { height: 400px; }
 
@@ -87,9 +108,12 @@ button.flash { background: var(--fg) !important; color: var(--bg) !important; }
 .project-title { font-weight: bold; }
 .project-date { font-style: italic; font-size: .9rem; }
 
-.expanded-content { height: 0; overflow: hidden; transition: height .4s ease; }
-.project-card.expanded .expanded-content { height: calc(100% - 50px); overflow: auto; padding-top: 1rem; }
-.expanded-scroll { overflow: auto; height: 100%; }
+.expanded-content { 
+  height: 0; overflow: hidden; transition: height .4s ease; 
+}
+.project-card.expanded .expanded-content { 
+  height: calc(100% - 50px); overflow-y: auto; padding-top: 1rem; 
+}
 
 .close-btn {
   position: absolute; top: 6px; right: 8px; border: none; background: transparent;
@@ -148,7 +172,7 @@ button.flash { background: var(--fg) !important; color: var(--bg) !important; }
   display: flex; align-items: center; justify-content: center; z-index: 1000;
 }
 .overlay-card {
-  width: 80%; max-height: 80%; overflow: auto; background: var(--bg);
+  width: 80%; max-height: 80%; overflow-y: auto; background: var(--bg);
   border: 1px solid var(--fg); padding: 1rem; position: relative;
 }
 .overlay-content { position: relative; max-width: 90%; max-height: 90%; background: var(--bg); }
