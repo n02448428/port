@@ -1,90 +1,132 @@
-// Portfolio Animations Controller
+// Portfolio Animations Controller - Phase 3 Enhanced
 class PortfolioAnimations {
   constructor() {
     this.enabled = true;
-    this.setupAnimationObserver();
-    this.setupSplashAnimations();
+    this.intersectionObserver = null;
     this.init();
   }
 
-  // Initialize all animations
   init() {
-    console.log('Portfolio animations initialized');
-    this.observeTimelineItems();
-    this.observeGridItems();
+    this.setupScrollObserver();
+    this.setupSplashAnimations();
+    this.enhanceViewTransitions();
+    console.log('Phase 3 animations initialized');
   }
 
-  // Toggle animations on/off
-  toggle(enabled = !this.enabled) {
-    this.enabled = enabled;
-    document.body.classList.toggle('animations-disabled', !enabled);
-    console.log(`Animations ${enabled ? 'enabled' : 'disabled'}`);
+  // 1. Enhanced View Transitions
+  enhanceViewTransitions() {
+    const originalToggle = window.toggleView;
+    window.toggleView = () => {
+      this.animateViewChange();
+      if (originalToggle) originalToggle();
+    };
   }
 
-  // Setup Intersection Observer for timeline items
+  animateViewChange() {
+    const content = document.getElementById('content');
+    if (!content || !this.enabled) return;
+
+    content.style.opacity = '0.7';
+    content.style.transform = 'translateY(10px)';
+    
+    setTimeout(() => {
+      content.style.opacity = '1';
+      content.style.transform = 'translateY(0)';
+    }, 150);
+  }
+
+  // 2. Timeline Cascade - Opt-in
+  triggerTimelineCascade() {
+    if (!this.enabled) return;
+    
+    const items = document.querySelectorAll('.timeline-item');
+    items.forEach((item, index) => {
+      setTimeout(() => {
+        item.classList.add('cascade-in');
+      }, index * 50);
+    });
+  }
+
+  // 3. Enhanced Orb Movement
+  enhanceOrbMovement(orb, marker) {
+    if (!this.enabled || !orb) return;
+    
+    orb.classList.add('moving');
+    setTimeout(() => {
+      orb.classList.remove('moving');
+    }, 600);
+  }
+
+  // 4. Loading States
+  showSkeletonLoader() {
+    if (!this.enabled) return;
+    
+    const content = document.getElementById('content');
+    if (!content) return;
+
+    content.innerHTML = `
+      <div class="timeline-skeleton">
+        ${Array.from({length: 5}, (_, i) => `
+          <div class="timeline-item">
+            <div class="project-card loading-skeleton" style="height: 60px; margin-bottom: 2rem;">
+              <div style="height: 20px; background: rgba(255,255,255,0.1); margin-bottom: 10px; border-radius: 2px;"></div>
+              <div style="height: 15px; background: rgba(255,255,255,0.05); width: 70%; border-radius: 2px;"></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  // 5. Scroll-Triggered Animations
+  setupScrollObserver() {
+    if (!this.enabled || !window.IntersectionObserver) return;
+
+    this.intersectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          this.intersectionObserver.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.2,
+      rootMargin: '0px 0px -100px 0px'
+    });
+  }
+
   observeTimelineItems() {
-    if (!this.enabled) return;
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, index) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateX(0)';
-          }, index * 50); // Stagger effect
-        }
-      });
-    }, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
+    if (!this.intersectionObserver) return;
+    
+    document.querySelectorAll('.timeline-item').forEach(item => {
+      this.intersectionObserver.observe(item);
     });
-
-    // Re-observe when timeline renders
-    this.observeTimeline = () => {
-      document.querySelectorAll('.timeline-item').forEach(item => {
-        observer.observe(item);
-      });
-    };
   }
 
-  // Setup observer for grid items
-  observeGridItems() {
-    if (!this.enabled) return;
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, index) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'scale(1) translateY(0)';
-          }, index * 100); // Stagger effect
-        }
+  // 6. Present Moment Enhancement
+  enhancePresentMoment() {
+    const presentCard = document.querySelector('.project-card.present-moment');
+    if (presentCard && this.enabled) {
+      // Breathing effect is now handled by CSS
+      // Add subtle glow on hover
+      presentCard.addEventListener('mouseenter', () => {
+        presentCard.style.boxShadow = '0 0 30px rgba(128,128,128,0.4)';
       });
-    }, {
-      threshold: 0.1
-    });
-
-    // Re-observe when grid renders
-    this.observeGrid = () => {
-      document.querySelectorAll('.grid-card').forEach(item => {
-        observer.observe(item);
+      presentCard.addEventListener('mouseleave', () => {
+        presentCard.style.boxShadow = '';
       });
-    };
+    }
   }
 
-  // Setup splash screen animations
+  // Enhanced Splash Animations
   setupSplashAnimations() {
     const splash = document.getElementById('splashOverlay');
     if (!splash) return;
 
-    // Enhanced splash close on outside click
     splash.addEventListener('click', (e) => {
-      if (e.target === splash) {
-        this.closeSplash();
-      }
+      if (e.target === splash) this.closeSplash();
     });
 
-    // ESC key to close splash
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !splash.classList.contains('hidden')) {
         this.closeSplash();
@@ -92,171 +134,130 @@ class PortfolioAnimations {
     });
   }
 
-  // Animated splash close
   closeSplash() {
     const splash = document.getElementById('splashOverlay');
     if (!splash) return;
 
-    // Add exit animation
-    splash.style.animation = 'overlayFadeOut 0.3s ease-out forwards';
-    
+    splash.style.animation = 'overlayIn 0.3s ease-out reverse';
     setTimeout(() => {
       splash.classList.add('hidden');
       splash.style.animation = '';
-      
-      // Trigger portfolio load if needed
       if (typeof window.enterPortfolio === 'function') {
         window.enterPortfolio();
       }
     }, 300);
   }
 
-  // Animated view transitions
-  animateViewChange(newView) {
-    if (!this.enabled) return;
-
-    const content = document.getElementById('content');
-    if (!content) return;
-
-    // Fade out current view
-    content.style.opacity = '0';
-    content.style.transform = 'translateY(10px)';
-
-    setTimeout(() => {
-      // Fade in new view
-      content.style.opacity = '1';
-      content.style.transform = 'translateY(0)';
-      
-      // Re-observe items for animations
-      if (newView === 'timeline') {
-        setTimeout(() => this.observeTimeline?.(), 100);
-      } else if (newView === 'grid') {
-        setTimeout(() => this.observeGrid?.(), 100);
-      }
-    }, 250);
-  }
-
-  // Animate search results
-  animateSearchResults() {
-    if (!this.enabled) return;
-
-    const cards = document.querySelectorAll('.grid-card');
-    cards.forEach((card, index) => {
-      card.style.opacity = '0';
-      card.style.transform = 'scale(0.9) translateY(20px)';
-      
-      setTimeout(() => {
-        card.style.opacity = '1';
-        card.style.transform = 'scale(1) translateY(0)';
-      }, index * 50);
-    });
-  }
-
-  // Animate orb movement
-  animateOrbToMarker(orb, marker) {
-    if (!this.enabled || !orb || !marker) return;
-
-    // Add smooth trail effect
-    orb.style.transition = 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
+  // Enhanced Marker Activation
+  activateMarker(marker) {
+    if (!this.enabled || !marker) return;
     
-    // Add pulse effect when moving
-    orb.style.animation = 'orbPulse 0.6s ease-out';
-    
+    marker.classList.add('active');
+    // Trigger pulse animation
+    marker.style.animation = 'markerPulse 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
     setTimeout(() => {
-      orb.style.animation = 'orbPulse 2s ease-in-out infinite';
+      marker.style.animation = '';
     }, 600);
   }
 
-  // Animate card expansion
-  animateCardExpansion(card, isExpanding) {
+  // Enhanced Card Expansion
+  expandCard(card) {
     if (!this.enabled || !card) return;
-
-    if (isExpanding) {
-      // Add expansion animation
-      card.style.animation = 'cardExpand 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards';
-    } else {
-      // Add collapse animation
-      card.style.animation = 'cardCollapse 0.3s ease-out forwards';
-    }
-  }
-
-  // Animate overlay entrance
-  animateOverlayEntrance(overlay) {
-    if (!this.enabled || !overlay) return;
-
-    overlay.style.animation = 'overlayFadeIn 0.3s ease-out forwards';
     
-    const modal = overlay.querySelector('.overlay-card, .overlay-content');
-    if (modal) {
-      modal.style.animation = 'modalSlideIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards';
-    }
+    card.style.animation = 'cardExpand 0.5s cubic-bezier(0.22, 1, 0.36, 1)';
+    setTimeout(() => {
+      card.style.animation = '';
+    }, 500);
   }
 
-  // Setup animation performance observer
-  setupAnimationObserver() {
-    if (!window.PerformanceObserver) return;
+  // Trigger all Phase 3 effects for timeline
+  enhanceTimeline() {
+    if (!this.enabled) return;
+    
+    setTimeout(() => {
+      this.observeTimelineItems();
+      this.enhancePresentMoment();
+      // Optionally trigger cascade on load
+      // this.triggerTimelineCascade();
+    }, 100);
+  }
 
-    const observer = new PerformanceObserver((list) => {
-      const entries = list.getEntries();
-      entries.forEach(entry => {
-        if (entry.duration > 16.67) { // Longer than 1 frame at 60fps
-          console.warn(`Slow animation detected: ${entry.name} took ${entry.duration.toFixed(2)}ms`);
-        }
-      });
+  // Trigger all Phase 3 effects for grid
+  enhanceGrid() {
+    if (!this.enabled) return;
+    
+    const gridCards = document.querySelectorAll('.grid-card');
+    gridCards.forEach((card, index) => {
+      setTimeout(() => {
+        card.classList.add('in-view');
+      }, index * 30);
     });
+  }
 
-    try {
-      observer.observe({ entryTypes: ['measure'] });
-    } catch (e) {
-      // Ignore if not supported
+  // Public Methods
+  toggle(enabled = !this.enabled) {
+    this.enabled = enabled;
+    document.body.classList.toggle('animations-disabled', !enabled);
+    console.log(`Phase 3 animations ${enabled ? 'enabled' : 'disabled'}`);
+  }
+
+  // Method to trigger cascade manually
+  cascadeTimeline() {
+    this.triggerTimelineCascade();
+  }
+
+  // Method to show loading
+  showLoading() {
+    this.showSkeletonLoader();
+  }
+
+  // Performance monitoring
+  checkPerformance() {
+    if (window.performance && window.performance.memory) {
+      const memory = window.performance.memory.usedJSHeapSize / 1048576;
+      if (memory > 100) { // Over 100MB
+        console.warn('High memory usage, consider disabling complex animations');
+        return false;
+      }
     }
-  }
-
-  // Debug mode - shows animation boundaries
-  enableDebugMode() {
-    const style = document.createElement('style');
-    style.textContent = `
-      .timeline-item, .grid-card, .project-card {
-        outline: 1px dashed rgba(255, 0, 0, 0.3) !important;
-      }
-      .timeline-position-orb {
-        outline: 2px solid rgba(0, 255, 0, 0.8) !important;
-      }
-    `;
-    document.head.appendChild(style);
-    console.log('Animation debug mode enabled');
-  }
-
-  // Performance mode - reduces animations
-  enablePerformanceMode() {
-    this.enabled = false;
-    document.body.classList.add('performance-mode');
-    
-    const style = document.createElement('style');
-    style.textContent = `
-      .performance-mode * {
-        animation-duration: 0.1s !important;
-        transition-duration: 0.1s !important;
-      }
-    `;
-    document.head.appendChild(style);
-    console.log('Performance mode enabled - animations reduced');
+    return true;
   }
 }
 
-// Initialize animations when DOM is ready
+// Global initialization
 let portfolioAnimations;
 
 function initializeAnimations() {
   portfolioAnimations = new PortfolioAnimations();
-  
-  // Make it globally accessible for debugging
   window.portfolioAnimations = portfolioAnimations;
   
-  // Keyboard shortcut to toggle animations (Ctrl+Shift+A)
+  // Hook into existing app functions
+  const originalRenderTimeline = window.renderTimelineView;
+  if (originalRenderTimeline) {
+    window.renderTimelineView = function(...args) {
+      const result = originalRenderTimeline.apply(this, args);
+      portfolioAnimations.enhanceTimeline();
+      return result;
+    };
+  }
+
+  const originalRenderGrid = window.renderGridView;
+  if (originalRenderGrid) {
+    window.renderGridView = function(...args) {
+      const result = originalRenderGrid.apply(this, args);
+      portfolioAnimations.enhanceGrid();
+      return result;
+    };
+  }
+
+  // Keyboard shortcuts
   document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-      portfolioAnimations.toggle();
+    if (e.ctrlKey && e.shiftKey) {
+      switch(e.key) {
+        case 'A': portfolioAnimations.toggle(); break;
+        case 'C': portfolioAnimations.cascadeTimeline(); break;
+        case 'L': portfolioAnimations.showLoading(); break;
+      }
     }
   });
 }
@@ -265,9 +266,4 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initializeAnimations);
 } else {
   initializeAnimations();
-}
-
-// Export for module use
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = PortfolioAnimations;
 }
