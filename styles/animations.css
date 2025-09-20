@@ -1,17 +1,7 @@
 /* Portfolio Animations - Phase 3: Advanced Polish */
 /* Efficient, minimal, dynamic - no layout breaking */
 
-/* ===== POSITIONING FIX ===== */
-.view-indicator-fixed {
-  position: fixed !important; top: 50px !important; right: 2rem !important;
-  font-size: 0.75rem !important; font-style: italic !important; color: gray !important;
-  z-index: 998 !important; height: 40px !important; display: flex !important;
-  align-items: center !important; pointer-events: none !important; opacity: 0.6 !important;
-}
-
-@media (max-width: 768px) {
-  .view-indicator-fixed { right: 1rem !important; top: 110px !important; font-size: 0.7rem !important; }
-}
+/* ===== REMOVED OLD VIEW INDICATOR ===== */
 
 /* ===== PHASE 3: ADVANCED POLISH ===== */
 

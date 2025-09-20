@@ -15,15 +15,53 @@
 }
 body.light { --bg: #fff; --fg: #000; --bg-rgb: 255,255,255; }
 
-/* HIDE ALL SCROLLBARS */
-/* Webkit browsers (Chrome, Safari, Edge) */
-::-webkit-scrollbar {
+/* SIMPLE THIN SCROLLBAR - CLEAN APPROACH */
+
+/* Step 1: Hide ALL scrollbars by default */
+* {
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
   display: none;
 }
 
-/* Firefox */
-* {
-  scrollbar-width: none;
+/* Step 2: Only show scrollbar on main page (html element) */
+html {
+  overflow-y: scroll !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #fff #000 !important; /* white thumb, black track */
+}
+
+html::-webkit-scrollbar {
+  width: 2px !important;
+  display: block !important;
+}
+
+html::-webkit-scrollbar-track {
+  background: #000 !important;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: #fff !important;
+  border-radius: 0 !important;
+}
+
+html::-webkit-scrollbar-button {
+  display: none !important;
+}
+
+/* Step 3: Light theme colors */
+body.light html {
+  scrollbar-color: #000 #fff !important; /* black thumb, white track */
+}
+
+body.light html::-webkit-scrollbar-track {
+  background: #fff !important;
+}
+
+body.light html::-webkit-scrollbar-thumb {
+  background: #000 !important;
 }
 
 * { box-sizing: border-box; }
@@ -57,6 +95,19 @@ button.flash { background: var(--fg) !important; color: var(--bg) !important; }
 .timeline-container {
   display: flex; flex-direction: column; align-items: flex-end;
   padding: 2rem var(--right-padding) 2rem 2rem; position: relative; max-width: 1200px; margin: 0 auto;
+}
+
+/* View indicator - static positioned above timeline content */
+.timeline-container .view-indicator-static {
+  position: absolute;
+  top: 0.5rem;
+  left: 2rem;
+  font-size: 0.65rem;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: lowercase;
+  font-weight: 300;
+  pointer-events: none;
 }
 .timeline-container::before {
   content: ''; position: absolute; right: var(--line-right); top: var(--timeline-top);
@@ -392,20 +443,7 @@ button.flash { background: var(--fg) !important; color: var(--bg) !important; }
   letter-spacing: 0.1em;
 }
 
-/* View indicator positioning fix */
-.view-indicator-fixed {
-  position: fixed !important; 
-  top: 50px !important; 
-  right: 8rem !important; 
-  font-size: 0.75rem !important;
-  font-style: italic !important; 
-  color: gray !important; 
-  z-index: 999 !important; 
-  height: 40px !important;
-  display: flex !important; 
-  align-items: center !important;
-  pointer-events: none !important;
-}
+/* Remove old view indicator */
 @media (max-width: 768px) {
   body { padding-top: 60px; }
   .header { height: 50px; padding: 0 .5rem; }
@@ -426,6 +464,14 @@ button.flash { background: var(--fg) !important; color: var(--bg) !important; }
   .project-card { margin-right: var(--right-padding); }
   
   .grid-controls { flex-direction: column; top: 60px; }
+  
+  .grid-container { padding-top: 5rem; } /* More space for stacked controls */
+
+  .timeline-container .view-indicator-static,
+  .grid-container .view-indicator-static {
+    left: 1rem;
+    font-size: 0.6rem;
+  }
 
   /* Splash mobile styles */
   .splash-actions {

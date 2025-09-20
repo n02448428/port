@@ -1,4 +1,4 @@
-// Portfolio Timeline App - Complete Final Version
+// Portfolio Timeline App - Complete Final Version with Static View Indicators
 let isGrid = false, expandedCard = null, projectsData = [], currentOverlay = null, 
     positionOrb = null, filterTypes = [], itemSize = 220, isLoading = false, searchQuery = '',
     splashShown = true;
@@ -59,12 +59,28 @@ const createPresentMoment = () => ({
   status: 'ongoing', date: getCurrentDateTime(), isPresentMoment: true
 });
 
+// UPDATED: Static view indicator that stays within content containers
 const updateViewIndicator = viewName => {
-  document.querySelector('.view-indicator-fixed')?.remove();
-  const indicator = Object.assign(document.createElement('div'), {
-    className: 'view-indicator-fixed', textContent: viewName
-  });
-  document.body.appendChild(indicator);
+  // Remove any existing indicators
+  document.querySelectorAll('.view-indicator-static, .view-indicator-fixed').forEach(el => el.remove());
+  
+  // Add indicator to the appropriate container after a brief delay to ensure container exists
+  setTimeout(() => {
+    let container;
+    if (viewName === 'Timeline') {
+      container = document.querySelector('.timeline-container');
+    } else if (viewName === 'Vault') {
+      container = document.querySelector('.grid-container');
+    }
+    
+    if (container) {
+      const indicator = Object.assign(document.createElement('div'), {
+        className: 'view-indicator-static', 
+        textContent: viewName.toLowerCase()
+      });
+      container.appendChild(indicator);
+    }
+  }, 100);
 };
 
 const createPositionOrb = () => {
@@ -731,7 +747,7 @@ const createExpandedContent = proj => {
       html += `<li><a href="${link.url}" class="external-link" target="_blank" rel="noopener noreferrer">${link.name}</a></li>`;
     });
     html += `</ul></div>`;
-} else if (proj.links || (proj.external_link_names && proj.external_link_urls)) {
+  } else if (proj.links || (proj.external_link_names && proj.external_link_urls)) {
     // Fallback to original logic for backward compatibility
     html += `<div class="content-section"><h4>Links</h4><ul>`;
     let links = [];
@@ -968,6 +984,13 @@ const setupLiveTimeUpdates = () => {
       liveTimeElement.textContent = getCurrentDateTime();
     }
   }, 60000);
+};
+
+// Enhanced View Toggle Function
+window.toggleView = () => {
+  isGrid = !isGrid;
+  if (positionOrb) positionOrb.style.display = isGrid ? 'none' : 'block';
+  renderProjects(projectsData);
 };
 
 // Initialize everything when DOM is ready
