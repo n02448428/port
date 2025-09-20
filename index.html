@@ -8,13 +8,56 @@
   <link rel="icon" href="assets/favicon.ico">
 </head>
 <body class="dark">
+  <!-- Splash Screen Overlay -->
+  <div class="splash-overlay" id="splashOverlay">
+    <div class="splash-content">
+      <h1 class="splash-name">DMITRY MARKELOV</h1>
+      
+      <p class="splash-titles">Game Developer &middot; Creative Technologist</p>
+      
+      <p class="splash-bio">
+        Crafting interactive experiences that push boundaries. Specializing in game development, 
+        web technologies, and creative coding with a focus on innovative gameplay mechanics 
+        and immersive digital worlds.
+      </p>
+      
+      <div class="splash-actions">
+        <a href="mailto:dmarkelo89@gmail.com?subject=Portfolio%20Inquiry&body=Hi%20Dmitry%2C%0D%0A%0D%0AI%20saw%20your%20portfolio%20and%20wanted%20to%20reach%20out..." 
+           class="splash-btn">
+          Get In Touch
+        </a>
+        <button class="splash-btn" onclick="enterPortfolio()">
+          Projects Portfolio
+        </button>
+      </div>
+      
+      <div class="splash-links">
+        <button class="links-toggle" onclick="toggleLinks()">Links</button>
+        <div class="links-dropdown" id="linksDropdown">
+          <a href="Dmitry Markelov Resume-1.pdf" target="_blank">Resume</a>
+          <a href="https://linkedin.com/in/dmitrymarkelov" target="_blank">LinkedIn</a>
+          <a href="https://github.com/n02448428" target="_blank">GitHub</a>
+          <a href="https://novelfilms.itch.io" target="_blank">itch.io</a>
+          <a href="https://twitch.tv/0dotdmtr" target="_blank">Twitch</a>
+          <a href="https://instagram.com/novel.films" target="_blank">IG</a>
+          <a href="https://x.com/0dotdmtr" target="_blank">X</a>
+        </div>
+      </div>
+      
+      <div class="splash-footer">
+        All Rights Reserved
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Portfolio -->
   <div class="header">
     <span id="logo">MD</span>
     <span id="name">Dmitry Markelov</span>
     <div id="controls">
       <button id="toggleMode" title="Dark / Light">⊙</button>
       <button id="toggleView" title="Timeline / Vault">△</button>
-      <button id="contactBtn" title="Connect">☆</button>
+      <button id="contactBtn" title="Show Splash">☆</button>
     </div>
   </div>
   <div id="content"></div>
