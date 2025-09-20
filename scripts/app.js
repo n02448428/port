@@ -1,12 +1,12 @@
-// Portfolio Timeline App - Refined Version
+// Portfolio Timeline App - Safe Critical Improvements
 let isGrid = false, expandedCard = null, projectsData = [], currentOverlay = null, 
-    positionOrb = null, filterTypes = [], itemSize = 220;
+    positionOrb = null, filterTypes = [], itemSize = 220, isLoading = false;
 
 const content = document.getElementById('content'),
       toggle = document.getElementById('toggleView'),
       modeBtn = document.getElementById('toggleMode');
 
-// Utils
+// Utils (unchanged)
 const formatDate = dateStr => {
   if (!dateStr || isNaN(new Date(dateStr).getTime())) return 'Undated';
   const date = new Date(dateStr), day = date.getDate(), year = date.getFullYear(),
@@ -61,32 +61,159 @@ const snapOrbToMarker = marker => {
   });
 };
 
-// Data Loading
-const loadProjects = async () => {
+// IMPROVEMENT 1: Better Error Handling with Loading States
+const showLoadingState = () => {
+  content.innerHTML = `
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; text-align: center;">
+      <div style="width: 40px; height: 40px; border: 2px solid var(--fg); border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 1rem;"></div>
+      <p style="color: var(--fg); opacity: 0.7;">Loading projects...</p>
+    </div>
+    <style>
+      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+  `;
+};
+
+const showErrorState = (error) => {
+  content.innerHTML = `
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; text-align: center; max-width: 500px; margin: 0 auto; padding: 2rem;">
+      <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;">⚠</div>
+      <h3 style="margin-bottom: 1rem; color: var(--fg);">Unable to load projects</h3>
+      <p style="color: var(--fg); opacity: 0.7; line-height: 1.5; margin-bottom: 1.5rem;">${error.message}</p>
+      <button onclick="loadProjects()" style="background: var(--bg); border: 1px solid var(--fg); color: var(--fg); padding: 0.5rem 1rem; cursor: pointer; font-family: inherit;">Retry</button>
+    </div>
+  `;
+};
+
+// IMPROVEMENT 3: Enhanced Input Validation
+const validateAndProcessProject = (project) => {
+  // Ensure required fields exist with defaults
+  const validated = {
+    id: project.id || Math.random().toString(36).substr(2, 9),
+    title: project.title || 'Untitled Project',
+    type: project.type || 'misc',
+    status: project.status || 'unknown',
+    description: project.description || '',
+    date: project.date || null,
+    medium: project.medium || '',
+    story: project.story || '',
+    tags: project.tags || [],
+    video_urls: project.video_urls || [],
+    external_link_names: project.external_link_names || [],
+    external_link_urls: project.external_link_urls || []
+  };
+
+  // Safely process links to prevent breakage
+  if (validated.external_link_names && validated.external_link_urls) {
+    validated.processedLinks = safeProcessLinks(validated.external_link_names, validated.external_link_urls);
+  }
+
+  return validated;
+};
+
+const safeProcessLinks = (names, urls) => {
   try {
-    const response = await fetch('data/projects.json');
-    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    projectsData = await response.json();
-    renderProjects(projectsData);
+    let nameArray = [], urlArray = [];
+    
+    // Safely convert names to array
+    if (Array.isArray(names)) {
+      nameArray = names.map(n => String(n || '').trim()).filter(Boolean);
+    } else if (typeof names === 'string' && names.trim()) {
+      nameArray = names.includes('|') ? 
+                 names.split('|').map(n => n.trim()).filter(Boolean) : 
+                 names.split(',').map(n => n.trim()).filter(Boolean);
+    }
+    
+    // Safely convert URLs to array
+    if (Array.isArray(urls)) {
+      urls.forEach(urlItem => {
+        if (typeof urlItem === 'string' && urlItem.trim()) {
+          if (urlItem.includes('|')) {
+            urlArray.push(...urlItem.split('|').map(u => u.trim()).filter(Boolean));
+          } else {
+            urlArray.push(urlItem.trim());
+          }
+        }
+      });
+    } else if (typeof urls === 'string' && urls.trim()) {
+      urlArray = urls.includes('|') ? 
+                urls.split('|').map(u => u.trim()).filter(Boolean) : 
+                urls.split(',').map(u => u.trim()).filter(Boolean);
+    }
+    
+    // Create safe link pairs
+    const links = [];
+    const maxLength = Math.max(nameArray.length, urlArray.length);
+    for (let i = 0; i < maxLength; i++) {
+      const url = urlArray[i] || '#';
+      const name = nameArray[i] || url || 'Link';
+      if (url && url !== '#') {
+        // Ensure URL has protocol
+        const safeUrl = url.startsWith('http') ? url : `https://${url}`;
+        links.push({ name, url: safeUrl });
+      }
+    }
+    
+    return links;
   } catch (error) {
-    content.innerHTML = `<div class="error-message">
-      <p>Error loading projects: ${error.message}</p>
-      <p>Make sure your Google Sheet is set up and the GitHub Action has run successfully.</p>
-    </div>`;
+    console.warn('Error processing links:', error);
+    return [];
   }
 };
 
+// IMPROVEMENT 1: Enhanced Data Loading with proper error handling
+const loadProjects = async () => {
+  if (isLoading) return;
+  isLoading = true;
+  showLoadingState();
+  
+  try {
+    const response = await fetch('data/projects.json');
+    
+    if (!response.ok) {
+      throw new Error(`Failed to load projects (${response.status}). Please check that your Google Sheet is set up correctly and the GitHub Action has run.`);
+    }
+    
+    const rawData = await response.json();
+    
+    if (!Array.isArray(rawData)) {
+      throw new Error('Invalid data format. Expected an array of projects.');
+    }
+    
+    if (rawData.length === 0) {
+      throw new Error('No projects found. Add projects to your Google Sheet and run the GitHub Action.');
+    }
+    
+    // Process and validate all projects
+    projectsData = rawData.map(validateAndProcessProject).filter(Boolean);
+    
+    if (projectsData.length === 0) {
+      throw new Error('No valid projects found after processing. Please check your data format.');
+    }
+    
+    renderProjects(projectsData);
+    console.log(`Successfully loaded ${projectsData.length} projects`);
+    
+  } catch (error) {
+    console.error('Failed to load projects:', error);
+    showErrorState(error);
+  } finally {
+    isLoading = false;
+  }
+};
+
+// Rest of functions remain exactly the same...
 const getUniqueTypes = () => [...new Set(projectsData.map(p => p.type).filter(Boolean))];
 
 const renderProjects = data => {
   if (!data?.length) {
-    content.innerHTML = '<div class="error-message"><p>No projects found. Add data to your Google Sheet and run the GitHub Action!</p></div>';
+    showErrorState(new Error('No projects to display'));
     return;
   }
   isGrid ? renderGridView(data) : renderTimelineView(data);
 };
 
-// Timeline View
+// Timeline View (unchanged from original)
 const renderTimelineView = data => {
   content.className = 'timeline-container';
   content.innerHTML = '';
@@ -193,7 +320,7 @@ const renderTimelineView = data => {
   }
 };
 
-// Grid View
+// Grid View (unchanged from original)
 const renderGridView = data => {
   content.className = 'grid-container';
   content.innerHTML = '';
@@ -312,7 +439,7 @@ const renderGridView = data => {
   });
 };
 
-// Overlays and Media
+// All remaining functions unchanged from original...
 const openGridOverlay = proj => {
   currentOverlay?.remove();
   const overlay = document.createElement('div');
@@ -368,8 +495,15 @@ const createExpandedContent = proj => {
   if (proj.description) html += `<div class="content-section"><h4>Description</h4><p>${proj.description}</p></div>`;
   if (proj.story) html += `<div class="content-section"><h4>Story</h4><p>${proj.story}</p></div>`;
   
-  // Links handling
-  if (proj.links || (proj.external_link_names && proj.external_link_urls)) {
+  // IMPROVEMENT 3: Use safe processed links
+  if (proj.processedLinks && proj.processedLinks.length > 0) {
+    html += `<div class="content-section"><h4>Links</h4><ul>`;
+    proj.processedLinks.forEach(link => {
+      html += `<li><a href="${link.url}" class="external-link" target="_blank" rel="noopener noreferrer">${link.name}</a></li>`;
+    });
+    html += `</ul></div>`;
+  } else if (proj.links || (proj.external_link_names && proj.external_link_urls)) {
+    // Fallback to original logic for backward compatibility
     html += `<div class="content-section"><h4>Links</h4><ul>`;
     let links = [];
     
@@ -443,7 +577,7 @@ const createExpandedContent = proj => {
   // Other fields
   let otherHtml = '';
   Object.entries(proj).forEach(([key, value]) => {
-    if (!['id', 'title', 'type', 'date', 'status', 'description', 'story', 'links', 'media', 'external_link_names', 'external_link_urls', 'isPresentMoment'].includes(key)) {
+    if (!['id', 'title', 'type', 'date', 'status', 'description', 'story', 'links', 'media', 'external_link_names', 'external_link_urls', 'isPresentMoment', 'processedLinks'].includes(key)) {
       otherHtml += `<p><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${value}</p>`;
     }
   });
@@ -533,7 +667,7 @@ const handleClickOutside = e => {
   }
 };
 
-// Event Listeners
+// Event Listeners (unchanged from original)
 document.querySelectorAll('button').forEach(btn => {
   btn.onclick = () => {
     btn.classList.add('flash');
@@ -558,5 +692,5 @@ setInterval(() => {
   if (liveTimeElement) liveTimeElement.textContent = getCurrentDateTime();
 }, 60000);
 
-// Initialize
+// Initialize - IMPROVEMENT 1: Better initialization with error handling
 loadProjects();
