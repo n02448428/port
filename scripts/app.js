@@ -1,4 +1,4 @@
-// Portfolio Timeline App - Complete Enhanced Version with Splash (CORRECTED)
+// Portfolio Timeline App - Complete Final Version
 let isGrid = false, expandedCard = null, projectsData = [], currentOverlay = null, 
     positionOrb = null, filterTypes = [], itemSize = 220, isLoading = false, searchQuery = '',
     splashShown = true;
@@ -36,7 +36,7 @@ function showSplash() {
   }
 }
 
-// Utils (unchanged)
+// Utils
 const formatDate = dateStr => {
   if (!dateStr || isNaN(new Date(dateStr).getTime())) return 'Undated';
   const date = new Date(dateStr), day = date.getDate(), year = date.getFullYear(),
@@ -64,11 +64,6 @@ const updateViewIndicator = viewName => {
   const indicator = Object.assign(document.createElement('div'), {
     className: 'view-indicator-fixed', textContent: viewName
   });
-  Object.assign(indicator.style, {
-    position: 'fixed', top: '50px', right: '1rem', fontSize: '0.75rem',
-    fontStyle: 'italic', color: 'gray', zIndex: '999', height: '40px',
-    display: 'flex', alignItems: 'center'
-  });
   document.body.appendChild(indicator);
 };
 
@@ -91,7 +86,7 @@ const snapOrbToMarker = marker => {
   });
 };
 
-// ENHANCEMENT 6: Search and Filter Functions
+// Search and Filter Functions
 const debounce = (func, wait) => {
   let timeout;
   return function executedFunction(...args) {
@@ -127,7 +122,7 @@ const filterProjects = (data) => {
   return filtered;
 };
 
-// ENHANCEMENT 4: Keyboard Navigation
+// Keyboard Navigation
 const setupKeyboardNavigation = () => {
   document.addEventListener('keydown', (e) => {
     // Splash screen shortcuts
@@ -145,6 +140,9 @@ const setupKeyboardNavigation = () => {
           break;
         case 'l':
           window.toggleLinks();
+          break;
+        case 'escape':
+          window.enterPortfolio();
           break;
       }
       return;
@@ -313,7 +311,7 @@ const safeProcessLinks = (names, urls) => {
   }
 };
 
-// Enhanced Data Loading with better error handling
+// Enhanced Data Loading
 const loadProjects = async () => {
   if (isLoading) return;
   isLoading = true;
@@ -477,9 +475,15 @@ const renderTimelineView = data => {
   }, 100);
 };
 
-// Enhanced Grid View with Search
+// Enhanced Grid View with Search Focus Fix
 const renderGridView = data => {
   if (!content) return;
+  
+  // Store current search focus state BEFORE DOM manipulation
+  const currentSearchValue = searchQuery;
+  const activeElement = document.activeElement;
+  const wasSearchFocused = activeElement && activeElement.type === 'text' && activeElement.placeholder === 'Filter projects...';
+  const cursorPosition = wasSearchFocused ? activeElement.selectionStart : 0;
   
   content.className = 'grid-container';
   content.innerHTML = '';
@@ -500,7 +504,7 @@ const renderGridView = data => {
   const searchInput = document.createElement('input');
   searchInput.type = 'text';
   searchInput.placeholder = 'Filter projects...';
-  searchInput.value = searchQuery;
+  searchInput.value = currentSearchValue;
   searchInput.style.cssText = `
     background: var(--bg); border: 1px solid var(--fg); color: var(--fg);
     padding: 4px 8px; font-size: 0.8rem; width: 200px; font-family: inherit;
@@ -598,6 +602,14 @@ const renderGridView = data => {
   controls.append(searchContainer, filterContainer, sliderLabel);
   content.appendChild(controls);
   
+  // CRITICAL: Restore search focus AFTER DOM is built but BEFORE rendering items
+  if (wasSearchFocused) {
+    setTimeout(() => {
+      searchInput.focus();
+      searchInput.setSelectionRange(cursorPosition, cursorPosition);
+    }, 0);
+  }
+  
   // Apply filters and search
   const filteredData = filterProjects(data);
   
@@ -653,7 +665,7 @@ const renderGridView = data => {
   }
 };
 
-// Media and overlay functions
+// Media and overlay functions with enhanced close buttons
 const openGridOverlay = proj => {
   currentOverlay?.remove();
   const overlay = document.createElement('div');
@@ -663,8 +675,9 @@ const openGridOverlay = proj => {
     className: 'overlay-card expanded', innerHTML: createExpandedContent(proj)
   });
   
+  // Add standardized close button
   const closeBtn = Object.assign(document.createElement('button'), {
-    className: 'close-btn', innerHTML: '×'
+    className: 'overlay-close-btn', innerHTML: '×'
   });
   closeBtn.onclick = () => { overlay.remove(); currentOverlay = null; };
   overlayCard.appendChild(closeBtn);
@@ -718,7 +731,7 @@ const createExpandedContent = proj => {
       html += `<li><a href="${link.url}" class="external-link" target="_blank" rel="noopener noreferrer">${link.name}</a></li>`;
     });
     html += `</ul></div>`;
-  } else if (proj.links || (proj.external_link_names && proj.external_link_urls)) {
+} else if (proj.links || (proj.external_link_names && proj.external_link_urls)) {
     // Fallback to original logic for backward compatibility
     html += `<div class="content-section"><h4>Links</h4><ul>`;
     let links = [];
@@ -831,17 +844,21 @@ const openMediaOverlay = (url, type) => {
     <div class="overlay-content">
       ${content}
       <button class="fullscreen-btn">⛶ Fullscreen</button>
-      <button class="close-overlay">×</button>
+      <button class="overlay-close-btn">×</button>
     </div>
   `;
   
   document.body.appendChild(overlay);
   currentOverlay = overlay;
 
-  overlay.querySelector('.close-overlay').onclick = () => {
-    overlay.remove(); 
-    currentOverlay = null;
-  };
+  // Enhanced close button functionality
+  const closeBtn = overlay.querySelector('.overlay-close-btn');
+  if (closeBtn) {
+    closeBtn.onclick = () => {
+      overlay.remove(); 
+      currentOverlay = null;
+    };
+  }
   
   overlay.onclick = e => {
     if (e.target === overlay) { 
