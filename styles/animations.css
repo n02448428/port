@@ -96,41 +96,102 @@
   50% { transform: scale(1.02); box-shadow: 0 0 20px rgba(128,128,128,0.3); }
 }
 
-/* ===== ENHANCED HOVER EFFECTS ===== */
-/* UPDATED: Timeline hover - right edge indents, left stays aligned */
-.project-card:not(.present-moment) {
-  transition: margin-right 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+/* ===== ENHANCED HOVER EFFECTS - DESKTOP ONLY ===== */
+/* Hover animations only on devices that support hover */
+@media (hover: hover) {
+  /* Timeline hover - right edge indents, left stays aligned */
+  .project-card:not(.present-moment) {
+    transition: margin-right 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Right edge moves inward by increasing right margin */
+  .project-card:not(.present-moment):hover {
+    margin-right: calc(var(--right-padding) + 15px);
+    box-shadow: 0 0 20px rgba(255,255,255,0.15);
+  }
+
+  /* Tail stays connected - no width change needed */
+  .project-card:not(.present-moment):hover::after {
+    opacity: 1;
+  }
+
+  .grid-card {
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .grid-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+  }
+
+  /* Enhanced Timeline Marker */
+  .timeline-marker {
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .timeline-marker:hover {
+    transform: translateY(-50%) scale(1.15);
+    box-shadow: 0 0 20px var(--fg);
+  }
+
+  /* Enhanced Buttons */
+  button, .splash-btn {
+    transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative; overflow: hidden;
+  }
+
+  button::before, .splash-btn::before {
+    content: ''; position: absolute; top: 50%; left: 50%;
+    width: 0; height: 0; background: rgba(255,255,255,0.1);
+    border-radius: 50%; transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+  }
+
+  button:hover::before, .splash-btn:hover::before {
+    width: 200%; height: 200%;
+  }
+
+  button:hover, .splash-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  #controls button {
+    transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  #controls button:hover {
+    transform: scale(1.1) rotate(5deg);
+  }
 }
 
-/* Right edge moves inward by increasing right margin */
-.project-card:not(.present-moment):hover {
-  margin-right: calc(var(--right-padding) + 15px);
-  box-shadow: 0 0 20px rgba(255,255,255,0.15);
-}
-
-/* Tail stays connected - no width change needed */
-.project-card:not(.present-moment):hover::after {
-  opacity: 1;
-  /* Width stays the same to maintain timeline connection */
-}
-
-.grid-card {
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.grid-card:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-}
-
-/* Enhanced Timeline Marker */
-.timeline-marker {
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.timeline-marker:hover {
-  transform: translateY(-50%) scale(1.15);
-  box-shadow: 0 0 20px var(--fg);
+/* Touch device specific styles */
+@media (pointer: coarse) {
+  /* Simplify animations on touch devices */
+  .project-card:not(.present-moment) {
+    transition: box-shadow 0.2s ease;
+  }
+  
+  .grid-card {
+    transition: transform 0.2s ease;
+  }
+  
+  .timeline-marker {
+    transition: all 0.2s ease;
+  }
+  
+  /* Active states for touch feedback */
+  .project-card:active {
+    box-shadow: 0 0 10px rgba(255,255,255,0.2);
+  }
+  
+  .grid-card:active {
+    transform: scale(0.98);
+  }
+  
+  button:active, .splash-btn:active {
+    transform: scale(0.95);
+    opacity: 0.9;
+  }
 }
 
 .timeline-marker.active {
@@ -141,35 +202,6 @@
   0% { transform: translateY(-50%) scale(1); }
   50% { transform: translateY(-50%) scale(1.3); box-shadow: 0 0 25px var(--fg); }
   100% { transform: translateY(-50%) scale(1); }
-}
-
-/* Enhanced Buttons */
-button, .splash-btn {
-  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-  position: relative; overflow: hidden;
-}
-
-button::before, .splash-btn::before {
-  content: ''; position: absolute; top: 50%; left: 50%;
-  width: 0; height: 0; background: rgba(255,255,255,0.1);
-  border-radius: 50%; transform: translate(-50%, -50%);
-  transition: width 0.3s, height 0.3s;
-}
-
-button:hover::before, .splash-btn:hover::before {
-  width: 200%; height: 200%;
-}
-
-button:hover, .splash-btn:hover {
-  transform: translateY(-2px);
-}
-
-#controls button {
-  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-#controls button:hover {
-  transform: scale(1.1) rotate(5deg);
 }
 
 /* Enhanced Input Focus */
@@ -212,18 +244,87 @@ input[type="text"]:focus {
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
+/* ===== MOBILE PERFORMANCE OPTIMIZATIONS ===== */
+@media (max-width: 768px) {
+  /* Reduce animation complexity on mobile */
+  * {
+    animation-duration: 0.2s !important;
+    transition-duration: 0.15s !important;
+  }
+  
+  /* Disable complex animations */
+  .timeline-item.cascade-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  
+  .timeline-position-orb {
+    animation: none;
+  }
+  
+  .project-card.present-moment {
+    animation: breatheMobile 4s ease-in-out infinite;
+  }
+  
+  @keyframes breatheMobile {
+    0%, 100% { opacity: 0.9; }
+    50% { opacity: 1; }
+  }
+  
+  /* Simplify overlay animations */
+  .grid-overlay, .media-overlay {
+    animation: fadeIn 0.2s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .overlay-card {
+    animation: slideUp 0.25s ease;
+  }
+  
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  /* Disable will-change on mobile for performance */
+  .timeline-item, .grid-card, .project-card, .timeline-marker {
+    will-change: auto !important;
+  }
+}
+
 /* ===== PERFORMANCE & ACCESSIBILITY ===== */
 .timeline-item, .grid-card, .project-card, .timeline-marker {
   will-change: auto;
 }
 
-.timeline-item:hover, .grid-card:hover, .project-card:hover, .timeline-marker:hover {
-  will-change: transform, box-shadow;
+@media (hover: hover) {
+  .timeline-item:hover, .grid-card:hover, .project-card:hover, .timeline-marker:hover {
+    will-change: transform, box-shadow;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Very small device optimizations */
+@media (max-width: 375px) {
+  /* Further simplify animations */
+  * {
+    animation: none !important;
+    transition-duration: 0.1s !important;
+  }
+  
+  /* Keep only essential transitions */
+  button, .splash-btn, .project-card, .grid-card {
+    transition: opacity 0.1s ease !important;
   }
 }
