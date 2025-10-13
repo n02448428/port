@@ -7,10 +7,82 @@ from datetime import datetime
 from io import StringIO
 
 class SimpleSheetsConverter:
+    # Required columns for validation
+    REQUIRED_COLUMNS = ['id', 'title']
+    # Fields that should be split by semicolon
+    SEMICOLON_SPLIT_FIELDS = ['medium', 'tags']
+    # Fields that should be split by comma
+    COMMA_SPLIT_FIELDS = ['image_urls', 'audio_urls', 'video_urls']
+    # Fields with paired values (name|url format)
+    PAIRED_FIELDS = {
+        'external_link_names': 'external_link_urls'
+    }
+
     def __init__(self, sheet_id):
         self.sheet_id = sheet_id
         self.csv_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv"
     
+    def validate_headers(self, headers):
+        """Validate that required columns exist"""
+        missing_columns = [col for col in self.REQUIRED_COLUMNS if col not in headers]
+        if missing_columns:
+            print(f"❌ Missing required columns: {', '.join(missing_columns)}")
+            return False
+        return True
+
+    def parse_date(self, date_str):
+        """Parse date string into consistent format"""
+        if not date_str:
+            return ""
+        try:
+            # Try different date formats
+            for fmt in ['%m/%d/%y', '%m/%d/%Y', '%Y-%m-%d']:
+                try:
+                    return datetime.strptime(date_str, fmt).strftime('%Y-%m-%d')
+                except ValueError:
+                    continue
+            return date_str  # Return original if no format matches
+        except Exception:
+            return date_str
+
+    def process_field(self, header, value):
+        """Process field based on its type"""
+        if not value:
+            return None
+            
+        value = value.strip()
+        
+        if header == 'date':
+            return self.parse_date(value)
+        
+        if header in self.SEMICOLON_SPLIT_FIELDS:
+            return [item.strip() for item in value.split(';') if item.strip()]
+            
+        if header in self.COMMA_SPLIT_FIELDS:
+            return [item.strip() for item in value.split(',') if item.strip()]
+            
+        return value
+
+    def process_paired_fields(self, project):
+        """Process paired fields like external links"""
+        for names_field, urls_field in self.PAIRED_FIELDS.items():
+            if names_field in project and urls_field in project:
+                names = project[names_field][0].split('|') if project[names_field] else []
+                urls = project[urls_field][0].split('|') if project[urls_field] else []
+                
+                # Create pairs of names and URLs
+                links = []
+                for i in range(min(len(names), len(urls))):
+                    links.append({
+                        'name': names[i].strip(),
+                        'url': urls[i].strip()
+                    })
+                
+                # Update project with processed links
+                project['external_links'] = links
+                del project[names_field]
+                del project[urls_field]
+
     def fetch_sheet_data(self):
         """Fetch CSV data from public Google Sheet"""
         try:
@@ -18,8 +90,10 @@ class SimpleSheetsConverter:
             response = requests.get(self.csv_url)
             response.raise_for_status()
             
-            # Parse CSV data
             csv_data = list(csv.reader(StringIO(response.text)))
+            if len(csv_data) < 2:
+                raise ValueError("Sheet contains insufficient data")
+                
             print(f"✅ Fetched {len(csv_data)} rows from sheet")
             return csv_data
             
@@ -29,40 +103,40 @@ class SimpleSheetsConverter:
     
     def process_data(self, csv_data):
         """Convert CSV data to JSON structure"""
-        if not csv_data or len(csv_data) < 2:
-            print("❌ No valid data found")
+        if not csv_data:
+            print("❌ No data to process")
             return []
         
         headers = [h.strip().lower().replace(' ', '_').replace('-', '_') for h in csv_data[0]]
+        
+        if not self.validate_headers(headers):
+            return []
+            
         projects = []
         
-        for row in csv_data[1:]:
-            # Skip empty rows
+        for row_num, row in enumerate(csv_data[1:], 2):
+            # Skip completely empty rows
             if not any(cell.strip() for cell in row):
                 continue
             
             # Pad row to match headers length
-            while len(row) < len(headers):
-                row.append('')
+            row = row + [''] * (len(headers) - len(row))
             
             project = {}
             
-            for i, header in enumerate(headers):
-                value = row[i].strip() if i < len(row) else ''
-                
-                if not value:  # Skip empty fields
-                    continue
-                
-                # Handle comma-separated fields
-                if header in ['image_urls', 'audio_urls', 'video_urls', 'tags', 
-                             'external_link_names', 'external_link_urls']:
-                    project[header] = [item.strip() for item in value.split(',') if item.strip()]
-                else:
-                    project[header] = value
+            for header, value in zip(headers, row):
+                processed_value = self.process_field(header, value)
+                if processed_value is not None:
+                    project[header] = processed_value
             
-            # Only include projects with at least id and title
-            if project.get('id') and project.get('title'):
+            # Process paired fields
+            self.process_paired_fields(project)
+            
+            # Validate required fields
+            if all(project.get(field) for field in self.REQUIRED_COLUMNS):
                 projects.append(project)
+            else:
+                print(f"⚠️ Skipping row {row_num}: Missing required fields")
         
         print(f"✅ Processed {len(projects)} valid projects")
         return projects
