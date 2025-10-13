@@ -1,33 +1,7 @@
 [
   {
     "id": "1",
-    "title": "game1",
-    "date": "08/27/24",
-    "type": "video game",
-    "status": "completed",
-    "description": "describing things",
-    "medium": "code",
-    "external_link_names": [
-      "google"
-    ],
-    "external_link_urls": [
-      "google.com"
-    ],
-    "tags": [
-      "#urmom"
-    ]
-  },
-  {
-    "id": "2",
-    "title": "game2",
-    "type": "game",
-    "status": "in progressss",
-    "description": "this was a good and fun game to make",
-    "story": "took forever",
-    "medium": "unity, blender, apis",
-    "video_urls": [
-      "https://www.youtube.com/watch?v=bZrfMU71W9I&list=RDbZrfMU71W9I&start_radio=1"
-    ]
+    "title": "undone : a book of poems"
   },
   {
     "id": "3",
@@ -38,11 +12,11 @@
     "description": "Weave through the neon cybergrid, leaving light trails in your wake. Built for Pieter Levels' (@levelsio) March 2025 VibeJam game jam.",
     "medium": "Javascript;CSS;HTML;Three.js",
     "external_link_names": [
-      "Play here!",
-      "GitHub"
+      "Play here!|GitHub"
     ],
     "external_link_urls": [
-      "https://ntb-chi.vercel.app|https://github.com/n02448428/NTB"
+      "https://ntb-chi.vercel.app",
+      "https://github.com/n02448428/NTB"
     ],
     "tags": [
       "Javascript;CSS;HTML;Three.js"
