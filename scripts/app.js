@@ -759,6 +759,9 @@ const getMediaType = url => {
   return 'unknown';
 };
 
+// Replace your createExpandedContent function with this version
+// Find it around line 500-600 in app.js
+
 const createExpandedContent = proj => {
   if (!proj) return '';
   
@@ -773,96 +776,83 @@ const createExpandedContent = proj => {
     <div class="expanded-scroll">
   `;
   
-  if (proj.description) html += `<div class="content-section"><h4>Description</h4><p>${proj.description}</p></div>`;
-  if (proj.story) html += `<div class="content-section"><h4>Story</h4><p>${proj.story}</p></div>`;
+  // Only show Description if it exists and has content
+  if (proj.description && proj.description.trim()) {
+    html += `<div class="content-section"><h4>Description</h4><p>${proj.description}</p></div>`;
+  }
   
-  // Use safe processed links
-  if (proj.processedLinks && proj.processedLinks.length > 0) {
+  // Only show Story if it exists and has content
+  if (proj.story && proj.story.trim()) {
+    html += `<div class="content-section"><h4>Story</h4><p>${proj.story}</p></div>`;
+  }
+  
+  // Render links - only if they exist
+  const linksToRender = proj.external_links || proj.processedLinks;
+  
+  if (linksToRender && linksToRender.length > 0) {
     html += `<div class="content-section"><h4>Links</h4><ul>`;
-    proj.processedLinks.forEach(link => {
+    linksToRender.forEach(link => {
       html += `<li><a href="${link.url}" class="external-link" target="_blank" rel="noopener noreferrer">${link.name}</a></li>`;
     });
     html += `</ul></div>`;
-  } else if (proj.links || (proj.external_link_names && proj.external_link_urls)) {
-    // Fallback to original logic for backward compatibility
-    html += `<div class="content-section"><h4>Links</h4><ul>`;
-    let links = [];
+  }
+  
+  // Only show Media if it exists and has content
+  if (proj.media) {
+    const mediaItems = Array.isArray(proj.media) ? proj.media.filter(url => url && url.trim()) : [proj.media];
     
-    if (proj.links && Array.isArray(proj.links)) {
-      links = proj.links.map(link => {
-        if (typeof link === 'string') {
-          const [name, url] = link.includes('|') ? link.split('|') : [link, link];
-          return { name: name || url, url: url || '#' };
+    if (mediaItems.length > 0 && mediaItems.some(url => url && url.trim())) {
+      html += `<div class="content-section"><h4>Media</h4><div class="media-gallery">`;
+      mediaItems.forEach(url => {
+        if (!url || !url.trim()) return; // Skip empty items
+        const type = getMediaType(url);
+        if (type === 'image') {
+          html += `<img src="${url}" alt="media" class="media-item" data-type="image" data-url="${url}">`;
+        } else if (type === 'video') {
+          html += `<div class="video-thumb media-item" data-type="video" data-url="${url}"><span>▶️ Video</span></div>`;
+        } else if (type === 'youtube') {
+          html += `<div class="youtube-thumb media-item" data-type="youtube" data-url="${url}"><span>▶️ YouTube</span></div>`;
+        } else {
+          html += `<a href="${url}" class="external-link" target="_blank">${url}</a>`;
         }
-        return { name: link.name || link.url || 'Link', url: link.url || '#' };
       });
-    } else if (proj.external_link_names && proj.external_link_urls) {
-      // Parse names and URLs with comprehensive handling
-      let names = [], urls = [];
-      
-      if (Array.isArray(proj.external_link_names)) {
-        names = proj.external_link_names.map(n => String(n || ''));
-      } else if (typeof proj.external_link_names === 'string') {
-        names = proj.external_link_names.includes('|') ? 
-               proj.external_link_names.split('|') : 
-               proj.external_link_names.split(',');
-        names = names.map(n => n.trim());
-      }
-      
-      if (Array.isArray(proj.external_link_urls)) {
-        proj.external_link_urls.forEach(urlItem => {
-          if (typeof urlItem === 'string' && urlItem.includes('|')) {
-            urls.push(...urlItem.split('|').map(u => u.trim()));
-          } else {
-            urls.push(String(urlItem || ''));
-          }
-        });
-      } else if (typeof proj.external_link_urls === 'string') {
-        urls = proj.external_link_urls.includes('|') ? 
-               proj.external_link_urls.split('|') : 
-               proj.external_link_urls.split(',');
-        urls = urls.map(u => u.trim());
-      }
-      
-      const maxLength = Math.max(names.length, urls.length);
-      for (let i = 0; i < maxLength; i++) {
-        links.push({ name: names[i] || urls[i] || 'Link', url: urls[i] || '#' });
-      }
+      html += `</div></div>`;
+    }
+  }
+  
+  // Collect other fields that have actual content
+  let otherHtml = '';
+  const skipFields = [
+    'id', 'title', 'type', 'date', 'status', 'description', 'story', 
+    'links', 'media', 'external_link_names', 'external_link_urls', 
+    'isPresentMoment', 'processedLinks', 'external_links', 
+    'image_urls', 'audio_urls', 'video_urls'
+  ];
+  
+  Object.entries(proj).forEach(([key, value]) => {
+    if (skipFields.includes(key)) return;
+    
+    // Check if value has actual content
+    let hasContent = false;
+    if (Array.isArray(value)) {
+      hasContent = value.length > 0 && value.some(item => item && String(item).trim());
+    } else if (typeof value === 'string') {
+      hasContent = value.trim().length > 0;
+    } else if (typeof value === 'number' || typeof value === 'boolean') {
+      hasContent = true;
     }
     
-    links.forEach(link => {
-      html += `<li><a href="${link.url}" class="external-link" target="_blank">${link.name}</a></li>`;
-    });
-    html += `</ul></div>`;
-  }
-  
-  // Media
-  if (proj.media) {
-    html += `<div class="content-section"><h4>Media</h4><div class="media-gallery">`;
-    const mediaItems = Array.isArray(proj.media) ? proj.media : [proj.media];
-    mediaItems.forEach(url => {
-      const type = getMediaType(url);
-      if (type === 'image') {
-        html += `<img src="${url}" alt="media" class="media-item" data-type="image" data-url="${url}">`;
-      } else if (type === 'video') {
-        html += `<div class="video-thumb media-item" data-type="video" data-url="${url}"><span>▶️ Video</span></div>`;
-      } else if (type === 'youtube') {
-        html += `<div class="youtube-thumb media-item" data-type="youtube" data-url="${url}"><span>▶️ YouTube</span></div>`;
-      } else {
-        html += `<a href="${url}" class="external-link" target="_blank">${url}</a>`;
-      }
-    });
-    html += `</div></div>`;
-  }
-  
-  // Other fields
-  let otherHtml = '';
-  Object.entries(proj).forEach(([key, value]) => {
-    if (!['id', 'title', 'type', 'date', 'status', 'description', 'story', 'links', 'media', 'external_link_names', 'external_link_urls', 'isPresentMoment', 'processedLinks'].includes(key) && value) {
-      otherHtml += `<p><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${value}</p>`;
+    if (hasContent) {
+      const displayValue = Array.isArray(value) ? value.join(', ') : value;
+      const formattedKey = key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ');
+      otherHtml += `<p><strong>${formattedKey}:</strong> ${displayValue}</p>`;
     }
   });
-  if (otherHtml) html += `<div class="content-section"><h4>Other Details</h4>${otherHtml}</div>`;
+  
+  // Only show Other Details section if there's content
+  if (otherHtml) {
+    html += `<div class="content-section"><h4>Other Details</h4>${otherHtml}</div>`;
+  }
   
   return html + '</div>';
 };
