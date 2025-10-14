@@ -933,3 +933,23 @@ button.flash { background: var(--fg) !important; color: var(--bg) !important; }
     transform: translateY(0);
   }
 }
+
+.project-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.project-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--accent-color);
+    color: var(--bg-color);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: opacity 0.2s;
+}
+
+.project-link:hover {
+    opacity: 0.8;
+}
