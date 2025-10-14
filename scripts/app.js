@@ -274,7 +274,12 @@ const validateAndProcessProject = (project) => {
     external_link_urls: project.external_link_urls || []
   };
 
-  if (validated.external_link_names && validated.external_link_urls) {
+  // Handle links: Python script might send either format
+  if (project.external_links && Array.isArray(project.external_links)) {
+    // Already processed by Python script (new format)
+    validated.processedLinks = project.external_links;
+  } else if (validated.external_link_names && validated.external_link_urls) {
+    // Raw data that needs processing (old format)
     validated.processedLinks = safeProcessLinks(validated.external_link_names, validated.external_link_urls);
   }
 
