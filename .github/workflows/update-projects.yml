@@ -1,19 +1,17 @@
 name: Update Projects from Google Sheet
 
 on:
-  # Manual trigger - you can run this from GitHub mobile/web
   workflow_dispatch:
-  
-  # Optional: Auto-run daily at 9 AM UTC (remove if you only want manual)
-  # schedule:
-  #   - cron: '0 9 * * *'
+  schedule:
+    - cron: '0 9 * * *'
 
 jobs:
   update-projects:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Allow writing to repository
-      actions: read    # Allow reading workflow info
+      contents: write
+      actions: read
+      id-token: write  # Add this for secrets access
     
     steps:
     - name: Checkout repository
@@ -29,10 +27,12 @@ jobs:
     
     - name: Install dependencies
       run: |
-        pip install requests
+        python -m pip install --upgrade pip
+        pip install requests pandas  # Add pandas for better CSV handling
     
     - name: Run sheet converter
       run: |
+        mkdir -p data  # Ensure data directory exists
         python sheets_to_json.py
       env:
         SHEET_ID: ${{ secrets.SHEET_ID }}
