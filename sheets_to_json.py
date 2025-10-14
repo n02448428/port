@@ -5,123 +5,84 @@ import os
 import subprocess
 from datetime import datetime
 from io import StringIO
-import re
 
-class EnhancedSheetsConverter:
-    """
-    Enhanced Google Sheets to JSON converter with:
-    - Link validation and warnings
-    - Better error messages
-    - Data quality checks
-    - Detailed logging
-    """
-    
+class SimpleSheetsConverter:
+    # Required columns for validation
     REQUIRED_COLUMNS = ['id', 'title']
+    # Fields that should be split by semicolon
     SEMICOLON_SPLIT_FIELDS = ['medium', 'tags']
+    # Fields that should be split by comma
     COMMA_SPLIT_FIELDS = ['image_urls', 'audio_urls', 'video_urls']
-    
-    # URL validation regex
-    URL_PATTERN = re.compile(
-        r'^https?://'  # http:// or https://
-        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
-        r'localhost|'  # localhost...
-        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-        r'(?::\d+)?'  # optional port
-        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+    # Fields with paired values (name|url format)
+    PAIRED_FIELDS = {
+        'external_link_names': 'external_link_urls'
+    }
 
     def __init__(self, sheet_id):
         self.sheet_id = sheet_id
         self.csv_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv"
-        self.warnings = []
-        self.stats = {
-            'total_projects': 0,
-            'valid_projects': 0,
-            'invalid_links': 0,
-            'placeholder_links': 0,
-            'empty_links': 0
-        }
     
-    def validate_url(self, url):
-        """Validate if string is a proper URL"""
-        if not url or len(url) < 10:
+    def validate_headers(self, headers):
+        """Validate that required columns exist"""
+        missing_columns = [col for col in self.REQUIRED_COLUMNS if col not in headers]
+        if missing_columns:
+            print(f"❌ Missing required columns: {', '.join(missing_columns)}")
             return False
-        return bool(self.URL_PATTERN.match(url))
-    
-    def is_placeholder(self, text):
-        """Check if text is a placeholder (single char, 'h', 'url', etc.)"""
-        if not text:
-            return True
-        text = text.strip().lower()
-        placeholders = ['h', 'p', 't', 'g', 'url', 'link', 'todo', 'tbd', '#', 'x']
-        return len(text) <= 2 or text in placeholders
-    
-    def process_external_links(self, project, row_num):
-        """
-        Process external_link_names and external_link_urls with validation
-        Returns processed links and logs warnings
-        """
-        names_raw = project.get('external_link_names', '')
-        urls_raw = project.get('external_link_urls', '')
-        
-        if not names_raw and not urls_raw:
-            return []
-        
-        # Parse names and URLs
-        names = []
-        urls = []
-        
-        if isinstance(names_raw, list):
-            names = names_raw
-        elif isinstance(names_raw, str):
-            names = [n.strip() for n in names_raw.split('|') if n.strip()]
-        
-        if isinstance(urls_raw, list):
-            urls = urls_raw
-        elif isinstance(urls_raw, str):
-            urls = [u.strip() for u in urls_raw.split('|') if u.strip()]
-        
-        # Validate and pair
-        valid_links = []
-        
-        for i in range(max(len(names), len(urls))):
-            name = names[i] if i < len(names) else ''
-            url = urls[i] if i < len(urls) else ''
+        return True
+
+    def parse_date(self, date_str):
+        """Parse date string into consistent format"""
+        if not date_str:
+            return ""
+        try:
+            # Try different date formats
+            for fmt in ['%m/%d/%y', '%m/%d/%Y', '%Y-%m-%d']:
+                try:
+                    return datetime.strptime(date_str, fmt).strftime('%Y-%m-%d')
+                except ValueError:
+                    continue
+            return date_str  # Return original if no format matches
+        except Exception:
+            return date_str
+
+    def process_field(self, header, value):
+        """Process field based on its type"""
+        if not value:
+            return None
             
-            # Check for placeholders
-            if self.is_placeholder(name) and self.is_placeholder(url):
-                self.stats['placeholder_links'] += 1
-                self.warnings.append(
-                    f"⚠️  Row {row_num} ({project.get('title', 'Unknown')}): "
-                    f"Placeholder link detected: '{name}' → '{url}'"
-                )
-                continue
-            
-            # Check for empty
-            if not name or not url:
-                self.stats['empty_links'] += 1
-                self.warnings.append(
-                    f"⚠️  Row {row_num} ({project.get('title', 'Unknown')}): "
-                    f"Incomplete link - Name: '{name}', URL: '{url}'"
-                )
-                continue
-            
-            # Validate URL format
-            if not self.validate_url(url):
-                self.stats['invalid_links'] += 1
-                self.warnings.append(
-                    f"❌ Row {row_num} ({project.get('title', 'Unknown')}): "
-                    f"Invalid URL format: '{url}'"
-                )
-                continue
-            
-            # Valid link!
-            valid_links.append({
-                'name': name,
-                'url': url
-            })
+        value = value.strip()
         
-        return valid_links
-    
+        if header == 'date':
+            return self.parse_date(value)
+        
+        if header in self.SEMICOLON_SPLIT_FIELDS:
+            return [item.strip() for item in value.split(';') if item.strip()]
+            
+        if header in self.COMMA_SPLIT_FIELDS:
+            return [item.strip() for item in value.split(',') if item.strip()]
+            
+        return value
+
+    def process_paired_fields(self, project):
+        """Process paired fields like external links"""
+        for names_field, urls_field in self.PAIRED_FIELDS.items():
+            if names_field in project and urls_field in project:
+                names = project[names_field][0].split('|') if project[names_field] else []
+                urls = project[urls_field][0].split('|') if project[urls_field] else []
+                
+                # Create pairs of names and URLs
+                links = []
+                for i in range(min(len(names), len(urls))):
+                    links.append({
+                        'name': names[i].strip(),
+                        'url': urls[i].strip()
+                    })
+                
+                # Update project with processed links
+                project['external_links'] = links
+                del project[names_field]
+                del project[urls_field]
+
     def fetch_sheet_data(self):
         """Fetch CSV data from public Google Sheet"""
         try:
@@ -140,113 +101,45 @@ class EnhancedSheetsConverter:
             print(f"❌ Error fetching sheet data: {e}")
             return None
     
-    def validate_headers(self, headers):
-        """Validate that required columns exist"""
-        missing = [col for col in self.REQUIRED_COLUMNS if col not in headers]
-        if missing:
-            print(f"❌ Missing required columns: {', '.join(missing)}")
-            return False
-        return True
-    
-    def parse_date(self, date_str):
-        """Parse date string into consistent format"""
-        if not date_str:
-            return ""
-        try:
-            for fmt in ['%m/%d/%y', '%m/%d/%Y', '%Y-%m-%d']:
-                try:
-                    return datetime.strptime(date_str, fmt).strftime('%Y-%m-%d')
-                except ValueError:
-                    continue
-            return date_str
-        except Exception:
-            return date_str
-    
-    def process_field(self, header, value):
-        """Process field based on its type"""
-        if not value:
-            return None
-            
-        value = value.strip()
-        
-        if header == 'date':
-            return self.parse_date(value)
-        
-        if header in self.SEMICOLON_SPLIT_FIELDS:
-            return [item.strip() for item in value.split(';') if item.strip()]
-            
-        if header in self.COMMA_SPLIT_FIELDS:
-            return [item.strip() for item in value.split(',') if item.strip()]
-            
-        return value
-    
     def process_data(self, csv_data):
-        """Convert CSV data to JSON structure with validation"""
+        """Convert CSV data to JSON structure"""
         if not csv_data:
             print("❌ No data to process")
             return []
         
-        headers = [h.strip().lower().replace(' ', '_').replace('-', '_') 
-                  for h in csv_data[0]]
+        headers = [h.strip().lower().replace(' ', '_').replace('-', '_') for h in csv_data[0]]
         
         if not self.validate_headers(headers):
             return []
-        
+            
         projects = []
-        self.warnings = []
         
         for row_num, row in enumerate(csv_data[1:], 2):
+            # Skip completely empty rows
             if not any(cell.strip() for cell in row):
                 continue
             
+            # Pad row to match headers length
             row = row + [''] * (len(headers) - len(row))
+            
             project = {}
             
             for header, value in zip(headers, row):
-                processed = self.process_field(header, value)
-                if processed is not None:
-                    project[header] = processed
+                processed_value = self.process_field(header, value)
+                if processed_value is not None:
+                    project[header] = processed_value
             
-            # Process external links with validation
-            if 'external_link_names' in project or 'external_link_urls' in project:
-                valid_links = self.process_external_links(project, row_num)
-                if valid_links:
-                    project['external_links'] = valid_links
-                # Remove raw fields
-                project.pop('external_link_names', None)
-                project.pop('external_link_urls', None)
+            # Process paired fields
+            self.process_paired_fields(project)
             
             # Validate required fields
             if all(project.get(field) for field in self.REQUIRED_COLUMNS):
                 projects.append(project)
-                self.stats['valid_projects'] += 1
             else:
-                print(f"⚠️  Skipping row {row_num}: Missing required fields")
+                print(f"⚠️ Skipping row {row_num}: Missing required fields")
         
-        self.stats['total_projects'] = len(csv_data) - 1
+        print(f"✅ Processed {len(projects)} valid projects")
         return projects
-    
-    def print_report(self):
-        """Print validation report"""
-        print("\n" + "="*60)
-        print("📊 VALIDATION REPORT")
-        print("="*60)
-        print(f"Total rows processed: {self.stats['total_projects']}")
-        print(f"Valid projects: {self.stats['valid_projects']}")
-        print(f"Placeholder links found: {self.stats['placeholder_links']}")
-        print(f"Empty/incomplete links: {self.stats['empty_links']}")
-        print(f"Invalid URL formats: {self.stats['invalid_links']}")
-        
-        if self.warnings:
-            print(f"\n⚠️  {len(self.warnings)} warnings:")
-            for warning in self.warnings[:10]:  # Show first 10
-                print(f"   {warning}")
-            if len(self.warnings) > 10:
-                print(f"   ... and {len(self.warnings) - 10} more")
-        else:
-            print("\n✅ No warnings! All data looks good.")
-        
-        print("="*60 + "\n")
     
     def save_json(self, data, filename='data/projects.json'):
         """Save data to JSON file"""
@@ -270,6 +163,7 @@ class EnhancedSheetsConverter:
                 timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 commit_message = f"Update projects data - {timestamp}"
             
+            # Check if there are changes to commit
             result = subprocess.run(['git', 'diff', '--name-only'], 
                                   capture_output=True, text=True)
             
@@ -292,37 +186,41 @@ class EnhancedSheetsConverter:
             return False
     
     def run_pipeline(self):
-        """Run the complete pipeline with validation"""
-        print("🚀 Starting Enhanced Google Sheets to JSON pipeline...\n")
+        """Run the complete pipeline"""
+        print("🚀 Starting Google Sheets to JSON pipeline...")
         
+        # Fetch data from sheet
         csv_data = self.fetch_sheet_data()
         if not csv_data:
             return False
         
+        # Process into JSON structure
         projects = self.process_data(csv_data)
         if not projects:
             return False
         
-        self.print_report()
-        
+        # Save to file
         if not self.save_json(projects):
             return False
         
+        # Commit to GitHub
         if not self.commit_to_github():
             return False
         
         print("🎉 Pipeline completed successfully!")
+        print(f"📊 Updated {len(projects)} projects")
         return True
 
 def main():
+    # Get Sheet ID from environment variable (for GitHub Actions) or hardcode for local testing
     SHEET_ID = os.environ.get('SHEET_ID', 'YOUR_SHEET_ID_HERE')
     
     if SHEET_ID == "YOUR_SHEET_ID_HERE":
-        print("❌ Please set SHEET_ID environment variable")
+        print("❌ Please set SHEET_ID environment variable or update the script")
         print("💡 For local testing: SHEET_ID=your_id python sheets_to_json.py")
         return
     
-    converter = EnhancedSheetsConverter(SHEET_ID)
+    converter = SimpleSheetsConverter(SHEET_ID)
     converter.run_pipeline()
 
 if __name__ == "__main__":
