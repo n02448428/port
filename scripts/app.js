@@ -726,9 +726,19 @@ const getMediaType = url => {
 const createExpandedContent = proj => {
     const content = document.createElement('div');
     content.className = 'expanded-content';
-    
-    // ...existing code for title, description, etc...
-    
+
+    // Create and append title
+    const title = document.createElement('h2');
+    title.textContent = proj.title;
+    content.appendChild(title);
+
+    // Create and append description if it exists
+    if (proj.description) {
+        const desc = document.createElement('p');
+        desc.textContent = proj.description;
+        content.appendChild(desc);
+    }
+
     // Add external links section
     if (proj.external_links && proj.external_links.length > 0) {
         const linksContainer = document.createElement('div');
@@ -746,7 +756,15 @@ const createExpandedContent = proj => {
         
         content.appendChild(linksContainer);
     }
-    
+
+    // Add type and status if they exist
+    if (proj.type || proj.status) {
+        const meta = document.createElement('div');
+        meta.className = 'project-meta';
+        meta.textContent = [proj.type, proj.status].filter(Boolean).join(' • ');
+        content.appendChild(meta);
+    }
+
     return content;
 };
 
