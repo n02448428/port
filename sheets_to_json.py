@@ -13,10 +13,6 @@ class SimpleSheetsConverter:
     SEMICOLON_SPLIT_FIELDS = ['medium', 'tags']
     # Fields that should be split by comma
     COMMA_SPLIT_FIELDS = ['image_urls', 'audio_urls', 'video_urls']
-    # Fields with paired values (name|url format)
-    PAIRED_FIELDS = {
-        'external_link_names': 'external_link_urls'
-    }
 
     def __init__(self, sheet_id):
         self.sheet_id = sheet_id
@@ -63,25 +59,40 @@ class SimpleSheetsConverter:
             
         return value
 
-    def process_paired_fields(self, project):
-        """Process paired fields like external links"""
-        for names_field, urls_field in self.PAIRED_FIELDS.items():
-            if names_field in project and urls_field in project:
-                names = project[names_field][0].split('|') if project[names_field] else []
-                urls = project[urls_field][0].split('|') if project[urls_field] else []
-                
-                # Create pairs of names and URLs
-                links = []
-                for i in range(min(len(names), len(urls))):
-                    links.append({
-                        'name': names[i].strip(),
-                        'url': urls[i].strip()
-                    })
-                
-                # Update project with processed links
-                project['external_links'] = links
-                del project[names_field]
-                del project[urls_field]
+    def process_external_links(self, names_value, urls_value):
+        """
+        Process external link names and URLs
+        FIXED: Now properly handles pipe-separated values
+        """
+        if not names_value and not urls_value:
+            return []
+        
+        # Split by pipe separator
+        names = []
+        urls = []
+        
+        if names_value:
+            names = [n.strip() for n in str(names_value).split('|') if n.strip()]
+        
+        if urls_value:
+            urls = [u.strip() for u in str(urls_value).split('|') if u.strip()]
+        
+        # Create pairs
+        links = []
+        max_length = max(len(names), len(urls))
+        
+        for i in range(max_length):
+            name = names[i] if i < len(names) else ''
+            url = urls[i] if i < len(urls) else ''
+            
+            # Only add if both name and url exist
+            if name and url:
+                links.append({
+                    'name': name,
+                    'url': url
+                })
+        
+        return links
 
     def fetch_sheet_data(self):
         """Fetch CSV data from public Google Sheet"""
@@ -111,7 +122,11 @@ class SimpleSheetsConverter:
         
         if not self.validate_headers(headers):
             return []
-            
+        
+        # Find indices for external link columns
+        names_idx = headers.index('external_link_names') if 'external_link_names' in headers else -1
+        urls_idx = headers.index('external_link_urls') if 'external_link_urls' in headers else -1
+        
         projects = []
         
         for row_num, row in enumerate(csv_data[1:], 2):
@@ -124,13 +139,26 @@ class SimpleSheetsConverter:
             
             project = {}
             
-            for header, value in zip(headers, row):
+            # Process all fields EXCEPT the link name/url fields
+            for i, (header, value) in enumerate(zip(headers, row)):
+                # Skip the raw link fields - we'll process them separately
+                if header in ['external_link_names', 'external_link_urls']:
+                    continue
+                    
                 processed_value = self.process_field(header, value)
                 if processed_value is not None:
                     project[header] = processed_value
             
-            # Process paired fields
-            self.process_paired_fields(project)
+            # NOW process the external links into the proper format
+            if names_idx >= 0 and urls_idx >= 0:
+                names_value = row[names_idx] if len(row) > names_idx else ''
+                urls_value = row[urls_idx] if len(row) > urls_idx else ''
+                
+                links = self.process_external_links(names_value, urls_value)
+                
+                if links:
+                    project['external_links'] = links
+                    print(f"✅ Row {row_num} ({project.get('title', 'Unknown')}): Added {len(links)} link(s)")
             
             # Validate required fields
             if all(project.get(field) for field in self.REQUIRED_COLUMNS):
