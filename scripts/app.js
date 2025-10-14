@@ -724,48 +724,111 @@ const getMediaType = url => {
 };
 
 const createExpandedContent = proj => {
-    const content = document.createElement('div');
-    content.className = 'expanded-content';
-
-    // Create and append title
-    const title = document.createElement('h2');
-    title.textContent = proj.title;
-    content.appendChild(title);
-
-    // Create and append description if it exists
-    if (proj.description) {
-        const desc = document.createElement('p');
-        desc.textContent = proj.description;
-        content.appendChild(desc);
-    }
-
-    // Add external links section
-    if (proj.external_links && proj.external_links.length > 0) {
-        const linksContainer = document.createElement('div');
-        linksContainer.className = 'project-links';
-        
-        proj.external_links.forEach(link => {
-            const linkElement = document.createElement('a');
-            linkElement.href = link.url;
-            linkElement.textContent = link.name;
-            linkElement.target = '_blank';
-            linkElement.rel = 'noopener noreferrer';
-            linkElement.className = 'project-link';
-            linksContainer.appendChild(linkElement);
+  if (!proj) return '';
+  
+  let html = `
+    <div class="expanded-header">
+      <h2>${proj.title}</h2>
+      <div class="project-metadata">
+        <span class="project-type">[${proj.type}]</span>
+        <span class="project-date">${formatDate(proj.date)}</span>
+      </div>
+    </div>
+    <div class="expanded-scroll">
+  `;
+  
+  if (proj.description) html += `<div class="content-section"><h4>Description</h4><p>${proj.description}</p></div>`;
+  if (proj.story) html += `<div class="content-section"><h4>Story</h4><p>${proj.story}</p></div>`;
+  
+  // Use safe processed links
+  if (proj.processedLinks && proj.processedLinks.length > 0) {
+    html += `<div class="content-section"><h4>Links</h4><ul>`;
+    proj.processedLinks.forEach(link => {
+      html += `<li><a href="${link.url}" class="external-link" target="_blank" rel="noopener noreferrer">${link.name}</a></li>`;
+    });
+    html += `</ul></div>`;
+  } else if (proj.links || (proj.external_link_names && proj.external_link_urls)) {
+    // Fallback to original logic for backward compatibility
+    html += `<div class="content-section"><h4>Links</h4><ul>`;
+    let links = [];
+    
+    if (proj.links && Array.isArray(proj.links)) {
+      links = proj.links.map(link => {
+        if (typeof link === 'string') {
+          const [name, url] = link.includes('|') ? link.split('|') : [link, link];
+          return { name: name || url, url: url || '#' };
+        }
+        return { name: link.name || link.url || 'Link', url: link.url || '#' };
+      });
+    } else if (proj.external_link_names && proj.external_link_urls) {
+      // Parse names and URLs with comprehensive handling
+      let names = [], urls = [];
+      
+      if (Array.isArray(proj.external_link_names)) {
+        names = proj.external_link_names.map(n => String(n || ''));
+      } else if (typeof proj.external_link_names === 'string') {
+        names = proj.external_link_names.includes('|') ? 
+               proj.external_link_names.split('|') : 
+               proj.external_link_names.split(',');
+        names = names.map(n => n.trim());
+      }
+      
+      if (Array.isArray(proj.external_link_urls)) {
+        proj.external_link_urls.forEach(urlItem => {
+          if (typeof urlItem === 'string' && urlItem.includes('|')) {
+            urls.push(...urlItem.split('|').map(u => u.trim()));
+          } else {
+            urls.push(String(urlItem || ''));
+          }
         });
-        
-        content.appendChild(linksContainer);
+      } else if (typeof proj.external_link_urls === 'string') {
+        urls = proj.external_link_urls.includes('|') ? 
+               proj.external_link_urls.split('|') : 
+               proj.external_link_urls.split(',');
+        urls = urls.map(u => u.trim());
+      }
+      
+      const maxLength = Math.max(names.length, urls.length);
+      for (let i = 0; i < maxLength; i++) {
+        links.push({ name: names[i] || urls[i] || 'Link', url: urls[i] || '#' });
+      }
     }
-
-    // Add type and status if they exist
-    if (proj.type || proj.status) {
-        const meta = document.createElement('div');
-        meta.className = 'project-meta';
-        meta.textContent = [proj.type, proj.status].filter(Boolean).join(' • ');
-        content.appendChild(meta);
+    
+    links.forEach(link => {
+      html += `<li><a href="${link.url}" class="external-link" target="_blank">${link.name}</a></li>`;
+    });
+    html += `</ul></div>`;
+  }
+  
+  // Media
+  if (proj.media) {
+    html += `<div class="content-section"><h4>Media</h4><div class="media-gallery">`;
+    const mediaItems = Array.isArray(proj.media) ? proj.media : [proj.media];
+    mediaItems.forEach(url => {
+      const type = getMediaType(url);
+      if (type === 'image') {
+        html += `<img src="${url}" alt="media" class="media-item" data-type="image" data-url="${url}">`;
+      } else if (type === 'video') {
+        html += `<div class="video-thumb media-item" data-type="video" data-url="${url}"><span>▶️ Video</span></div>`;
+      } else if (type === 'youtube') {
+        html += `<div class="youtube-thumb media-item" data-type="youtube" data-url="${url}"><span>▶️ YouTube</span></div>`;
+      } else {
+        html += `<a href="${url}" class="external-link" target="_blank">${url}</a>`;
+      }
+    });
+    html += `</div></div>`;
+  }
+  
+  // Other fields
+  let otherHtml = '';
+  Object.entries(proj).forEach(([key, value]) => {
+    if (!['id', 'title', 'type', 'date', 'status', 'description', 'story', 'links', 'media', 'external_link_names', 'external_link_urls', 'isPresentMoment', 'processedLinks'].includes(key) && value) {
+      otherHtml += `<p><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${value}</p>`;
     }
-
-    return content;
+  });
+  if (otherHtml) html += `<div class="content-section"><h4>Other Details</h4>${otherHtml}</div>`;
+  
+  return html + '</div>';
 };
 
 const extractYoutubeId = url => {

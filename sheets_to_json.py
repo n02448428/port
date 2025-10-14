@@ -67,37 +67,19 @@ class SimpleSheetsConverter:
         """Process paired fields like external links"""
         for names_field, urls_field in self.PAIRED_FIELDS.items():
             if names_field in project and urls_field in project:
-                names_str = project[names_field]
-                urls_str = project[urls_field]
-                
-                # Skip if either field is empty
-                if not names_str or not urls_str:
-                    continue
-                
-                # Split by '|' character
-                names = [name.strip() for name in names_str.split('|')]
-                
-                # Handle URLs - split by | first, then handle any commas
-                urls = []
-                for url_group in urls_str.split('|'):
-                    # Take first URL if comma-separated
-                    url = url_group.split(',')[0].strip()
-                    urls.append(url)
+                names = project[names_field][0].split('|') if project[names_field] else []
+                urls = project[urls_field][0].split('|') if project[urls_field] else []
                 
                 # Create pairs of names and URLs
                 links = []
                 for i in range(min(len(names), len(urls))):
-                    if names[i] and urls[i]:
-                        links.append({
-                            'name': names[i],
-                            'url': urls[i]
-                        })
+                    links.append({
+                        'name': names[i].strip(),
+                        'url': urls[i].strip()
+                    })
                 
                 # Update project with processed links
-                if links:
-                    project['external_links'] = links
-                
-                # Remove original fields
+                project['external_links'] = links
                 del project[names_field]
                 del project[urls_field]
 
