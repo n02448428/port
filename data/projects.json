@@ -21,6 +21,12 @@
       "CSS",
       "HTML",
       "Three.js"
+    ],
+    "external_links": [
+      {
+        "name": "P",
+        "url": "h"
+      }
     ]
   },
   {
@@ -46,12 +52,8 @@
     ],
     "external_links": [
       {
-        "name": "Try it here",
-        "url": "https://n02448428.github.io/rosie/"
-      },
-      {
-        "name": "GitHub",
-        "url": "https://github.com/n02448428/rosie"
+        "name": "T",
+        "url": "h"
       }
     ]
   },
@@ -76,12 +78,8 @@
     ],
     "external_links": [
       {
-        "name": "Try it here (.glt files work best)",
-        "url": "https://n02448428.github.io/billboard-gen-gui/"
-      },
-      {
-        "name": "GitHub",
-        "url": "https://github.com/n02448428/billboard-gen-gui"
+        "name": "T",
+        "url": "h"
       }
     ]
   },
@@ -105,12 +103,8 @@
     ],
     "external_links": [
       {
-        "name": "Try here!",
-        "url": "https://n02448428.github.io/My-Room/"
-      },
-      {
-        "name": "GitHub",
-        "url": "https://github.com/n02448428/My-Room"
+        "name": "T",
+        "url": "h"
       }
     ]
   },
@@ -134,12 +128,8 @@
     ],
     "external_links": [
       {
-        "name": "Play here!",
-        "url": "https://n02448428.github.io/Firebreather/"
-      },
-      {
-        "name": "GitHub",
-        "url": "https://github.com/n02448428/Firebreather"
+        "name": "P",
+        "url": "h"
       }
     ]
   },
@@ -163,12 +153,8 @@
     ],
     "external_links": [
       {
-        "name": "Play here!",
-        "url": "https://n02448428.github.io/kart/"
-      },
-      {
-        "name": "GitHub",
-        "url": "https://github.com/n02448428/kart"
+        "name": "P",
+        "url": "h"
       }
     ]
   },
@@ -192,12 +178,8 @@
     ],
     "external_links": [
       {
-        "name": "Play here!",
-        "url": "https://novelfilms.itch.io/8192"
-      },
-      {
-        "name": "GitHub",
-        "url": "https://github.com/n02448428/8192"
+        "name": "P",
+        "url": "h"
       }
     ]
   },
@@ -221,12 +203,8 @@
     ],
     "external_links": [
       {
-        "name": "Try Demo!",
-        "url": "https://n02448428.github.io/MuseumInteractive/"
-      },
-      {
-        "name": "GitHub",
-        "url": "https://github.com/n02448428/MuseumInteractive"
+        "name": "T",
+        "url": "h"
       }
     ]
   },
@@ -244,8 +222,8 @@
     ],
     "external_links": [
       {
-        "name": "Try here!",
-        "url": "https://rosebud.ai/p/cd3fb542-5e34-4c0f-b5b9-618b963a25e3"
+        "name": "T",
+        "url": "h"
       }
     ]
   },
@@ -269,12 +247,8 @@
     ],
     "external_links": [
       {
-        "name": "Try here!",
-        "url": "https://slim-screen.vercel.app/"
-      },
-      {
-        "name": "GitHub",
-        "url": "https://github.com/n02448428/SlimScreen"
+        "name": "T",
+        "url": "h"
       }
     ]
   },
@@ -294,8 +268,8 @@
     ],
     "external_links": [
       {
-        "name": "GitHub",
-        "url": "https://github.com/n02448428/Stranded-game"
+        "name": "G",
+        "url": "h"
       }
     ]
   },
@@ -319,12 +293,8 @@
     ],
     "external_links": [
       {
-        "name": "Play here!",
-        "url": "https://novelfilms.itch.io/3d-maze"
-      },
-      {
-        "name": "GitHub",
-        "url": "https://github.com/n02448428/3D-Maze"
+        "name": "P",
+        "url": "h"
       }
     ]
   },
@@ -346,12 +316,8 @@
     ],
     "external_links": [
       {
-        "name": "Play here!",
-        "url": "https://novelfilms.itch.io/brix"
-      },
-      {
-        "name": "GitHub",
-        "url": "https://github.com/n02448428/brix"
+        "name": "P",
+        "url": "h"
       }
     ]
   },
@@ -373,12 +339,8 @@
     ],
     "external_links": [
       {
-        "name": "Play here!",
-        "url": "https://novelfilms.itch.io/flippybard"
-      },
-      {
-        "name": "GitHub",
-        "url": "https://github.com/n02448428/flippybard-game"
+        "name": "P",
+        "url": "h"
       }
     ]
   },
@@ -401,12 +363,8 @@
     ],
     "external_links": [
       {
-        "name": "Play here!",
-        "url": "https://novelfilms.itch.io/contrast"
-      },
-      {
-        "name": "GitHub",
-        "url": "https://github.com/n02448428/contrast-game"
+        "name": "P",
+        "url": "h"
       }
     ]
   }
