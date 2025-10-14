@@ -357,51 +357,7 @@ const loadProjects = async () => {
     
     projectsData = rawData.map(validateAndProcessProject).filter(Boolean);
 
-    // Add this temporarily to your app.js to debug link rendering
-// Put it right after loadProjects() successfully loads data
-
-// DEBUG: Check what's in the loaded data
-console.log('=== LINK DEBUG START ===');
-console.log('Total projects loaded:', projectsData.length);
-
-projectsData.forEach((proj, index) => {
-  console.log(`\n--- Project ${index + 1}: ${proj.title} ---`);
-  
-  // Check all possible link field variations
-  console.log('external_links:', proj.external_links);
-  console.log('external_link_names:', proj.external_link_names);
-  console.log('external_link_urls:', proj.external_link_urls);
-  console.log('links:', proj.links);
-  console.log('processedLinks:', proj.processedLinks);
-  
-  // Check what fields exist
-  const linkFields = Object.keys(proj).filter(key => 
-    key.toLowerCase().includes('link') || key.toLowerCase().includes('url')
-  );
-  console.log('All link-related fields:', linkFields);
-  
-  // Show what each field contains
-  linkFields.forEach(field => {
-    console.log(`  ${field}:`, proj[field]);
-  });
-});
-
-console.log('=== LINK DEBUG END ===');
-    
-    if (projectsData.length === 0) {
-      throw new Error('No valid projects found after processing. Please check your data format.');
-    }
-    
-    renderProjects(projectsData);
-    console.log(`Successfully loaded ${projectsData.length} projects`);
-    
-  } catch (error) {
-    console.error('Failed to load projects:', error);
-    showErrorState(error);
-  } finally {
-    isLoading = false;
-  }
-};
+  }};
 
 // Make loadProjects global so retry button can access it
 window.loadProjects = loadProjects;
