@@ -10,6 +10,9 @@
     "medium": [
       "book, printed paper, poems, words"
     ],
+    "image_urls": [
+      "https://m.media-amazon.com/images/I/516l3fayjkL._SY466_.jpg"
+    ],
     "tags": [
       "book",
       "poem",
@@ -19,7 +22,7 @@
     "external_links": [
       {
         "name": "Take a look",
-        "url": "https://www.amazon.com/undone-book-poems-Dmitry-Markelov/dp/B0C5PJRHDQ/ref=tmm_pap_swatch_0"
+        "url": "https://a.co/d/d8TvY5t"
       }
     ]
   },
