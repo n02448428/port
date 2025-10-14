@@ -67,7 +67,6 @@ class SimpleSheetsConverter:
         """Process paired fields like external links"""
         for names_field, urls_field in self.PAIRED_FIELDS.items():
             if names_field in project and urls_field in project:
-                # Get raw strings from the fields
                 names_str = project[names_field]
                 urls_str = project[urls_field]
                 
@@ -77,12 +76,18 @@ class SimpleSheetsConverter:
                 
                 # Split by '|' character
                 names = [name.strip() for name in names_str.split('|')]
-                urls = [url.strip() for url in urls_str.split('|')]
+                
+                # Handle URLs - split by | first, then handle any commas
+                urls = []
+                for url_group in urls_str.split('|'):
+                    # Take first URL if comma-separated
+                    url = url_group.split(',')[0].strip()
+                    urls.append(url)
                 
                 # Create pairs of names and URLs
                 links = []
                 for i in range(min(len(names), len(urls))):
-                    if names[i] and urls[i]:  # Only add if both name and url exist
+                    if names[i] and urls[i]:
                         links.append({
                             'name': names[i],
                             'url': urls[i]
@@ -92,7 +97,7 @@ class SimpleSheetsConverter:
                 if links:
                     project['external_links'] = links
                 
-                # Remove the original fields
+                # Remove original fields
                 del project[names_field]
                 del project[urls_field]
 
