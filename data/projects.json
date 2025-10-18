@@ -121,6 +121,7 @@
   {
     "id": "6",
     "title": "My Room",
+    "date": "2025-05-09",
     "type": "web app",
     "status": "Completed",
     "description": "Interactive model of my workspace complete with Unity style gizmos to transform objects.",
@@ -150,6 +151,7 @@
   {
     "id": "7",
     "title": "Firebreather",
+    "date": "2025-05-07",
     "type": "video game",
     "status": "Completed",
     "description": "Game that uses computer camera to track player's head and make fire come out of their mouth to destroy ice enemies.",
@@ -208,6 +210,7 @@
   {
     "id": "9",
     "title": "8192",
+    "date": "2025-04-19",
     "type": "video game",
     "status": "Completed",
     "description": "Numbers puzzle: try to get to the 8192 tile!",
@@ -335,6 +338,7 @@
   {
     "id": "14",
     "title": "Win95 3D Maze",
+    "date": "2025-04-29",
     "type": "video game",
     "status": "Completed",
     "description": "Navigate a 3D maze, collect retro icons, and race the clock in this classic screensaver-inspired challenge!",
