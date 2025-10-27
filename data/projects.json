@@ -181,6 +181,7 @@
   {
     "id": "8",
     "title": "Kart (working title)",
+    "date": "2025-05-01",
     "type": "video game",
     "status": "In Progress",
     "description": "An ambitious kart game project. Building for private client.",
@@ -240,6 +241,7 @@
   {
     "id": "10",
     "title": "MuseumInteractive",
+    "date": "2025-06-01",
     "type": "web app",
     "status": "Demo (Incomplete)",
     "description": "Demo interactive portfolio website.",
@@ -269,6 +271,7 @@
   {
     "id": "11",
     "title": "Hand Dance Revolution",
+    "date": "2025-05-22",
     "type": "video game",
     "status": "Completed",
     "description": "Dance Dance Revolution but played with hands using hand-tracking with computer camera.",
@@ -288,6 +291,7 @@
   {
     "id": "12",
     "title": "SlimScreen",
+    "date": "2025-07-18",
     "type": "web app",
     "status": "Almost Completed",
     "description": "Meet Lexi, your pocket-sized, ever-helpful librarian who makes research a breeze. Get instant definitions anywhere on the web.",
@@ -317,6 +321,7 @@
   {
     "id": "13",
     "title": "Stranded",
+    "date": "2023-03-10",
     "type": "video game",
     "status": "In Progress",
     "description": "Stranded is a first-person 3D exploration game set on a mysterious island. The player must uncover the truth about their past by piecing together memories.",
@@ -368,6 +373,7 @@
   {
     "id": "15",
     "title": "BRIX",
+    "date": "2022-01-19",
     "type": "video game",
     "status": "Completed",
     "description": "Brickbreaker-inspired action game. Beat the fifth level for a secret bonus!",
@@ -395,6 +401,7 @@
   {
     "id": "16",
     "title": "Flippy Bard",
+    "date": "2021-09-04",
     "type": "video game",
     "status": "Completed",
     "description": "A fun and challenging Flappy Bird clone with a twist! Guide a pixelated bard through a series of obstacles while keeping the rhythm alive.",
