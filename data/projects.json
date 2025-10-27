@@ -128,8 +128,7 @@
     "medium": [
       "Javascript",
       "HTML",
-      "THREE.js",
-      "Rosebud AI"
+      "THREE.js"
     ],
     "tags": [
       "Javascript",
@@ -158,8 +157,7 @@
     "medium": [
       "Javascript",
       "HTML",
-      "THREE.js",
-      "Rosebud AI"
+      "THREE.js"
     ],
     "tags": [
       "Javascript",
@@ -188,8 +186,7 @@
     "medium": [
       "HTML",
       "Javascript",
-      "THREE.js",
-      "Rosebud AI"
+      "THREE.js"
     ],
     "tags": [
       "HTML",
@@ -291,7 +288,7 @@
   {
     "id": "12",
     "title": "SlimScreen",
-    "date": "2025-07-18",
+    "date": "2025-03-21",
     "type": "web app",
     "status": "Almost Completed",
     "description": "Meet Lexi, your pocket-sized, ever-helpful librarian who makes research a breeze. Get instant definitions anywhere on the web.",
