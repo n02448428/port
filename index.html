@@ -1,49 +1,108 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>dmitry a. markelov</title> </head> <body> <main> <h1>dmitry a. markelov, poet / philosopher</h1>
-<p>one truth many illusions</p>
-<p>for all my friends, lovers, collaborators, old and new</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>dmitry a. markelov</title>
+  <style>
+    /* Hide the honeypot field from humans but not from bots */
+    .honeypot {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>dmitry a. markelov, poet / philosopher</h1>
 
-<section>
-  <form>
-    <label for="email">sign up to join my inner circle (rare, surprise emails)</label><br>
-    <input type="email" id="email" name="email" placeholder="your email">
-    <button type="submit">join</button>
-  </form>
-</section>
+    <p>one truth many illusions</p>
+    <p>for all my friends, lovers, collaborators, old and new</p>
 
-<section>
-  <p>listen:</p>
-  <button onclick="window.location.href='YOUTUBE_ZERO_DEMETER_URL'">
-    zero·demeter →
-  </button>
-  <button onclick="window.location.href='YOUTUBE_DARKDMTR_URL'">
-    darkdmtr →
-  </button>
-</section>
+    <section>
+      <form id="emailForm">
+        <label for="email">sign up to join my inner circle (rare, surprise emails)</label><br>
+        <input type="email" id="email" name="email" placeholder="your email" required>
+        
+        <!-- Honeypot field - invisible to humans, but bots will fill it -->
+        <input type="text" name="website" class="honeypot" tabindex="-1" autocomplete="off">
+        
+        <button type="submit">join</button>
+        <p id="formMessage"></p>
+      </form>
+    </section>
 
-<section>
-  <p>
-    <a href="AMAZON_POETRY_BOOK_URL" target="_blank" rel="noopener">
-      buy my poetry book on amazon →
-    </a>
-  </p>
-</section>
+    <section>
+      <p>listen:</p>
+      <button onclick="window.location.href='https://youtube.com/@zerodemeter'">
+        zero·demeter →
+      </button>
+      <button onclick="window.location.href='https://youtube.com/@darkdmtr'">
+        darkdmtr →
+      </button>
+    </section>
 
-<section>
-  <p>if you want to help keep this alive:</p>
-  <p>
-    <a href="DONATION_URL" target="_blank" rel="noopener">
-      tip the poet →
-    </a>
-  </p>
-</section>
+    <section>
+      <p>
+        <a href="AMAZON_POETRY_BOOK_URL" target="_blank" rel="noopener">
+          buy my poetry book on amazon →
+        </a>
+      </p>
+    </section>
 
-<footer>
-  <p>elsewhere:</p>
-  <p>
-    <a href="INSTAGRAM_URL" target="_blank" rel="noopener">instagram</a> ·
-    <a href="YOUTUBE_MAIN_URL" target="_blank" rel="noopener">youtube</a> ·
-    <a href="TWITTER_URL" target="_blank" rel="noopener">twitter</a> ·
-    <a href="OTHER_URL" target="_blank" rel="noopener">other</a>
-  </p>
-</footer>
-</main> </body> </html>
+    <section>
+      <p>if you want to help keep this alive:</p>
+      <p>
+        <a href="DONATION_URL" target="_blank" rel="noopener">
+          tip the poet →
+        </a>
+      </p>
+    </section>
+
+    <footer>
+      <p>elsewhere:</p>
+      <p>
+        <a href="INSTAGRAM_URL" target="_blank" rel="noopener">instagram</a> ·
+        <a href="YOUTUBE_MAIN_URL" target="_blank" rel="noopener">youtube</a> ·
+        <a href="TWITTER_URL" target="_blank" rel="noopener">twitter</a> ·
+        <a href="OTHER_URL" target="_blank" rel="noopener">other</a>
+      </p>
+    </footer>
+  </main>
+
+  <script>
+    const form = document.getElementById('emailForm');
+    const message = document.getElementById('formMessage');
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbysq6cHkh9MeDeqeZqeBc-Ghuga7LZoigY341ELTewF9gm4EOHerDZVy6DxvC3fd21E/exec';
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      message.textContent = 'joining...';
+      
+      const formData = new FormData(form);
+      
+      try {
+        const response = await fetch(scriptURL, {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+          message.textContent = result.message;
+          form.reset();
+        } else {
+          message.textContent = 'something went wrong. try again?';
+        }
+      } catch (error) {
+        message.textContent = 'connection error. try again?';
+      }
+    });
+  </script>
+</body>
+</html>
