@@ -1,221 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>dmitry a. markelov</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>dmitry a. markelov</title> </head> <body> <main> <h1>dmitry a. markelov, poet / philosopher</h1>
+<p>one truth many illusions</p>
+<p>for all my friends, lovers, collaborators, old and new</p>
 
-  <!-- fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
+<section>
+  <form>
+    <label for="email">sign up to join my inner circle (rare, surprise emails)</label><br>
+    <input type="email" id="email" name="email" placeholder="your email">
+    <button type="submit">join</button>
+  </form>
+</section>
 
-  <style>
-    :root {
-      --bg: #050608;
-      --fg: #f5f5f5;
-      --muted: #9b9b9b;
-      --accent: #e84b3c;
-    }
+<section>
+  <p>listen:</p>
+  <button onclick="window.location.href='YOUTUBE_ZERO_DEMETER_URL'">
+    zero·demeter →
+  </button>
+  <button onclick="window.location.href='YOUTUBE_DARKDMTR_URL'">
+    darkdmtr →
+  </button>
+</section>
 
-    * {
-      box-sizing: border-box;
-    }
+<section>
+  <p>
+    <a href="AMAZON_POETRY_BOOK_URL" target="_blank" rel="noopener">
+      buy my poetry book on amazon →
+    </a>
+  </p>
+</section>
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1.5rem;
-      background: var(--bg);
-      color: var(--fg);
-      font-family: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
+<section>
+  <p>if you want to help keep this alive:</p>
+  <p>
+    <a href="DONATION_URL" target="_blank" rel="noopener">
+      tip the poet →
+    </a>
+  </p>
+</section>
 
-    main {
-      width: 100%;
-    }
-
-    .shell {
-      max-width: 40rem;
-      width: 100%;
-    }
-
-    h1 {
-      margin: 0 0 0.25rem;
-      font-family: "Lora", serif;
-      font-size: clamp(1.8rem, 5vw, 2.4rem);
-      letter-spacing: 0.08em;
-      text-transform: lowercase;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: clip;
-    }
-
-    .tagline {
-      margin: 0 0 1.5rem;
-      font-family: "Lora", serif;
-      font-size: 0.95rem;
-      letter-spacing: 0.16em;
-      text-transform: lowercase;
-      color: var(--muted);
-    }
-
-    .hook {
-      margin: 0 0 1.75rem;
-      font-family: "Lora", serif;
-      font-size: 1.05rem;
-      line-height: 1.7;
-      text-transform: lowercase;
-    }
-
-    .hook span {
-      color: var(--accent);
-    }
-
-    .invite {
-      margin: 0 0 0.75rem;
-      font-size: 0.95rem;
-      color: var(--muted);
-      text-transform: lowercase;
-    }
-
-    form {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-bottom: 0.75rem;
-    }
-
-    input[type="email"] {
-      flex: 1 1 11rem;
-      min-width: 0;
-      padding: 0.65rem 0.75rem;
-      border-radius: 999px;
-      border: 1px solid #333;
-      background: #0c0c10;
-      color: var(--fg);
-      font: inherit;
-      text-transform: lowercase;
-    }
-
-    input::placeholder {
-      color: #666;
-      text-transform: lowercase;
-    }
-
-    button {
-      flex: 0 0 auto;
-      padding: 0.65rem 1.2rem;
-      border-radius: 999px;
-      border: 1px solid var(--accent);
-      background: var(--accent);
-      color: var(--fg);
-      font: inherit;
-      font-size: 0.9rem;
-      letter-spacing: 0.06em;
-      cursor: pointer;
-      text-transform: lowercase;
-    }
-
-    button:active {
-      transform: translateY(1px);
-    }
-
-    .tiny {
-      margin: 0 0 1.5rem;
-      font-size: 0.78rem;
-      color: var(--muted);
-      text-transform: lowercase;
-    }
-
-    .links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.9rem;
-      font-size: 0.9rem;
-      text-transform: lowercase;
-    }
-
-    .links a {
-      color: var(--fg);
-      text-decoration: none;
-      position: relative;
-    }
-
-    .links a::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: -0.18rem;
-      width: 100%;
-      height: 1px;
-      background: var(--accent);
-      opacity: 0.7;
-    }
-
-    .foot {
-      margin-top: 1.5rem;
-      font-size: 0.7rem;
-      color: #555;
-      text-transform: lowercase;
-    }
-
-    @media (max-width: 480px) {
-      .shell {
-        max-width: 100%;
-      }
-
-      form {
-        flex-direction: column;
-      }
-
-      button {
-        width: 100%;
-        text-align: center;
-      }
-
-      h1 {
-        font-size: 1.8rem;
-      }
-    }
-  </style>
-</head>
-<body>
-  <main>
-    <div class="shell">
-      <h1>dmitry a. markelov</h1>
-      <p class="tagline">one truth, many illusions</p>
-
-      <p class="hook">
-        words that touch skin first, mind later. for those who <span>feel</span> before they understand.
-      </p>
-
-      <p class="invite">
-        if something here finds you, let it write back. leave an email and a version of you i haven’t met yet.
-      </p>
-
-      <!-- replace action with your real email provider endpoint or embed later -->
-      <form action="#" method="post">
-        <input type="email" name="email" placeholder="your most honest email" required>
-        <button type="submit">send to future-us</button>
-      </form>
-
-      <p class="tiny">
-        rare letters. no newsletters. no spam, only soft hauntings.
-      </p>
-
-      <div class="links">
-        <!-- replace the # with real urls when ready -->
-        <a href="#">buy the poetry book</a>
-        <a href="#">donate</a>
-        <a href="#">elsewhere</a>
-      </div>
-
-      <p class="foot">
-        broadcasting between timelines.
-      </p>
-    </div>
-  </main>
-</body>
-</html>
+<footer>
+  <p>elsewhere:</p>
+  <p>
+    <a href="INSTAGRAM_URL" target="_blank" rel="noopener">instagram</a> ·
+    <a href="YOUTUBE_MAIN_URL" target="_blank" rel="noopener">youtube</a> ·
+    <a href="TWITTER_URL" target="_blank" rel="noopener">twitter</a> ·
+    <a href="OTHER_URL" target="_blank" rel="noopener">other</a>
+  </p>
+</footer>
+</main> </body> </html>
