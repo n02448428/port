@@ -3,8 +3,150 @@
 <head>
   <meta charset="UTF-8">
   <title>dmitry a. markelov</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
-    /* Hide the honeypot field from humans but not from bots */
+    :root {
+      --bg: #000000;
+      --fg: #ffffff;
+      --muted: #b3b3b3;
+      --accent: #e84b3c;
+      --border: #333333;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: 100%;
+      max-width: 420px;
+      padding: 2rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #050505;
+    }
+
+    h1 {
+      margin: 0 0 0.5rem;
+      font-size: 1.6rem;
+      line-height: 1.3;
+      text-align: center;
+      text-transform: lowercase;
+    }
+
+    .tagline {
+      margin: 0 0 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-transform: lowercase;
+    }
+
+    p {
+      margin: 0 0 0.9rem;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      text-transform: lowercase;
+    }
+
+    section {
+      margin-top: 1.2rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.45rem;
+      font-size: 0.86rem;
+      color: var(--muted);
+      text-transform: lowercase;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    input[type="email"] {
+      padding: 0.55rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #050505;
+      color: var(--fg);
+      font: inherit;
+      text-transform: lowercase;
+    }
+
+    input::placeholder {
+      color: #777777;
+      text-transform: lowercase;
+    }
+
+    button {
+      padding: 0.55rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: var(--fg);
+      font: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-transform: lowercase;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .small {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    a {
+      color: var(--fg);
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent);
+      padding-bottom: 1px;
+      text-transform: lowercase;
+    }
+
+    a:hover {
+      opacity: 0.9;
+    }
+
+    footer {
+      margin-top: 1.5rem;
+      font-size: 0.82rem;
+    }
+
+    footer p {
+      margin-bottom: 0.4rem;
+    }
+
     .honeypot {
       position: absolute;
       left: -9999px;
@@ -13,36 +155,42 @@
       opacity: 0;
       pointer-events: none;
     }
+
+    #formMessage {
+      font-size: 0.82rem;
+      color: var(--muted);
+      min-height: 1em;
+    }
   </style>
 </head>
 <body>
   <main>
     <h1>dmitry a. markelov, poet / philosopher</h1>
+    <p class="tagline">one truth many illusions</p>
 
-    <p>one truth many illusions</p>
-    <p>for all my friends, lovers, collaborators, old and new</p>
+    <p>for all my friends, lovers, collaborators, old and new.</p>
 
     <section>
       <form id="emailForm">
-        <label for="email">sign up to join my inner circle (rare, surprise emails)</label><br>
+        <label for="email">sign up to join my inner circle (rare, surprise emails)</label>
+
         <input type="email" id="email" name="email" placeholder="your email" required>
-        
-        <!-- Honeypot field - invisible to humans, but bots will fill it -->
+
+        <!-- honeypot field for bots -->
         <input type="text" name="website" class="honeypot" tabindex="-1" autocomplete="off">
-        
+
         <button type="submit">join</button>
         <p id="formMessage"></p>
       </form>
+      <p class="small">no spam. just occasional transmissions.</p>
     </section>
 
     <section>
       <p>listen:</p>
-      <button onclick="window.location.href='https://youtube.com/@zerodotdemeter'">
-        zero·demeter →
-      </button>
-      <button onclick="window.location.href='https://www.youtube.com/channel/UCxPPM37uFyEkVdIK-spVQVg'">
-        darkdmtr →
-      </button>
+      <div class="link-row">
+        <a href="https://youtube.com/@zerodotdemeter" target="_blank" rel="noopener">zero·demeter →</a>
+        <a href="https://www.youtube.com/channel/UCxPPM37uFyEkVdIK-spVQVg" target="_blank" rel="noopener">darkdmtr →</a>
+      </div>
     </section>
 
     <section>
@@ -64,10 +212,10 @@
 
     <footer>
       <p>elsewhere:</p>
-      <p>
-        <a href="https://www.instagram.com/1.dmtr" target="_blank" rel="noopener">instagram</a> ·
-        <a href="YOUTUBE_MAIN_URL" target="_blank" rel="noopener">youtube</a> ·
-        <a href="x.com/@odotdmtr" target="_blank" rel="noopener">twitter</a> ·
+      <p class="link-row">
+        <a href="https://www.instagram.com/1.dmtr" target="_blank" rel="noopener">instagram</a>
+        <a href="YOUTUBE_MAIN_URL" target="_blank" rel="noopener">youtube</a>
+        <a href="https://x.com/odotdmtr" target="_blank" rel="noopener">twitter</a>
         <a href="OTHER_URL" target="_blank" rel="noopener">other</a>
       </p>
     </footer>
@@ -80,19 +228,19 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+
       message.textContent = 'joining...';
-      
+
       const formData = new FormData(form);
-      
+
       try {
         const response = await fetch(scriptURL, {
           method: 'POST',
           body: formData
         });
-        
+
         const result = await response.json();
-        
+
         if (result.status === 'success') {
           message.textContent = result.message;
           form.reset();
