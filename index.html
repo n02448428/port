@@ -35,6 +35,15 @@
       perspective: 1000px;
     }
 
+    .bg-layer {
+      position: fixed;
+      inset: 0; /* top:0 right:0 bottom:0 left:0 */
+      background: #000000
+      url("https://twistedsifter.com/wp-content/uploads/2025/02/shutterstock_2463683337.jpg")
+      center/cover no-repeat;
+      z-index: -1; /* sit behind the card */
+    }
+
     .card {
       position: relative;
       transform-style: preserve-3d;
@@ -225,6 +234,7 @@
   </style>
 </head>
 <body>
+  <div class="bg-layer"></div>
   <div class="card" id="card">
     <main>
       <h1>dmitry a. markelov</h1>
