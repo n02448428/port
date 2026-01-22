@@ -21,7 +21,7 @@
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
+      height: 100dvh;
     overflow: hidden; 
     }
 
@@ -208,6 +208,10 @@
     }
 
     @media (max-width: 600px) {
+      main {
+    max-width: 360px;      /* narrower card on mobile */
+    padding: 1.6rem 1.25rem;
+  }
       body {
         align-items: flex-start;
         padding-top: 2.5rem;
