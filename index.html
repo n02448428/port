@@ -22,7 +22,7 @@
       margin: 0;
       padding: 0;
       height: 100dvh;
-    overflow: hidden; 
+      overflow: hidden;
     }
 
     body {
@@ -62,6 +62,7 @@
       opacity: 0.18;
       transform: translate3d(0,0,0);
       pointer-events: none;
+      border-radius: inherit; /* ensure overlay follows rounded corners */
     }
 
     main {
@@ -75,7 +76,7 @@
       -webkit-backdrop-filter: blur(2px);
       text-align: center;
       z-index: 1;
-      margin: 0; 
+      margin: 0;
     }
 
     h1 {
@@ -209,10 +210,10 @@
 
     @media (max-width: 600px) {
       .card {
-        border-radius: 24px;    /* re-assert radius */
+        border-radius: 24px; /* keep rounded on mobile */
       }
       main {
-        max-width: 360px;      /* narrower card on mobile */
+        max-width: 360px;
         padding: 1.6rem 1.25rem;
       }
       body {
@@ -267,13 +268,6 @@
         </p>
       </section>
 
-      <section>
-        <p class="link-row">
-          <a href="https://www.instagram.com/1.dmtr" target="_blank" rel="noopener">ig</a>
-          <a href="https://x.com/0dotdmtr" target="_blank" rel="noopener">x</a>
-        </p>
-      </section>
-
       <footer>
         <p class="link-row">
           <a href="https://www.instagram.com/1.dmtr" target="_blank" rel="noopener">ig</a> |
@@ -317,11 +311,15 @@
 
     const card = document.getElementById('card');
     const maxTilt = 10;
+    let currentX = 0;
+    let currentY = 0;
 
     function applyTilt(xRatio, yRatio) {
-      const rotateY = xRatio * maxTilt;
-      const rotateX = -yRatio * maxTilt;
-      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      const targetY = xRatio * maxTilt;
+      const targetX = -yRatio * maxTilt;
+      currentX = targetX;
+      currentY = targetY;
+      card.style.transform = `rotateX(${currentX}deg) rotateY(${currentY}deg)`;
     }
 
     function handleMove(e) {
@@ -334,6 +332,8 @@
     }
 
     function resetTilt() {
+      currentX = 0;
+      currentY = 0;
       card.style.transform = 'rotateX(0deg) rotateY(0deg)';
     }
 
@@ -344,7 +344,7 @@
 
     let touchActive = false;
 
-    card.addEventListener('touchstart', () => {
+    card.addEventListener('touchstart', (e) => {
       touchActive = true;
     }, { passive: true });
 
@@ -356,7 +356,11 @@
       const y = touch.clientY - rect.top;
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      applyTilt((x - centerX) / centerX, (y - centerY) / centerY);
+      const xRatio = (x - centerX) / centerX;
+      const yRatio = (y - centerY) / centerY;
+
+      // dampen movement for smoother feel on mobile
+      applyTilt(xRatio * 0.7, yRatio * 0.7);
     }, { passive: true });
 
     card.addEventListener('touchend', () => {
