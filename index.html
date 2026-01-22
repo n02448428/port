@@ -79,6 +79,14 @@
       border-radius: inherit; /* holo respects rounded corners */
     }
 
+    .signature {
+      display: block;
+      margin: 0 auto 1rem; /* center + space under */
+      max-width: 180px;    /* adjust to taste */
+      width: 60%;
+      height: auto;        /* keep aspect ratio */
+    }
+
     main {
       position: relative;
       width: 100%;
@@ -239,6 +247,11 @@
 
   <div class="card" id="card">
     <main>
+      <img
+        src="images/signature.png"
+        alt="signature of dmitry a. markelov"
+        class="signature"
+      >
       <h1>dmitry a. markelov</h1>
       <p class="tagline">poet / philosopher</p>
 
