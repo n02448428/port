@@ -35,11 +35,13 @@
 
     main {
       width: 100%;
-      max-width: 420px;
-      padding: 2rem 1.5rem;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: #050505;
+  max-width: 420px;
+  padding: 2rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 24px;                /* was 16px */
+  background: rgba(5, 5, 5, 0.6);     /* add transparency */
+  backdrop-filter: blur(16px);        /* glass blur */
+  -webkit-backdrop-filter: blur(16px);
       text-align: center;  
     }
 
@@ -80,9 +82,10 @@
 
     /* email box wrapper */
     .email-box {
-      border: 1px solid #ffffff;
-      border-radius: 14px;
-      padding: 0.75rem 0.85rem 0.45rem;
+      border: 1px solid rgba(255, 255, 255, 0.35);  /* subtle bright border */
+  border-radius: 18px;                          /* rounder */
+  padding: 0.75rem 0.9rem 0.45rem;
+  background: rgba(0, 0, 0, 0.35);              /* slightly darker glass */
     }
 
     form {
@@ -93,10 +96,10 @@
 
     input[type="email"] {
       padding: 0.55rem 0.75rem;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: #050505;
-      color: var(--fg);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--fg);
       font: inherit;
       text-transform: lowercase;
     }
@@ -108,9 +111,10 @@
 
     button {
       padding: 0.55rem 0.9rem;
-      border-radius: 999px;
-      border: 1px solid var(--accent);
-      background: var(--accent);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--accent);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.55);   /* soft lift, very iOS */
       color: var(--fg);
       font: inherit;
       font-size: 0.9rem;
