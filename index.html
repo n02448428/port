@@ -70,11 +70,12 @@
       max-width: 420px;
       padding: 2rem 1.5rem;
       border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(5, 5, 5, 0.33);
+      background: rgba(5, 5, 5, 0.55);
       backdrop-filter: blur(2px);
       -webkit-backdrop-filter: blur(2px);
       text-align: center;
       z-index: 1;
+      margin: 0; 
     }
 
     h1 {
@@ -207,10 +208,13 @@
     }
 
     @media (max-width: 600px) {
+      .card {
+        border-radius: 24px;    /* re-assert radius */
+      }
       main {
-    max-width: 360px;      /* narrower card on mobile */
-    padding: 1.6rem 1.25rem;
-  }
+        max-width: 360px;      /* narrower card on mobile */
+        padding: 1.6rem 1.25rem;
+      }
       body {
         align-items: flex-start;
         padding-top: 2.5rem;
