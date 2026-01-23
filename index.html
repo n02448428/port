@@ -22,8 +22,8 @@
     html, body {
       margin: 0;
       padding: 0;
-      height: 130dvh;
-      overflow: hidden;
+      min-height: 100vh;     /* desktop + older browsers */
+      min-height: 100dvh;    /* modern mobile browsers */
     }
 
     /* full-screen background image */
@@ -48,6 +48,7 @@
       color: var(--fg);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       perspective: 1000px;
+      overflow-x: hidden;
       /*transform: translateY(15dvh);*/
     }
 
