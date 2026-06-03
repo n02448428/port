@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dmitry Markelov</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content="Dmitry Markelov — creator. Games, software, writings, music, and drawings."
+  />
+
+  <!-- Keep these paths if your current site already uses the images folder -->
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="shortcut icon" href="images/favicon.png" />
+
+  <!-- Pixel / retro font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg: #000000;
+      --fg: #f5f5f5;
+      --muted: #9d9d9d;
+      --line: #242424;
+      --line-2: #3a3a3a;
+      --panel: #050505;
+      --panel-2: #0a0a0a;
+      --accent: #ffffff;
+      --max: 860px;
+      --space-1: 8px;
+      --space-2: 12px;
+      --space-3: 16px;
+      --space-4: 20px;
+      --space-5: 28px;
+      --space-6: 40px;
+      --pixel-font: "Press Start 2P", monospace;
+      --body-font: "Press Start 2P", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--fg);
+    }
+
+    body {
+      font-family: var(--body-font);
+      line-height: 1.9;
+      letter-spacing: 0.02em;
+      -webkit-font-smoothing: none;
+      -moz-osx-font-smoothing: auto;
+      text-rendering: geometricPrecision;
+    }
+
+    a {
+      color: var(--fg);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--muted);
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .page {
+      width: min(100% - 32px, var(--max));
+      margin: 0 auto;
+      padding: 28px 0 60px;
+    }
+
+    .scanlines {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.028) 0px,
+          rgba(255, 255, 255, 0.028) 1px,
+          transparent 1px,
+          transparent 4px
+        );
+      opacity: 0.34;
+      mix-blend-mode: screen;
+      z-index: 10;
+    }
+
+    header {
+      padding: 36px 0 28px;
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .logo-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      width: min(220px, 70%);
+      max-height: 110px;
+      object-fit: contain;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      filter: grayscale(1) contrast(1.2) brightness(1.15);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      line-height: 1.7;
+      font-weight: normal;
+      text-transform: lowercase;
+    }
+
+    .title {
+      margin-top: 14px;
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: lowercase;
+    }
+
+    .intro {
+      max-width: 58ch;
+      margin: 24px auto 0;
+      font-size: 0.62rem;
+      color: var(--muted);
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    details {
+      border: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    details[open] {
+      border-color: var(--line-2);
+      background: var(--panel-2);
+    }
+
+    summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 18px 16px;
+      position: relative;
+      text-transform: lowercase;
+      font-size: 0.7rem;
+      user-select: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: "[+]";
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 0.62rem;
+    }
+
+    details[open] summary::after {
+      content: "[-]";
+      color: var(--fg);
+    }
+
+    .content {
+      padding: 0 16px 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .content-inner {
+      padding-top: 14px;
+    }
+
+    .item-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .item {
+      border: 1px solid var(--line);
+      padding: 12px;
+      background: #020202;
+    }
+
+    .item-title {
+      display: inline-block;
+      font-size: 0.62rem;
+      line-height: 1.8;
+      text-transform: lowercase;
+    }
+
+    .item-title a {
+      border-bottom: 1px solid var(--fg);
+      padding-bottom: 2px;
+    }
+
+    .item-desc {
+      margin-top: 8px;
+      font-size: 0.52rem;
+      line-height: 1.9;
+      color: var(--muted);
+    }
+
+    .note {
+      margin-top: 12px;
+      font-size: 0.5rem;
+      color: var(--muted);
+      line-height: 1.9;
+    }
+
+    .section-help {
+      margin-bottom: 12px;
+      font-size: 0.5rem;
+      line-height: 1.9;
+      color: var(--muted);
+      border: 1px dashed var(--line-2);
+      padding: 10px;
+    }
+
+    .ad {
+      margin-top: 32px;
+      border: 1px solid var(--fg);
+      padding: 16px;
+      background: #030303;
+    }
+
+    .ad-title {
+      font-size: 0.62rem;
+      text-transform: lowercase;
+    }
+
+    .ad-copy {
+      margin-top: 10px;
+      font-size: 0.52rem;
+      line-height: 1.9;
+      color: var(--muted);
+    }
+
+    .ad-link {
+      display: inline-block;
+      margin-top: 12px;
+      border-bottom: 1px solid var(--fg);
+      padding-bottom: 2px;
+      font-size: 0.56rem;
+      text-transform: lowercase;
+    }
+
+    .drawings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .drawing-card {
+      border: 1px solid var(--line);
+      padding: 10px;
+      background: #020202;
+    }
+
+    .drawing-card img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      background: #0d0d0d;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      border: 1px solid var(--line);
+    }
+
+    .drawing-name {
+      margin-top: 8px;
+      font-size: 0.48rem;
+      color: var(--muted);
+      line-height: 1.8;
+      word-break: break-word;
+    }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+      font-size: 0.52rem;
+      text-transform: lowercase;
+    }
+
+    .footer-links a {
+      border-bottom: 1px solid transparent;
+    }
+
+    .footer-links a:hover {
+      border-bottom-color: var(--fg);
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      font-size: 0.45rem;
+      color: var(--muted);
+      line-height: 1.8;
+      text-transform: lowercase;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(100% - 20px, var(--max));
+        padding-top: 18px;
+      }
+
+      header {
+        padding: 26px 0 22px;
+      }
+
+      summary {
+        padding: 16px 14px;
+      }
+
+      .content {
+        padding: 0 14px 14px;
+      }
+
+      .drawings-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .intro {
+        font-size: 0.56rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <main class="page">
+    <header>
+      <div class="logo-wrap">
+        <img
+          src="images/signature.png"
+          alt="Dmitry Markelov logo"
+          class="logo"
+          onerror="this.style.display='none';"
+        />
+      </div>
+
+      <h1>dmitry markelov</h1>
+      <div class="title">creator</div>
+
+      <p class="intro">
+        games / software / writings / music / drawings
+      </p>
+    </header>
+
+    <section class="stack">
+      <!-- =========================================================
+        EASY TO EDIT:
+        To add a new main section, copy one full <details> block.
+        To add more items inside a section, copy one .item block.
+      ========================================================== -->
+
+      <details open>
+        <summary>games</summary>
+        <div class="content">
+          <div class="content-inner">
+            <div class="section-help">
+              edit links and descriptions directly in the html below.
+            </div>
+
+            <div class="item-list">
+              <article class="item">
+                <div class="item-title">
+                  <a href="https://ntb-chi.vercel.app" target="_blank" rel="noopener noreferrer">
+                    neon trailblazer
+                  </a>
+                </div>
+                <div class="item-desc">
+                  browser game / featured project / fast, stylish, and playable.
+                </div>
+              </article>
+
+              <article class="item">
+                <div class="item-title">
+                  <a href="https://novelfilms.itch.io/" target="_blank" rel="noopener noreferrer">
+                    novel films games
+                  </a>
+                </div>
+                <div class="item-desc">
+                  game studio / experiments / worlds / playable ideas.
+                </div>
+              </article>
+
+              <!-- COPY / PASTE MORE GAME ITEMS HERE -->
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details>
+        <summary>software</summary>
+        <div class="content">
+          <div class="content-inner">
+            <div class="section-help">
+              replace these placeholders with selected github projects manually.
+            </div>
+
+            <div class="item-list">
+              <article class="item">
+                <div class="item-title">
+                  <a href="https://github.com/n02448428" target="_blank" rel="noopener noreferrer">
+                    github profile
+                  </a>
+                </div>
+                <div class="item-desc">
+                  main code archive / repositories / ongoing work.
+                </div>
+              </article>
+
+              <article class="item">
+                <div class="item-title">
+                  <a href="#" target="_blank" rel="noopener noreferrer">
+                    project one
+                  </a>
+                </div>
+                <div class="item-desc">
+                  replace with a github repo or live link.
+                </div>
+              </article>
+
+              <article class="item">
+                <div class="item-title">
+                  <a href="#" target="_blank" rel="noopener noreferrer">
+                    project two
+                  </a>
+                </div>
+                <div class="item-desc">
+                  replace with a github repo or live link.
+                </div>
+              </article>
+
+              <article class="item">
+                <div class="item-title">
+                  <a href="#" target="_blank" rel="noopener noreferrer">
+                    project three
+                  </a>
+                </div>
+                <div class="item-desc">
+                  replace with a github repo or live link.
+                </div>
+              </article>
+
+              <!-- COPY / PASTE MORE SOFTWARE ITEMS HERE -->
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details>
+        <summary>writings</summary>
+        <div class="content">
+          <div class="content-inner">
+            <div class="section-help">
+              keep amazon / pdf / gumroad / google drive / direct file links here.
+            </div>
+
+            <div class="item-list">
+              <article class="item">
+                <div class="item-title">
+                  <a href="https://www.amazon.com/undone-book-poems-Dmitry-Markelov/dp/B0DPWVRRWQ" target="_blank" rel="noopener noreferrer">
+                    undone
+                  </a>
+                </div>
+                <div class="item-desc">
+                  poetry book.
+                </div>
+              </article>
+
+              <article class="item">
+                <div class="item-title">
+                  <a href="#" target="_blank" rel="noopener noreferrer">
+                    prima vita
+                  </a>
+                </div>
+                <div class="item-desc">
+                  free writing / replace this link with the file or page where you host it.
+                </div>
+              </article>
+
+              <!-- COPY / PASTE MORE WRITING ITEMS HERE -->
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details>
+        <summary>music</summary>
+        <div class="content">
+          <div class="content-inner">
+            <div class="section-help">
+              replace the href values with your real music links.
+            </div>
+
+            <div class="item-list">
+              <article class="item">
+                <div class="item-title">
+                  <a href="#" target="_blank" rel="noopener noreferrer">
+                    zero dot demeter
+                  </a>
+                </div>
+                <div class="item-desc">
+                  replace with spotify / soundcloud / bandcamp / youtube / etc.
+                </div>
+              </article>
+
+              <article class="item">
+                <div class="item-title">
+                  <a href="#" target="_blank" rel="noopener noreferrer">
+                    darkdmtr
+                  </a>
+                </div>
+                <div class="item-desc">
+                  replace with spotify / soundcloud / bandcamp / youtube / etc.
+                </div>
+              </article>
+
+              <!-- COPY / PASTE MORE MUSIC ITEMS HERE -->
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details>
+        <summary>drawings</summary>
+        <div class="content">
+          <div class="content-inner">
+            <div class="section-help">
+              drawings below are placeholders. replace the js array near the bottom of this file
+              with your real filenames from the /drawings folder.
+            </div>
+
+            <div id="drawingsGrid" class="drawings-grid">
+              <!-- drawings injected by javascript -->
+            </div>
+
+            <p class="note">
+              put image files in the drawings folder and update the array in the script:
+              const drawingFiles = ["drawing1.jpg", "drawing2.png"];
+            </p>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <aside class="ad">
+      <div class="ad-title">[ visionminds solutions ]</div>
+      <div class="ad-copy">
+        i build custom websites for $100. simple, stylish, fast, and personal.
+      </div>
+      <a
+        class="ad-link"
+        href="https://visionaryminds.solutions"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        visionaryminds.solutions
+      </a>
+    </aside>
+
+    <footer>
+      <div class="footer-links">
+        <a href="mailto:dmarkelo89@gmail.com">email</a>
+        <a href="https://github.com/n02448428" target="_blank" rel="noopener noreferrer">github</a>
+        <a href="https://www.linkedin.com/in/dmitrymarkelov" target="_blank" rel="noopener noreferrer">linkedin</a>
+        <a href="https://visionaryminds.solutions" target="_blank" rel="noopener noreferrer">vms</a>
+      </div>
+
+      <div class="footer-note">
+        dmitry markelov / creator
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    /*
+      ============================================================
+      EASY DRAWINGS SETUP:
+      1. Put your image files inside the folder: drawings/
+      2. Replace the filenames below with your real files
+      3. Add more filenames whenever you want
+      ============================================================
+    */
+
+    const drawingFiles = [
+      "placeholder-1.jpg",
+      "placeholder-2.jpg",
+      "placeholder-3.jpg",
+      "placeholder-4.jpg"
+    ];
+
+    const drawingsGrid = document.getElementById("drawingsGrid");
+
+    function buildDrawingCard(filename) {
+      const card = document.createElement("article");
+      card.className = "drawing-card";
+
+      const img = document.createElement("img");
+      img.src = `drawings/${filename}`;
+      img.alt = filename.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+      img.loading = "lazy";
+
+      img.onerror = function () {
+        card.innerHTML = `
+          <div class="drawing-name">
+            missing file:<br>${filename}
+          </div>
+        `;
+      };
+
+      const label = document.createElement("div");
+      label.className = "drawing-name";
+      label.textContent = filename;
+
+      card.appendChild(img);
+      card.appendChild(label);
+
+      return card;
+    }
+
+    drawingFiles.forEach((file) => {
+      drawingsGrid.appendChild(buildDrawingCard(file));
+    });
+  </script>
+</body>
+</html>
