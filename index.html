@@ -9,12 +9,10 @@
     content="Dmitry Markelov — creator. Games, software, writings, music, and drawings."
   />
 
-  <!-- Keep these paths if your current site already uses the images folder -->
   <link rel="icon" type="image/png" href="images/favicon.png" />
   <link rel="shortcut icon" href="images/favicon.png" />
 
-  <!-- Pixel / retro font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
     href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
@@ -30,16 +28,8 @@
       --line-2: #3a3a3a;
       --panel: #050505;
       --panel-2: #0a0a0a;
-      --accent: #ffffff;
       --max: 860px;
-      --space-1: 8px;
-      --space-2: 12px;
-      --space-3: 16px;
-      --space-4: 20px;
-      --space-5: 28px;
-      --space-6: 40px;
       --pixel-font: "Press Start 2P", monospace;
-      --body-font: "Press Start 2P", monospace;
     }
 
     * {
@@ -56,7 +46,7 @@
     }
 
     body {
-      font-family: var(--body-font);
+      font-family: var(--pixel-font);
       line-height: 1.9;
       letter-spacing: 0.02em;
       -webkit-font-smoothing: none;
@@ -142,6 +132,7 @@
       margin: 24px auto 0;
       font-size: 0.62rem;
       color: var(--muted);
+      text-transform: lowercase;
     }
 
     .stack {
@@ -226,49 +217,6 @@
       font-size: 0.52rem;
       line-height: 1.9;
       color: var(--muted);
-    }
-
-    .note {
-      margin-top: 12px;
-      font-size: 0.5rem;
-      color: var(--muted);
-      line-height: 1.9;
-    }
-
-    .section-help {
-      margin-bottom: 12px;
-      font-size: 0.5rem;
-      line-height: 1.9;
-      color: var(--muted);
-      border: 1px dashed var(--line-2);
-      padding: 10px;
-    }
-
-    .ad {
-      margin-top: 32px;
-      border: 1px solid var(--fg);
-      padding: 16px;
-      background: #030303;
-    }
-
-    .ad-title {
-      font-size: 0.62rem;
-      text-transform: lowercase;
-    }
-
-    .ad-copy {
-      margin-top: 10px;
-      font-size: 0.52rem;
-      line-height: 1.9;
-      color: var(--muted);
-    }
-
-    .ad-link {
-      display: inline-block;
-      margin-top: 12px;
-      border-bottom: 1px solid var(--fg);
-      padding-bottom: 2px;
-      font-size: 0.56rem;
       text-transform: lowercase;
     }
 
@@ -301,6 +249,136 @@
       color: var(--muted);
       line-height: 1.8;
       word-break: break-word;
+      text-transform: lowercase;
+    }
+
+    .ad {
+      margin-top: 32px;
+      border: 1px solid var(--fg);
+      padding: 16px;
+      background: #030303;
+    }
+
+    .ad-title {
+      font-size: 0.62rem;
+      text-transform: lowercase;
+    }
+
+    .ad-copy {
+      margin-top: 10px;
+      font-size: 0.52rem;
+      line-height: 1.9;
+      color: var(--muted);
+      text-transform: lowercase;
+    }
+
+    .ad-link {
+      display: inline-block;
+      margin-top: 12px;
+      border-bottom: 1px solid var(--fg);
+      padding-bottom: 2px;
+      font-size: 0.56rem;
+      text-transform: lowercase;
+    }
+
+    .contact {
+      margin-top: 32px;
+      border: 1px solid var(--line-2);
+      padding: 16px;
+      background: #030303;
+    }
+
+    .contact-title {
+      font-size: 0.62rem;
+      text-transform: lowercase;
+    }
+
+    .contact-copy {
+      margin-top: 10px;
+      font-size: 0.52rem;
+      line-height: 1.9;
+      color: var(--muted);
+      text-transform: lowercase;
+    }
+
+    .contact-link {
+      display: inline-block;
+      margin-top: 12px;
+      border-bottom: 1px solid var(--fg);
+      padding-bottom: 2px;
+      font-size: 0.56rem;
+      text-transform: lowercase;
+    }
+
+    .email-box {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      padding: 12px;
+      background: #020202;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.5rem;
+      line-height: 1.9;
+      color: var(--muted);
+      text-transform: lowercase;
+    }
+
+    input[type="email"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--line-2);
+      background: #000000;
+      color: var(--fg);
+      font: inherit;
+      font-size: 0.52rem;
+      text-transform: lowercase;
+    }
+
+    input::placeholder {
+      color: #6f6f6f;
+      text-transform: lowercase;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--fg);
+      background: #ffffff;
+      color: #000000;
+      font: inherit;
+      font-size: 0.52rem;
+      text-transform: lowercase;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background: #d9d9d9;
+    }
+
+    .honeypot {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #formMessage {
+      min-height: 1em;
+      margin: 0;
+      font-size: 0.46rem;
+      color: var(--muted);
+      line-height: 1.8;
+      text-transform: lowercase;
     }
 
     footer {
@@ -333,10 +411,6 @@
       color: var(--muted);
       line-height: 1.8;
       text-transform: lowercase;
-    }
-
-    .hidden {
-      display: none;
     }
 
     @media (max-width: 640px) {
@@ -390,20 +464,10 @@
     </header>
 
     <section class="stack">
-      <!-- =========================================================
-        EASY TO EDIT:
-        To add a new main section, copy one full <details> block.
-        To add more items inside a section, copy one .item block.
-      ========================================================== -->
-
       <details open>
         <summary>games</summary>
         <div class="content">
           <div class="content-inner">
-            <div class="section-help">
-              edit links and descriptions directly in the html below.
-            </div>
-
             <div class="item-list">
               <article class="item">
                 <div class="item-title">
@@ -426,8 +490,6 @@
                   game studio / experiments / worlds / playable ideas.
                 </div>
               </article>
-
-              <!-- COPY / PASTE MORE GAME ITEMS HERE -->
             </div>
           </div>
         </div>
@@ -437,10 +499,6 @@
         <summary>software</summary>
         <div class="content">
           <div class="content-inner">
-            <div class="section-help">
-              replace these placeholders with selected github projects manually.
-            </div>
-
             <div class="item-list">
               <article class="item">
                 <div class="item-title">
@@ -485,8 +543,6 @@
                   replace with a github repo or live link.
                 </div>
               </article>
-
-              <!-- COPY / PASTE MORE SOFTWARE ITEMS HERE -->
             </div>
           </div>
         </div>
@@ -496,10 +552,6 @@
         <summary>writings</summary>
         <div class="content">
           <div class="content-inner">
-            <div class="section-help">
-              keep amazon / pdf / gumroad / google drive / direct file links here.
-            </div>
-
             <div class="item-list">
               <article class="item">
                 <div class="item-title">
@@ -519,11 +571,9 @@
                   </a>
                 </div>
                 <div class="item-desc">
-                  free writing / replace this link with the file or page where you host it.
+                  free writing.
                 </div>
               </article>
-
-              <!-- COPY / PASTE MORE WRITING ITEMS HERE -->
             </div>
           </div>
         </div>
@@ -533,10 +583,6 @@
         <summary>music</summary>
         <div class="content">
           <div class="content-inner">
-            <div class="section-help">
-              replace the href values with your real music links.
-            </div>
-
             <div class="item-list">
               <article class="item">
                 <div class="item-title">
@@ -545,7 +591,7 @@
                   </a>
                 </div>
                 <div class="item-desc">
-                  replace with spotify / soundcloud / bandcamp / youtube / etc.
+                  music link.
                 </div>
               </article>
 
@@ -556,11 +602,9 @@
                   </a>
                 </div>
                 <div class="item-desc">
-                  replace with spotify / soundcloud / bandcamp / youtube / etc.
+                  music link.
                 </div>
               </article>
-
-              <!-- COPY / PASTE MORE MUSIC ITEMS HERE -->
             </div>
           </div>
         </div>
@@ -570,26 +614,14 @@
         <summary>drawings</summary>
         <div class="content">
           <div class="content-inner">
-            <div class="section-help">
-              drawings below are placeholders. replace the js array near the bottom of this file
-              with your real filenames from the /drawings folder.
-            </div>
-
-            <div id="drawingsGrid" class="drawings-grid">
-              <!-- drawings injected by javascript -->
-            </div>
-
-            <p class="note">
-              put image files in the drawings folder and update the array in the script:
-              const drawingFiles = ["drawing1.jpg", "drawing2.png"];
-            </p>
+            <div id="drawingsGrid" class="drawings-grid"></div>
           </div>
         </div>
       </details>
     </section>
 
     <aside class="ad">
-      <div class="ad-title">[ visionminds solutions ]</div>
+      <div class="ad-title">[ visionaryminds solutions ]</div>
       <div class="ad-copy">
         i build custom websites for $100. simple, stylish, fast, and personal.
       </div>
@@ -602,6 +634,47 @@
         visionaryminds.solutions
       </a>
     </aside>
+
+    <section class="contact">
+      <div class="contact-title">reach out</div>
+      <div class="contact-copy">
+        leave your email for occasional updates, or contact me directly.
+      </div>
+
+      <a
+        class="contact-link"
+        href="mailto:dmarkelo89@gmail.com"
+      >
+        dmarkelo89@gmail.com
+      </a>
+
+      <div class="email-box">
+        <form id="emailForm">
+          <label for="email">join the list</label>
+
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="your email"
+            required
+            inputmode="email"
+            autocomplete="email"
+          />
+
+          <input
+            type="text"
+            name="website"
+            class="honeypot"
+            tabindex="-1"
+            autocomplete="off"
+          />
+
+          <button type="submit">subscribe</button>
+          <p id="formMessage"></p>
+        </form>
+      </div>
+    </section>
 
     <footer>
       <div class="footer-links">
@@ -618,15 +691,6 @@
   </main>
 
   <script>
-    /*
-      ============================================================
-      EASY DRAWINGS SETUP:
-      1. Put your image files inside the folder: drawings/
-      2. Replace the filenames below with your real files
-      3. Add more filenames whenever you want
-      ============================================================
-    */
-
     const drawingFiles = [
       "placeholder-1.jpg",
       "placeholder-2.jpg",
@@ -647,9 +711,7 @@
 
       img.onerror = function () {
         card.innerHTML = `
-          <div class="drawing-name">
-            missing file:<br>${filename}
-          </div>
+          <div class="drawing-name">${filename}</div>
         `;
       };
 
@@ -665,6 +727,35 @@
 
     drawingFiles.forEach((file) => {
       drawingsGrid.appendChild(buildDrawingCard(file));
+    });
+
+    const form = document.getElementById("emailForm");
+    const message = document.getElementById("formMessage");
+    const scriptURL = "https://script.google.com/macros/s/AKfycbysq6cHkh9MeDeqeZqeBc-Ghuga7LZoigY341ELTewF9gm4EOHerDZVy6DxvC3fd21E/exec";
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      message.textContent = "subscribing...";
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(scriptURL, {
+          method: "POST",
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+          message.textContent = result.message || "you’re in.";
+          form.reset();
+        } else {
+          message.textContent = "something went wrong. try again?";
+        }
+      } catch (error) {
+        message.textContent = "connection error. try again?";
+      }
     });
   </script>
 </body>
