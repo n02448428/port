@@ -56,18 +56,18 @@
       overflow-x: hidden;
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background:
-        linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.96)),
-        url("images/bg1.jpg") center/cover no-repeat;
-      opacity: 0.16;
-      filter: grayscale(1) brightness(0.22) contrast(1.08);
-      pointer-events: none;
-      z-index: -2;
-    }
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.82)),
+    url("images/bg1.jpg") center/cover no-repeat;
+  opacity: 0.34;
+  filter: grayscale(1) brightness(0.42) contrast(1.05);
+  pointer-events: none;
+  z-index: -2;
+}
 
     a {
       color: var(--fg);
