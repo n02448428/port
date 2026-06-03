@@ -12,7 +12,7 @@
   <link rel="icon" type="image/png" href="images/favicon.png" />
   <link rel="shortcut icon" href="images/favicon.png" />
 
-  <link rel="preconnect" href://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
     href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
@@ -26,8 +26,8 @@
       --muted: #9d9d9d;
       --line: #242424;
       --line-2: #3a3a3a;
-      --panel: #050505;
-      --panel-2: #0a0a0a;
+      --panel: rgba(5, 5, 5, 0.9);
+      --panel-2: rgba(10, 10, 10, 0.94);
       --max: 860px;
       --pixel-font: "Press Start 2P", monospace;
     }
@@ -46,12 +46,27 @@
     }
 
     body {
+      position: relative;
       font-family: var(--pixel-font);
       line-height: 1.9;
       letter-spacing: 0.02em;
       -webkit-font-smoothing: none;
       -moz-osx-font-smoothing: auto;
       text-rendering: geometricPrecision;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.96)),
+        url("images/bg1.jpg") center/cover no-repeat;
+      opacity: 0.16;
+      filter: grayscale(1) brightness(0.22) contrast(1.08);
+      pointer-events: none;
+      z-index: -2;
     }
 
     a {
@@ -72,6 +87,8 @@
       width: min(100% - 32px, var(--max));
       margin: 0 auto;
       padding: 28px 0 60px;
+      position: relative;
+      z-index: 1;
     }
 
     .scanlines {
@@ -81,12 +98,12 @@
       background:
         repeating-linear-gradient(
           to bottom,
-          rgba(255, 255, 255, 0.028) 0px,
-          rgba(255, 255, 255, 0.028) 1px,
+          rgba(255, 255, 255, 0.022) 0px,
+          rgba(255, 255, 255, 0.022) 1px,
           transparent 1px,
           transparent 4px
         );
-      opacity: 0.34;
+      opacity: 0.26;
       mix-blend-mode: screen;
       z-index: 10;
     }
@@ -144,6 +161,7 @@
     details {
       border: 1px solid var(--line);
       background: var(--panel);
+      backdrop-filter: blur(1px);
     }
 
     details[open] {
@@ -197,7 +215,7 @@
     .item {
       border: 1px solid var(--line);
       padding: 12px;
-      background: #020202;
+      background: rgba(2, 2, 2, 0.92);
     }
 
     .item-title {
@@ -230,7 +248,7 @@
     .drawing-card {
       border: 1px solid var(--line);
       padding: 10px;
-      background: #020202;
+      background: rgba(2, 2, 2, 0.92);
     }
 
     .drawing-card img {
@@ -256,7 +274,7 @@
       margin-top: 32px;
       border: 1px solid var(--fg);
       padding: 16px;
-      background: #030303;
+      background: rgba(3, 3, 3, 0.94);
     }
 
     .ad-title {
@@ -285,7 +303,7 @@
       margin-top: 32px;
       border: 1px solid var(--line-2);
       padding: 16px;
-      background: #030303;
+      background: rgba(3, 3, 3, 0.94);
     }
 
     .contact-title {
@@ -314,7 +332,7 @@
       margin-top: 16px;
       border: 1px solid var(--line);
       padding: 12px;
-      background: #020202;
+      background: rgba(2, 2, 2, 0.92);
     }
 
     form {
@@ -502,45 +520,34 @@
             <div class="item-list">
               <article class="item">
                 <div class="item-title">
+                  <a href="#" target="_blank" rel="noopener noreferrer">
+                    slimscreen
+                  </a>
+                </div>
+                <div class="item-desc">
+                  practical software tool / clean product thinking / focused utility.
+                </div>
+              </article>
+
+              <article class="item">
+                <div class="item-title">
+                  <a href="#" target="_blank" rel="noopener noreferrer">
+                    cove
+                  </a>
+                </div>
+                <div class="item-desc">
+                  communication system / workflow thinking / service design.
+                </div>
+              </article>
+
+              <article class="item">
+                <div class="item-title">
                   <a href="https://github.com/n02448428" target="_blank" rel="noopener noreferrer">
                     github profile
                   </a>
                 </div>
                 <div class="item-desc">
                   main code archive / repositories / ongoing work.
-                </div>
-              </article>
-
-              <article class="item">
-                <div class="item-title">
-                  <a href="#" target="_blank" rel="noopener noreferrer">
-                    project one
-                  </a>
-                </div>
-                <div class="item-desc">
-                  replace with a github repo or live link.
-                </div>
-              </article>
-
-              <article class="item">
-                <div class="item-title">
-                  <a href="#" target="_blank" rel="noopener noreferrer">
-                    project two
-                  </a>
-                </div>
-                <div class="item-desc">
-                  replace with a github repo or live link.
-                </div>
-              </article>
-
-              <article class="item">
-                <div class="item-title">
-                  <a href="#" target="_blank" rel="noopener noreferrer">
-                    project three
-                  </a>
-                </div>
-                <div class="item-desc">
-                  replace with a github repo or live link.
                 </div>
               </article>
             </div>
@@ -591,7 +598,7 @@
                   </a>
                 </div>
                 <div class="item-desc">
-                  music link.
+                  music.
                 </div>
               </article>
 
@@ -602,7 +609,7 @@
                   </a>
                 </div>
                 <div class="item-desc">
-                  music link.
+                  music.
                 </div>
               </article>
             </div>
@@ -641,10 +648,7 @@
         leave your email for occasional updates, or contact me directly.
       </div>
 
-      <a
-        class="contact-link"
-        href="mailto:dmarkelo89@gmail.com"
-      >
+      <a class="contact-link" href="mailto:dmarkelo89@gmail.com">
         dmarkelo89@gmail.com
       </a>
 
@@ -710,9 +714,7 @@
       img.loading = "lazy";
 
       img.onerror = function () {
-        card.innerHTML = `
-          <div class="drawing-name">${filename}</div>
-        `;
+        card.innerHTML = `<div class="drawing-name">${filename}</div>`;
       };
 
       const label = document.createElement("div");
