@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Dmitry Markelov</title>
+  <title>Dmitry Markelov — Writings</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta
     name="description"
-    content="Dmitry Markelov — creator. Games, software, writings, music, and drawings."
+    content="Dmitry Markelov — writings."
   />
 
   <link rel="icon" type="image/png" href="images/favicon.png" />
@@ -28,9 +28,7 @@
       --line-2: rgba(255, 255, 255, 0.22);
       --panel: rgba(5, 5, 5, 0.28);
       --panel-open: rgba(8, 8, 8, 0.34);
-      --panel-soft: rgba(3, 3, 3, 0.24);
       --panel-item: rgba(2, 2, 2, 0.22);
-      --input-bg: rgba(0, 0, 0, 0.36);
       --max: 860px;
       --pixel-font: "Press Start 2P", monospace;
     }
@@ -98,11 +96,6 @@
       color: #ffffff;
     }
 
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
     .page {
       width: min(100% - 32px, var(--max));
       margin: 0 auto;
@@ -117,6 +110,7 @@
       text-align: center;
       background: rgba(0, 0, 0, 0.08);
       backdrop-filter: blur(1px);
+      -webkit-backdrop-filter: blur(1px);
     }
 
     .logo-wrap {
@@ -246,175 +240,6 @@
       text-transform: lowercase;
     }
 
-    .drawings-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-      margin-top: 8px;
-    }
-
-    .drawing-card {
-      border: 1px solid var(--line);
-      padding: 10px;
-      background: var(--panel-item);
-      backdrop-filter: blur(2px);
-      -webkit-backdrop-filter: blur(2px);
-    }
-
-    .drawing-card img {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      background: rgba(13, 13, 13, 0.28);
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
-      border: 1px solid var(--line);
-    }
-
-    .drawing-name {
-      margin-top: 8px;
-      font-size: 0.48rem;
-      color: var(--muted);
-      line-height: 1.8;
-      word-break: break-word;
-      text-transform: lowercase;
-    }
-
-    .ad {
-      margin-top: 32px;
-      border: 1px solid var(--line-2);
-      padding: 16px;
-      background: var(--panel-soft);
-      backdrop-filter: blur(2px);
-      -webkit-backdrop-filter: blur(2px);
-    }
-
-    .ad-title {
-      font-size: 0.62rem;
-      text-transform: lowercase;
-    }
-
-    .ad-copy {
-      margin-top: 10px;
-      font-size: 0.52rem;
-      line-height: 1.9;
-      color: var(--muted);
-      text-transform: lowercase;
-    }
-
-    .ad-link {
-      display: inline-block;
-      margin-top: 12px;
-      border-bottom: 1px solid var(--fg);
-      padding-bottom: 2px;
-      font-size: 0.56rem;
-      text-transform: lowercase;
-    }
-
-    .contact {
-      margin-top: 32px;
-      border: 1px solid var(--line-2);
-      padding: 16px;
-      background: var(--panel-soft);
-      backdrop-filter: blur(2px);
-      -webkit-backdrop-filter: blur(2px);
-    }
-
-    .contact-title {
-      font-size: 0.62rem;
-      text-transform: lowercase;
-    }
-
-    .contact-copy {
-      margin-top: 10px;
-      font-size: 0.52rem;
-      line-height: 1.9;
-      color: var(--muted);
-      text-transform: lowercase;
-    }
-
-    .contact-link {
-      display: inline-block;
-      margin-top: 12px;
-      border-bottom: 1px solid var(--fg);
-      padding-bottom: 2px;
-      font-size: 0.56rem;
-      text-transform: lowercase;
-    }
-
-    .email-box {
-      margin-top: 16px;
-      border: 1px solid var(--line);
-      padding: 12px;
-      background: rgba(2, 2, 2, 0.16);
-      backdrop-filter: blur(2px);
-      -webkit-backdrop-filter: blur(2px);
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    label {
-      display: block;
-      font-size: 0.5rem;
-      line-height: 1.9;
-      color: var(--muted);
-      text-transform: lowercase;
-    }
-
-    input[type="email"] {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid var(--line-2);
-      background: var(--input-bg);
-      color: var(--fg);
-      font: inherit;
-      font-size: 0.52rem;
-      text-transform: lowercase;
-    }
-
-    input::placeholder {
-      color: #808080;
-      text-transform: lowercase;
-    }
-
-    button[type="submit"] {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid var(--fg);
-      background: rgba(255, 255, 255, 0.92);
-      color: #000000;
-      font: inherit;
-      font-size: 0.52rem;
-      text-transform: lowercase;
-      cursor: pointer;
-    }
-
-    button[type="submit"]:hover {
-      background: #ffffff;
-    }
-
-    .honeypot {
-      position: absolute;
-      left: -9999px;
-      width: 1px;
-      height: 1px;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    #formMessage {
-      min-height: 1em;
-      margin: 0;
-      font-size: 0.46rem;
-      color: var(--muted);
-      line-height: 1.8;
-      text-transform: lowercase;
-    }
-
     footer {
       margin-top: 40px;
       padding-top: 20px;
@@ -422,6 +247,7 @@
       text-align: center;
       background: rgba(0, 0, 0, 0.06);
       backdrop-filter: blur(1px);
+      -webkit-backdrop-filter: blur(1px);
     }
 
     .footer-links {
@@ -450,9 +276,7 @@
     }
 
     a:focus-visible,
-    summary:focus-visible,
-    button:focus-visible,
-    input:focus-visible {
+    summary:focus-visible {
       outline: 2px solid rgba(255, 255, 255, 0.9);
       outline-offset: 3px;
     }
@@ -464,11 +288,7 @@
 
       details,
       details[open],
-      .item,
-      .drawing-card,
-      .ad,
-      .contact,
-      .email-box {
+      .item {
         background: rgba(0, 0, 0, 0.72);
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
@@ -493,10 +313,6 @@
         padding: 0 14px 14px;
       }
 
-      .drawings-grid {
-        grid-template-columns: 1fr;
-      }
-
       .intro {
         font-size: 0.56rem;
       }
@@ -519,98 +335,31 @@
       </div>
 
       <h1>dmitry markelov</h1>
-      <div class="title">creator</div>
+      <div class="title">writings</div>
 
       <p class="intro">
-        games / software / writings / music / drawings
+        poetry / free writing
       </p>
     </header>
 
     <section class="stack">
       <details open>
-        <summary>games</summary>
-        <div class="content">
-          <div class="content-inner">
-            <div class="item-list">
-              <article class="item">
-                <div class="item-title">
-                  <a href="https://ntb-chi.vercel.app" target="_blank" rel="noopener noreferrer">
-                    neon trailblazer
-                  </a>
-                </div>
-                <div class="item-desc">
-                  browser game / featured project / fast, stylish, and playable.
-                </div>
-              </article>
-
-              <article class="item">
-                <div class="item-title">
-                  <a href="https://novelfilms.itch.io/" target="_blank" rel="noopener noreferrer">
-                    novel films games
-                  </a>
-                </div>
-                <div class="item-desc">
-                  game studio / experiments / worlds / playable ideas.
-                </div>
-              </article>
-            </div>
-          </div>
-        </div>
-      </details>
-
-      <details>
-        <summary>software</summary>
-        <div class="content">
-          <div class="content-inner">
-            <div class="item-list">
-              <article class="item">
-                <div class="item-title">
-                  <a href="#" target="_blank" rel="noopener noreferrer">
-                    slimscreen
-                  </a>
-                </div>
-                <div class="item-desc">
-                  practical software tool / clean product thinking / focused utility.
-                </div>
-              </article>
-
-              <article class="item">
-                <div class="item-title">
-                  <a href="#" target="_blank" rel="noopener noreferrer">
-                    cove
-                  </a>
-                </div>
-                <div class="item-desc">
-                  communication system / workflow thinking / service design.
-                </div>
-              </article>
-
-              <article class="item">
-                <div class="item-title">
-                  <a href="https://github.com/n02448428" target="_blank" rel="noopener noreferrer">
-                    github profile
-                  </a>
-                </div>
-                <div class="item-desc">
-                  code archive / repositories / ongoing work.
-                </div>
-              </article>
-            </div>
-          </div>
-        </div>
-      </details>
-
-      <details>
         <summary>writings</summary>
+
         <div class="content">
           <div class="content-inner">
             <div class="item-list">
               <article class="item">
                 <div class="item-title">
-                  <a href="https://www.amazon.com/undone-book-poems-Dmitry-Markelov/dp/B0DPWVRRWQ" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://www.amazon.com/undone-book-poems-Dmitry-Markelov/dp/B0DPWVRRWQ"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     undone
                   </a>
                 </div>
+
                 <div class="item-desc">
                   poetry book.
                 </div>
@@ -622,6 +371,7 @@
                     prima vita
                   </a>
                 </div>
+
                 <div class="item-desc">
                   free writing.
                 </div>
@@ -630,180 +380,38 @@
           </div>
         </div>
       </details>
-
-      <details>
-        <summary>music</summary>
-        <div class="content">
-          <div class="content-inner">
-            <div class="item-list">
-              <article class="item">
-                <div class="item-title">
-                  <a href="#" target="_blank" rel="noopener noreferrer">
-                    zero dot demeter
-                  </a>
-                </div>
-                <div class="item-desc">
-                  music.
-                </div>
-              </article>
-
-              <article class="item">
-                <div class="item-title">
-                  <a href="#" target="_blank" rel="noopener noreferrer">
-                    darkdmtr
-                  </a>
-                </div>
-                <div class="item-desc">
-                  music.
-                </div>
-              </article>
-            </div>
-          </div>
-        </div>
-      </details>
-
-      <details>
-        <summary>drawings</summary>
-        <div class="content">
-          <div class="content-inner">
-            <div id="drawingsGrid" class="drawings-grid"></div>
-          </div>
-        </div>
-      </details>
-    </section>
-
-    <aside class="ad">
-      <div class="ad-title">[ visionaryminds solutions ]</div>
-      <div class="ad-copy">
-        i build custom websites for $100. simple, stylish, fast, and personal.
-      </div>
-      <a
-        class="ad-link"
-        href="https://visionaryminds.solutions"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        visionaryminds.solutions
-      </a>
-    </aside>
-
-    <section class="contact">
-      <div class="contact-title">reach out</div>
-      <div class="contact-copy">
-        leave your email for occasional updates, or contact me directly.
-      </div>
-
-      <a class="contact-link" href="mailto:dmarkelo89@gmail.com">
-        dmarkelo89@gmail.com
-      </a>
-
-      <div class="email-box">
-        <form id="emailForm">
-          <label for="email">join the list</label>
-
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="your email"
-            required
-            inputmode="email"
-            autocomplete="email"
-          />
-
-          <input
-            type="text"
-            name="website"
-            class="honeypot"
-            tabindex="-1"
-            autocomplete="off"
-          />
-
-          <button type="submit">subscribe</button>
-          <p id="formMessage"></p>
-        </form>
-      </div>
     </section>
 
     <footer>
       <div class="footer-links">
         <a href="mailto:dmarkelo89@gmail.com">email</a>
-        <a href="https://github.com/n02448428" target="_blank" rel="noopener noreferrer">github</a>
-        <a href="https://www.linkedin.com/in/dmitrymarkelov" target="_blank" rel="noopener noreferrer">linkedin</a>
-        <a href="https://visionaryminds.solutions" target="_blank" rel="noopener noreferrer">vms</a>
+        <a
+          href="https://github.com/n02448428"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          github
+        </a>
+        <a
+          href="https://www.linkedin.com/in/dmitrymarkelov"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          linkedin
+        </a>
+        <a
+          href="https://visionaryminds.solutions"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          vms
+        </a>
       </div>
 
       <div class="footer-note">
-        dmitry markelov / creator
+        dmitry markelov / writings
       </div>
     </footer>
   </main>
-
-  <script>
-    const drawingFiles = [
-      "placeholder-1.jpg",
-      "placeholder-2.jpg",
-      "placeholder-3.jpg",
-      "placeholder-4.jpg"
-    ];
-
-    const drawingsGrid = document.getElementById("drawingsGrid");
-
-    function buildDrawingCard(filename) {
-      const card = document.createElement("article");
-      card.className = "drawing-card";
-
-      const img = document.createElement("img");
-      img.src = `drawings/${filename}`;
-      img.alt = filename.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
-      img.loading = "lazy";
-
-      img.onerror = function () {
-        card.innerHTML = `<div class="drawing-name">${filename}</div>`;
-      };
-
-      const label = document.createElement("div");
-      label.className = "drawing-name";
-      label.textContent = filename;
-
-      card.appendChild(img);
-      card.appendChild(label);
-
-      return card;
-    }
-
-    drawingFiles.forEach((file) => {
-      drawingsGrid.appendChild(buildDrawingCard(file));
-    });
-
-    const form = document.getElementById("emailForm");
-    const message = document.getElementById("formMessage");
-    const scriptURL = "https://script.google.com/macros/s/AKfycbysq6cHkh9MeDeqeZqeBc-Ghuga7LZoigY341ELTewF9gm4EOHerDZVy6DxvC3fd21E/exec";
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      message.textContent = "subscribing...";
-
-      const formData = new FormData(form);
-
-      try {
-        const response = await fetch(scriptURL, {
-          method: "POST",
-          body: formData
-        });
-
-        const result = await response.json();
-
-        if (result.status === "success") {
-          message.textContent = result.message || "you’re in.";
-          form.reset();
-        } else {
-          message.textContent = "something went wrong. try again?";
-        }
-      } catch (error) {
-        message.textContent = "connection error. try again?";
-      }
-    });
-  </script>
 </body>
 </html>
