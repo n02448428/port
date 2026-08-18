@@ -317,8 +317,146 @@
         font-size: 0.56rem;
       }
     }
+
+    .contact {
+  margin-top: 32px;
+  border: 1px solid var(--line-2);
+  padding: 16px;
+  background: var(--panel-soft);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.contact-title {
+  font-size: 0.62rem;
+  text-transform: lowercase;
+}
+
+.contact-copy {
+  margin-top: 10px;
+  font-size: 0.52rem;
+  line-height: 1.9;
+  color: var(--muted);
+  text-transform: lowercase;
+}
+
+.contact-link {
+  display: inline-block;
+  margin-top: 12px;
+  border-bottom: 1px solid var(--fg);
+  padding-bottom: 2px;
+  font-size: 0.56rem;
+  text-transform: lowercase;
+}
+
+.email-box {
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  padding: 12px;
+  background: rgba(2, 2, 2, 0.16);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+label {
+  display: block;
+  font-size: 0.5rem;
+  line-height: 1.9;
+  color: var(--muted);
+  text-transform: lowercase;
+}
+
+input[type="email"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--line-2);
+  background: var(--input-bg);
+  color: var(--fg);
+  font: inherit;
+  font-size: 0.52rem;
+  text-transform: lowercase;
+}
+
+input::placeholder {
+  color: #808080;
+  text-transform: lowercase;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--fg);
+  background: rgba(255, 255, 255, 0.92);
+  color: #000000;
+  font: inherit;
+  font-size: 0.52rem;
+  text-transform: lowercase;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background: #ffffff;
+}
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#formMessage {
+  min-height: 1em;
+  margin: 0;
+  font-size: 0.46rem;
+  color: var(--muted);
+  line-height: 1.8;
+  text-transform: lowercase;
+}
   </style>
 </head>
+
+<script>
+  const form = document.getElementById("emailForm");
+  const message = document.getElementById("formMessage");
+
+  const scriptURL =
+    "https://script.google.com/macros/s/AKfycbysq6cHkh9MeDeqeZqeBc-Ghuga7LZoigY341ELTewF9gm4EOHerDZVy6DxvC3fd21E/exec";
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    message.textContent = "subscribing...";
+
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch(scriptURL, {
+        method: "POST",
+        body: formData
+      });
+
+      const result = await response.json();
+
+      if (result.status === "success") {
+        message.textContent = result.message || "you’re in.";
+        form.reset();
+      } else {
+        message.textContent = "something went wrong. try again?";
+      }
+    } catch (error) {
+      message.textContent = "connection error. try again?";
+    }
+  });
+</script>
+  
 <body>
   <div class="bg-image" aria-hidden="true"></div>
   <div class="scanlines" aria-hidden="true"></div>
@@ -381,6 +519,44 @@
         </div>
       </details>
     </section>
+
+    <section class="contact">
+  <div class="contact-title">reach out</div>
+  <div class="contact-copy">
+    leave your email for occasional updates, or contact me directly.
+  </div>
+
+  <a class="contact-link" href="mailto:dmarkelo89@gmail.com">
+    dmarkelo89@gmail.com
+  </a>
+
+  <div class="email-box">
+    <form id="emailForm">
+      <label for="email">join the list</label>
+
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="your email"
+        required
+        inputmode="email"
+        autocomplete="email"
+      />
+
+      <input
+        type="text"
+        name="website"
+        class="honeypot"
+        tabindex="-1"
+        autocomplete="off"
+      />
+
+      <button type="submit">subscribe</button>
+      <p id="formMessage"></p>
+    </form>
+  </div>
+</section>
 
     <footer>
       <div class="footer-links">
