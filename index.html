@@ -426,40 +426,6 @@ button[type="submit"]:hover {
   </style>
 </head>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("emailForm");
-  const message = document.getElementById("formMessage");
-  const scriptURL =
-    "https://script.google.com/macros/s/AKfycbysq6cHkh9MeDeqeZqeBc-Ghuga7LZoigY341ELTewF9gm4EOHerDZVy6DxvC3fd21E/exec";
-
-  if (!form || !message) return;
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    message.textContent = "subscribing...";
-
-    try {
-      const response = await fetch(scriptURL, {
-        method: "POST",
-        body: new FormData(form)
-      });
-
-      const result = await response.json();
-
-      if (result.status === "success") {
-        message.textContent = result.message || "you’re in.";
-        form.reset();
-      } else {
-        message.textContent = "something went wrong. try again?";
-      }
-    } catch {
-      message.textContent = "connection error. try again?";
-    }
-  });
-});
-</script>
-  
 <body>
   <div class="bg-image" aria-hidden="true"></div>
   <div class="scanlines" aria-hidden="true"></div>
@@ -592,5 +558,40 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     </footer>
   </main>
+  
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("emailForm");
+  const message = document.getElementById("formMessage");
+  const scriptURL =
+    "https://script.google.com/macros/s/AKfycbysq6cHkh9MeDeqeZqeBc-Ghuga7LZoigY341ELTewF9gm4EOHerDZVy6DxvC3fd21E/exec";
+
+  if (!form || !message) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    message.textContent = "subscribing...";
+
+    try {
+      const response = await fetch(scriptURL, {
+        method: "POST",
+        body: new FormData(form)
+      });
+
+      const result = await response.json();
+
+      if (result.status === "success") {
+        message.textContent = result.message || "you’re in.";
+        form.reset();
+      } else {
+        message.textContent = "something went wrong. try again?";
+      }
+    } catch {
+      message.textContent = "connection error. try again?";
+    }
+  });
+});
+</script>
+  
 </body>
 </html>
