@@ -27,6 +27,8 @@
       --line: rgba(255, 255, 255, 0.12);
       --line-2: rgba(255, 255, 255, 0.22);
       --panel: rgba(5, 5, 5, 0.28);
+      --panel-soft: rgba(5, 5, 5, 0.28);
+      --input-bg: rgba(0, 0, 0, 0.35);
       --panel-open: rgba(8, 8, 8, 0.34);
       --panel-item: rgba(2, 2, 2, 0.22);
       --max: 860px;
@@ -425,22 +427,22 @@ button[type="submit"]:hover {
 </head>
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("emailForm");
   const message = document.getElementById("formMessage");
-
   const scriptURL =
     "https://script.google.com/macros/s/AKfycbysq6cHkh9MeDeqeZqeBc-Ghuga7LZoigY341ELTewF9gm4EOHerDZVy6DxvC3fd21E/exec";
+
+  if (!form || !message) return;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     message.textContent = "subscribing...";
 
-    const formData = new FormData(form);
-
     try {
       const response = await fetch(scriptURL, {
         method: "POST",
-        body: formData
+        body: new FormData(form)
       });
 
       const result = await response.json();
@@ -451,10 +453,11 @@ button[type="submit"]:hover {
       } else {
         message.textContent = "something went wrong. try again?";
       }
-    } catch (error) {
+    } catch {
       message.textContent = "connection error. try again?";
     }
   });
+});
 </script>
   
 <body>
