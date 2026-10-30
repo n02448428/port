@@ -4,594 +4,94 @@
   <meta charset="UTF-8" />
   <title>Dmitry Markelov</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta
-    name="description"
-    content="Dmitry Markelov"
-  />
-
+  <meta name="description" content="Dmitry Markelov — creator. Books, music, games." />
   <link rel="icon" type="image/png" href="images/favicon.png" />
-  <link rel="shortcut icon" href="images/favicon.png" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
-    rel="stylesheet"
-  />
-
   <style>
-    :root {
-      --bg: #000000;
-      --fg: #f5f5f5;
-      --muted: #ababab;
-      --line: rgba(255, 255, 255, 0.12);
-      --line-2: rgba(255, 255, 255, 0.22);
-      --panel: rgba(5, 5, 5, 0.28);
-      --panel-soft: rgba(5, 5, 5, 0.28);
-      --input-bg: rgba(0, 0, 0, 0.35);
-      --panel-open: rgba(8, 8, 8, 0.34);
-      --panel-item: rgba(2, 2, 2, 0.22);
-      --max: 860px;
-      --pixel-font: "Press Start 2P", monospace;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html,
+    * { box-sizing: border-box; }
     body {
       margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      background: var(--bg);
-      color: var(--fg);
+      background: #c0c0c0;
+      color: #000;
+      font-family: "Times New Roman", Times, serif;
+      text-align: center;
     }
-
-    body {
-      position: relative;
-      font-family: var(--pixel-font);
-      line-height: 1.9;
-      letter-spacing: 0.02em;
-      -webkit-font-smoothing: none;
-      -moz-osx-font-smoothing: auto;
-      text-rendering: geometricPrecision;
-      overflow-x: hidden;
-    }
-
-    .bg-image {
-      position: fixed;
-      inset: 0;
-      background:
-        linear-gradient(rgba(0, 0, 0, 0.32), rgba(0, 0, 0, 0.5)),
-        url("images/bg1.jpg") center / cover no-repeat;
-      opacity: 0.5;
-      filter: grayscale(1) brightness(0.7) contrast(1.02);
-      pointer-events: none;
-      z-index: 0;
-      transform: scale(1.02);
-    }
-
-    .scanlines {
-      pointer-events: none;
-      position: fixed;
-      inset: 0;
-      background:
-        repeating-linear-gradient(
-          to bottom,
-          rgba(255, 255, 255, 0.018) 0px,
-          rgba(255, 255, 255, 0.018) 1px,
-          transparent 1px,
-          transparent 4px
-        );
-      opacity: 0.28;
-      mix-blend-mode: screen;
-      z-index: 2;
-    }
-
-    a {
-      color: var(--fg);
-      text-decoration: none;
-    }
-
-    a:hover {
-      color: #ffffff;
-    }
-
     .page {
-      width: min(100% - 32px, var(--max));
+      max-width: 680px;
       margin: 0 auto;
-      padding: 28px 0 60px;
-      position: relative;
-      z-index: 1;
+      border: 2px solid;
+      border-color: #ffffff #404040 #404040 #ffffff;
     }
-
-    header {
-      padding: 36px 0 28px;
-      border-bottom: 1px solid var(--line);
-      text-align: center;
-      background: rgba(0, 0, 0, 0.08);
-      backdrop-filter: blur(1px);
-      -webkit-backdrop-filter: blur(1px);
+    .banner { background: #000; padding: 26px 12px 20px; }
+    .banner img { width: 300px; max-width: 78%; height: auto; display: block; margin: 0 auto 8px; }
+    .name {
+      color: #fff; font-family: Arial, Helvetica, sans-serif;
+      font-size: 38px; font-weight: 800; letter-spacing: 0.04em; line-height: 1.1;
     }
-
-    .logo-wrap {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
+    .creator {
+      color: #ababab; font-family: Arial, Helvetica, sans-serif;
+      font-size: 17px; letter-spacing: 0.35em; margin-top: 5px;
     }
-
-    .logo {
-      width: min(220px, 70%);
-      max-height: 110px;
-      object-fit: contain;
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
-      filter: grayscale(1) contrast(1.2) brightness(1.15);
+    .rupture { padding: 24px 16px 4px; }
+    .rupture .kicker { font-size: 17px; letter-spacing: 0.25em; }
+    .rupture h1 { font-size: 66px; margin: 4px 0; line-height: 1.1; }
+    .rupture .sub { font-size: 21px; }
+    .btn {
+      display: inline-block; background: #c0c0c0; color: #000;
+      font-family: Arial, Helvetica, sans-serif; font-size: 19px; font-weight: 700;
+      text-decoration: none; padding: 8px 22px; margin: 14px 5px 0;
+      border: 2px solid; border-color: #ffffff #404040 #404040 #ffffff;
     }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(1rem, 2.5vw, 1.4rem);
-      line-height: 1.7;
-      font-weight: normal;
-      text-transform: lowercase;
-    }
-
-    .title {
-      margin-top: 14px;
-      font-size: 0.7rem;
-      color: var(--muted);
-      text-transform: lowercase;
-    }
-
-    .intro {
-      max-width: 58ch;
-      margin: 24px auto 0;
-      font-size: 0.62rem;
-      color: var(--muted);
-      text-transform: lowercase;
-    }
-
-    .stack {
-      display: grid;
-      gap: 14px;
-      margin-top: 28px;
-    }
-
-    details {
-      border: 1px solid var(--line);
-      background: var(--panel);
-      backdrop-filter: blur(2px);
-      -webkit-backdrop-filter: blur(2px);
-    }
-
-    details[open] {
-      border-color: var(--line-2);
-      background: var(--panel-open);
-    }
-
-    summary {
-      list-style: none;
-      cursor: pointer;
-      padding: 18px 16px;
-      position: relative;
-      text-transform: lowercase;
-      font-size: 0.7rem;
-      user-select: none;
-    }
-
-    summary::-webkit-details-marker {
-      display: none;
-    }
-
-    summary::after {
-      content: "[+]";
-      position: absolute;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--muted);
-      font-size: 0.62rem;
-    }
-
-    details[open] summary::after {
-      content: "[-]";
-      color: var(--fg);
-    }
-
-    .content {
-      padding: 0 16px 16px;
-      border-top: 1px solid var(--line);
-    }
-
-    .content-inner {
-      padding-top: 14px;
-    }
-
-    .item-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .item {
-      border: 1px solid var(--line);
-      padding: 12px;
-      background: var(--panel-item);
-      backdrop-filter: blur(2px);
-      -webkit-backdrop-filter: blur(2px);
-    }
-
-    .item-title {
-      display: inline-block;
-      font-size: 0.62rem;
-      line-height: 1.8;
-      text-transform: lowercase;
-    }
-
-    .item-title a {
-      border-bottom: 1px solid var(--fg);
-      padding-bottom: 2px;
-    }
-
-    .item-desc {
-      margin-top: 8px;
-      font-size: 0.52rem;
-      line-height: 1.9;
-      color: var(--muted);
-      text-transform: lowercase;
-    }
-
-    footer {
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid var(--line);
-      text-align: center;
-      background: rgba(0, 0, 0, 0.06);
-      backdrop-filter: blur(1px);
-      -webkit-backdrop-filter: blur(1px);
-    }
-
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      justify-content: center;
-      font-size: 0.52rem;
-      text-transform: lowercase;
-    }
-
-    .footer-links a {
-      border-bottom: 1px solid transparent;
-    }
-
-    .footer-links a:hover {
-      border-bottom-color: var(--fg);
-    }
-
-    .footer-note {
-      margin-top: 14px;
-      font-size: 0.45rem;
-      color: var(--muted);
-      line-height: 1.8;
-      text-transform: lowercase;
-    }
-
-    a:focus-visible,
-    summary:focus-visible {
-      outline: 2px solid rgba(255, 255, 255, 0.9);
-      outline-offset: 3px;
-    }
-
-    @media (prefers-contrast: more) {
-      .bg-image {
-        opacity: 0.22;
-      }
-
-      details,
-      details[open],
-      .item {
-        background: rgba(0, 0, 0, 0.72);
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .page {
-        width: min(100% - 20px, var(--max));
-        padding-top: 18px;
-      }
-
-      header {
-        padding: 26px 0 22px;
-      }
-
-      summary {
-        padding: 16px 14px;
-      }
-
-      .content {
-        padding: 0 14px 14px;
-      }
-
-      .intro {
-        font-size: 0.56rem;
-      }
-    }
-
-    .contact {
-  margin-top: 32px;
-  border: 1px solid var(--line-2);
-  padding: 16px;
-  background: var(--panel-soft);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-}
-
-.contact-title {
-  font-size: 0.62rem;
-  text-transform: lowercase;
-}
-
-.contact-copy {
-  margin-top: 10px;
-  font-size: 0.52rem;
-  line-height: 1.9;
-  color: var(--muted);
-  text-transform: lowercase;
-}
-
-.contact-link {
-  display: inline-block;
-  margin-top: 12px;
-  border-bottom: 1px solid var(--fg);
-  padding-bottom: 2px;
-  font-size: 0.56rem;
-  text-transform: lowercase;
-}
-
-.email-box {
-  margin-top: 16px;
-  border: 1px solid var(--line);
-  padding: 12px;
-  background: rgba(2, 2, 2, 0.16);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-label {
-  display: block;
-  font-size: 0.5rem;
-  line-height: 1.9;
-  color: var(--muted);
-  text-transform: lowercase;
-}
-
-input[type="email"] {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid var(--line-2);
-  background: var(--input-bg);
-  color: var(--fg);
-  font: inherit;
-  font-size: 0.52rem;
-  text-transform: lowercase;
-}
-
-input::placeholder {
-  color: #808080;
-  text-transform: lowercase;
-}
-
-button[type="submit"] {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid var(--fg);
-  background: rgba(255, 255, 255, 0.92);
-  color: #000000;
-  font: inherit;
-  font-size: 0.52rem;
-  text-transform: lowercase;
-  cursor: pointer;
-}
-
-button[type="submit"]:hover {
-  background: #ffffff;
-}
-
-.honeypot {
-  position: absolute;
-  left: -9999px;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-}
-
-#formMessage {
-  min-height: 1em;
-  margin: 0;
-  font-size: 0.46rem;
-  color: var(--muted);
-  line-height: 1.8;
-  text-transform: lowercase;
-}
+    .btn:active { border-color: #404040 #ffffff #ffffff #404040; }
+    .order-note { font-size: 17px; margin-top: 12px; }
+    .small { font-size: 16px; color: #222; }
+    hr { border: none; border-top: 2px groove #ffffff; margin: 24px 30px 0; }
+    .links { padding-top: 18px; font-size: 24px; line-height: 2.0; }
+    .links a { color: #0000ee; }
+    .contact { padding: 16px 0 34px; font-size: 21px; }
+    .contact a { color: #0000ee; }
   </style>
 </head>
-
 <body>
-  <div class="bg-image" aria-hidden="true"></div>
-  <div class="scanlines" aria-hidden="true"></div>
+  <div class="page">
 
-  <main class="page">
-    <header>
-      <div class="logo-wrap">
-        <img
-          src="images/signature.png"
-          alt="Dmitry Markelov logo"
-          class="logo"
-          onerror="this.style.display='none';"
-        />
+    <div class="banner">
+      <img src="https://dmitrymarkelov.com/images/signature.png" alt="Dmitry Markelov signature" />
+      <div class="name">DMITRY MARKELOV</div>
+      <div class="creator">creator</div>
+    </div>
+
+    <div class="rupture">
+      <div class="kicker">NEW BOOK &mdash; OUT NOW</div>
+      <h1>RUPTURE</h1>
+      <div class="sub">handwritten poems, reprinted from the original notebook</div>
+      <div>
+        <a class="btn" href="rupture.html">ORDER RUPTURE</a>
       </div>
+    </div>
 
-      <h1>dmitry markelov</h1>
-      <div class="title">creator</div>
+    <hr />
 
-      <p class="intro">
-        feel free
-      </p>
-    </header>
+    <!-- ============================================================
+         YOUR LINKS. One per line. To change a link, just replace the
+         address inside the quotes and the text between > and </a>.
+         Copy a whole line to add a new one.
+         ============================================================ -->
+    <div class="links">
+      <div><a href="https://www.amazon.com/undone-book-poems-Dmitry-Markelov/dp/B0DPWVRRWQ">undone</a> &mdash; my first book of poems</div>
+      <div><a href="assets/Prima%20Vita%20by%20Dmitry%20A.%20Markelov.pdf">Prima Vita</a> &mdash; free book, read it</div>
+      <div><a href="#">Zero Dot Demeter</a> &mdash; music</div>
+      <div><a href="#">darkdmtr</a> &mdash; music</div>
+      <div><a href="#">Neon Trailblazer</a> &mdash; a game, play it</div>
+      <div><a href="#">Faucets of Reality</a> &mdash; podcast</div>
+      <div><a href="https://visionaryminds.solutions">Visionary Minds Solutions</a> &mdash; my AI company</div>
+    </div>
 
-    <section class="stack">
-      <details open>
-        <summary>my books</summary>
+    <hr />
 
-        <div class="content">
-          <div class="content-inner">
-            <div class="item-list">
-              <article class="item">
-                <div class="item-title">
-                  <a
-                    href="https://www.amazon.com/undone-book-poems-Dmitry-Markelov/dp/B0DPWVRRWQ"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    undone : a book of poems
-                  </a>
-                </div>
+    <div class="contact">
+      contact: <a href="mailto:dmarkelo89@gmail.com">dmarkelo89@gmail.com</a>
+    </div>
 
-                <div class="item-desc">
-                  self-published, available now
-                </div>
-              </article>
-
-              <article class="item">
-                <div class="item-title">
-                  <a href="assets/Prima%20Vita%20by%20Dmitry%20A.%20Markelov.pdf" target="_blank" rel="noopener noreferrer">
-  prima vita
-</a>
-                </div>
-
-                <div class="item-desc">
-                  first metaphysical work (free)
-                </div>
-              </article>
-            </div>
-          </div>
-        </div>
-      </details>
-    </section>
-
-    <section class="contact">
-  <div class="contact-title">reach out</div>
-  <div class="contact-copy">
-    leave your email for occasional updates, or contact me directly.
   </div>
-
-  <a class="contact-link" href="mailto:dmarkelo89@gmail.com">
-    dmarkelo89@gmail.com
-  </a>
-
-  <div class="email-box">
-    <form id="emailForm">
-      <label for="email">join the list</label>
-
-      <input
-        type="email"
-        id="email"
-        name="email"
-        placeholder="your email"
-        required
-        inputmode="email"
-        autocomplete="email"
-      />
-
-      <input
-        type="text"
-        name="website"
-        class="honeypot"
-        tabindex="-1"
-        autocomplete="off"
-      />
-
-      <button type="submit">subscribe</button>
-      <p id="formMessage"></p>
-    </form>
-  </div>
-</section>
-
-    <footer>
-      <div class="footer-links">
-        <a href="mailto:dmarkelo89@gmail.com">email</a>
-        <a
-          href="https://instagram.com/1.dmtr"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          ig
-        </a>
-        <a
-          href="https://x.com/0dotdmtr"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          x
-        </a>
-        <a
-          href="https://visionaryminds.solutions"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          vms
-        </a>
-      </div>
-
-      <div class="footer-note">
-        dmitry markelov / all rights reserved.
-      </div>
-    </footer>
-  </main>
-  
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("emailForm");
-  const message = document.getElementById("formMessage");
-  const scriptURL =
-    "https://script.google.com/macros/s/AKfycbysq6cHkh9MeDeqeZqeBc-Ghuga7LZoigY341ELTewF9gm4EOHerDZVy6DxvC3fd21E/exec";
-
-  if (!form || !message) return;
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    message.textContent = "subscribing...";
-
-    try {
-      const response = await fetch(scriptURL, {
-        method: "POST",
-        body: new FormData(form)
-      });
-
-      const result = await response.json();
-
-      if (result.status === "success") {
-        message.textContent = result.message || "you’re in.";
-        form.reset();
-      } else {
-        message.textContent = "something went wrong. try again?";
-      }
-    } catch {
-      message.textContent = "connection error. try again?";
-    }
-  });
-});
-</script>
-  
 </body>
 </html>
