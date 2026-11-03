@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dmitry Markelov — Software &amp; AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Software and AI projects by Dmitry Markelov — Cove, Komorebi Mindmate, and SlimScreen." />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #c0c0c0;
+      color: #000;
+      font-family: "Times New Roman", Times, serif;
+      text-align: center;
+    }
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+      border: 2px solid;
+      border-color: #ffffff #404040 #404040 #ffffff;
+      background: #c0c0c0;
+    }
+    .banner { background: #000; padding: 26px 12px 20px; }
+    .banner img { width: 300px; max-width: 78%; height: auto; display: block; margin: 0 auto 8px; }
+    .name {
+      color: #fff; font-family: Arial, Helvetica, sans-serif;
+      font-size: 38px; font-weight: 800; letter-spacing: 0.04em; line-height: 1.1;
+    }
+    .creator {
+      color: #ababab; font-family: Arial, Helvetica, sans-serif;
+      font-size: 17px; letter-spacing: 0.35em; margin-top: 5px;
+    }
+    .intro { padding: 22px 16px 8px; }
+    .intro .kicker {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 15px; letter-spacing: 0.25em;
+    }
+    .intro h1 { font-size: clamp(36px, 8vw, 52px); margin: 6px 0 8px; line-height: 1.1; }
+    .intro .sub { font-size: 19px; line-height: 1.45; max-width: 34ch; margin: 0 auto; }
+    hr { border: none; border-top: 2px groove #ffffff; margin: 20px 24px 0; }
+    .projects { padding: 18px 14px 8px; text-align: left; }
+    /* Win95 window chrome — same silver bevel language as homepage .page / .btn */
+    .win {
+      background: #c0c0c0;
+      border: 2px solid;
+      border-color: #ffffff #404040 #404040 #ffffff;
+      margin: 0 0 18px;
+      padding: 3px;
+    }
+    .titlebar {
+      background: #000080;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 3px 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      user-select: none;
+    }
+    .titlebar .title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .titlebar .controls { display: flex; gap: 2px; flex-shrink: 0; }
+    .titlebar .controls span {
+      display: inline-block; width: 16px; height: 14px; line-height: 12px;
+      text-align: center; font-size: 10px; font-weight: 700; color: #000;
+      background: #c0c0c0;
+      border: 2px solid;
+      border-color: #ffffff #404040 #404040 #ffffff;
+    }
+    .win-body { padding: 10px 10px 12px; }
+    .shot {
+      display: block; width: 100%; height: auto;
+      border: 2px solid;
+      border-color: #808080 #ffffff #ffffff #808080;
+      background: #000;
+    }
+    .meta { margin-top: 10px; }
+    .type {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 12px; letter-spacing: 0.12em; color: #222; margin: 0 0 4px;
+    }
+    .meta h2 {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 22px; margin: 0 0 8px; line-height: 1.15;
+    }
+    .meta p { font-size: 18px; line-height: 1.5; margin: 0 0 10px; }
+    .links { font-size: 17px; line-height: 1.7; }
+    .links a { color: #0000ee; }
+    .btn {
+      display: inline-block; background: #c0c0c0; color: #000;
+      font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight: 700;
+      text-decoration: none; padding: 6px 16px; margin: 4px 6px 0 0;
+      border: 2px solid; border-color: #ffffff #404040 #404040 #ffffff;
+    }
+    .btn:active { border-color: #404040 #ffffff #ffffff #404040; }
+    .back { padding: 10px 0 28px; font-size: 19px; }
+    .back a { color: #0000ee; }
+    @media (max-width: 520px) {
+      .name { font-size: 28px; }
+      .creator { font-size: 14px; letter-spacing: 0.28em; }
+      .intro h1 { font-size: 32px; }
+      .intro .sub, .meta p, .links { font-size: 16px; }
+      .projects { padding: 14px 8px 4px; }
+      .meta h2 { font-size: 19px; }
+      .btn { font-size: 15px; padding: 6px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <div class="banner">
+      <img src="images/signature.png" alt="Dmitry Markelov signature" />
+      <div class="name">DMITRY MARKELOV</div>
+      <div class="creator">creator, artist, technologist</div>
+    </div>
+
+    <div class="intro">
+      <div class="kicker">SOFTWARE &amp; AI</div>
+      <h1>What I&rsquo;ve built</h1>
+      <div class="sub">A short look at software and AI I&rsquo;ve built &mdash; products you can try, not a full portfolio.</div>
+    </div>
+
+    <hr />
+
+    <div class="projects">
+
+      <article class="win" aria-label="Cove">
+        <div class="titlebar">
+          <div class="title">Cove.exe &mdash; AI phone receptionist</div>
+          <div class="controls" aria-hidden="true"><span>_</span><span>&#9633;</span><span>&times;</span></div>
+        </div>
+        <div class="win-body">
+          <img class="shot" src="images/tech/cove.jpg" width="960" height="600" alt="Screenshot of the Cove / VisionaryMinds landing page" loading="lazy" />
+          <div class="meta">
+            <div class="type">AI PHONE RECEPTIONIST</div>
+            <h2>Cove</h2>
+            <p>An AI receptionist that answers the calls you can&rsquo;t take, asks custom questions, and emails you a summary. Built with VisionaryMinds Solutions.</p>
+            <div class="links">
+              <div><a href="tel:+16193402683">Live demo: (619) 340-2683</a></div>
+              <div><a href="https://visionaryminds.solutions" target="_blank" rel="noopener noreferrer">visionaryminds.solutions</a></div>
+              <div><a href="https://www.withcove.co/" target="_blank" rel="noopener noreferrer">withcove.co</a></div>
+            </div>
+            <div>
+              <a class="btn" href="tel:+16193402683">CALL DEMO</a>
+              <a class="btn" href="https://visionaryminds.solutions" target="_blank" rel="noopener noreferrer">OPEN SITE</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="win" aria-label="Komorebi Mindmate">
+        <div class="titlebar">
+          <div class="title">Komorebi Mindmate.exe &mdash; AI wellness</div>
+          <div class="controls" aria-hidden="true"><span>_</span><span>&#9633;</span><span>&times;</span></div>
+        </div>
+        <div class="win-body">
+          <img class="shot" src="images/tech/komorebi.jpg" width="960" height="600" alt="Screenshot of Komorebi Mindmate" loading="lazy" />
+          <div class="meta">
+            <div class="type">FULL-STACK AI WELLNESS</div>
+            <h2>Komorebi Mindmate</h2>
+            <p>A full-stack AI wellness companion with accounts and a Pro tier &mdash; chat sessions, archive, and AI insights.</p>
+            <div class="links">
+              <div><a href="https://komorebi-mindmate.netlify.app/" target="_blank" rel="noopener noreferrer">komorebi-mindmate.netlify.app</a></div>
+            </div>
+            <div>
+              <a class="btn" href="https://komorebi-mindmate.netlify.app/" target="_blank" rel="noopener noreferrer">OPEN APP</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="win" aria-label="SlimScreen">
+        <div class="titlebar">
+          <div class="title">SlimScreen.exe &mdash; browser overlay</div>
+          <div class="controls" aria-hidden="true"><span>_</span><span>&#9633;</span><span>&times;</span></div>
+        </div>
+        <div class="win-body">
+          <img class="shot" src="images/tech/slimscreen.jpg" width="960" height="600" alt="Screenshot of SlimScreen" loading="lazy" />
+          <div class="meta">
+            <div class="type">BROWSER OVERLAY</div>
+            <h2>SlimScreen</h2>
+            <p>SlimScreen is an AI browser overlay for instant definitions, with Lexi, its built-in assistant, there to help.</p>
+            <div class="links">
+              <div><a href="https://slim-screen.vercel.app/" target="_blank" rel="noopener noreferrer">slim-screen.vercel.app</a></div>
+            </div>
+            <div>
+              <a class="btn" href="https://slim-screen.vercel.app/" target="_blank" rel="noopener noreferrer">OPEN SITE</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <hr />
+
+    <div class="back">
+      <div><a href="/">&larr; Back to dmitrymarkelov.com</a></div>
+      <div style="margin-top:10px;"><a href="https://www.instagram.com/1.dmtr/" target="_blank" rel="noopener noreferrer">Instagram</a></div>
+    </div>
+
+  </div>
+</body>
+</html>
