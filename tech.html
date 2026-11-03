@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Dmitry Markelov — Software &amp; AI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Software and AI projects by Dmitry Markelov — Cove, Komorebi Mindmate, and SlimScreen." />
+  <meta name="description" content="Software and AI projects by Dmitry Markelov — Cove, Komorebi Mindmate, SlimScreen, and Neon Trailblazer." />
   <link rel="icon" type="image/png" href="images/favicon.png" />
   <style>
     * { box-sizing: border-box; }
@@ -64,13 +64,39 @@
     }
     .titlebar .title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .titlebar .controls { display: flex; gap: 2px; flex-shrink: 0; }
-    .titlebar .controls span {
-      display: inline-block; width: 16px; height: 14px; line-height: 12px;
+    .titlebar .controls button {
+      display: inline-block; width: 16px; height: 14px; line-height: 10px; padding: 0;
       text-align: center; font-size: 10px; font-weight: 700; color: #000;
-      background: #c0c0c0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #c0c0c0; cursor: pointer;
       border: 2px solid;
       border-color: #ffffff #404040 #404040 #ffffff;
     }
+    .titlebar .controls button:active { border-color: #404040 #ffffff #ffffff #404040; }
+    .titlebar .controls button:focus-visible { outline: 1px dotted #fff; outline-offset: 1px; }
+    .win.minimized .win-body { display: none; }
+    .win.closed { display: none; }
+    .win.maximized {
+      position: fixed; inset: 0; z-index: 50; margin: 0;
+      overflow: auto; background: #c0c0c0;
+    }
+    .win.maximized .shot { max-width: 960px; margin: 0 auto; }
+    body.has-max { overflow: hidden; }
+    .taskbar {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+      display: none; flex-wrap: wrap; gap: 4px; padding: 3px 4px;
+      background: #c0c0c0; border-top: 2px solid #ffffff;
+      box-shadow: 0 -1px 0 #808080;
+    }
+    .taskbar.show { display: flex; }
+    .taskbar button {
+      font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 700;
+      background: #c0c0c0; color: #000; cursor: pointer; padding: 3px 10px;
+      max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      border: 2px solid; border-color: #ffffff #404040 #404040 #ffffff;
+    }
+    .taskbar button:active { border-color: #404040 #ffffff #ffffff #404040; }
+    body.has-task { padding-bottom: 40px; }
     .win-body { padding: 10px 10px 12px; }
     .shot {
       display: block; width: 100%; height: auto;
@@ -132,7 +158,7 @@
       <article class="win" aria-label="Cove">
         <div class="titlebar">
           <div class="title">Cove.exe &mdash; AI phone receptionist</div>
-          <div class="controls" aria-hidden="true"><span>_</span><span>&#9633;</span><span>&times;</span></div>
+          <div class="controls"><button type="button" class="min" aria-label="Minimize" aria-expanded="true">_</button><button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button><button type="button" class="cls" aria-label="Close">&times;</button></div>
         </div>
         <div class="win-body">
           <img class="shot" src="images/tech/cove.jpg" width="960" height="600" alt="Screenshot of the Cove / VisionaryMinds landing page" loading="lazy" />
@@ -156,7 +182,7 @@
       <article class="win" aria-label="Komorebi Mindmate">
         <div class="titlebar">
           <div class="title">Komorebi Mindmate.exe &mdash; AI wellness</div>
-          <div class="controls" aria-hidden="true"><span>_</span><span>&#9633;</span><span>&times;</span></div>
+          <div class="controls"><button type="button" class="min" aria-label="Minimize" aria-expanded="true">_</button><button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button><button type="button" class="cls" aria-label="Close">&times;</button></div>
         </div>
         <div class="win-body">
           <img class="shot" src="images/tech/komorebi.jpg" width="960" height="600" alt="Screenshot of Komorebi Mindmate" loading="lazy" />
@@ -177,7 +203,7 @@
       <article class="win" aria-label="SlimScreen">
         <div class="titlebar">
           <div class="title">SlimScreen.exe &mdash; browser overlay</div>
-          <div class="controls" aria-hidden="true"><span>_</span><span>&#9633;</span><span>&times;</span></div>
+          <div class="controls"><button type="button" class="min" aria-label="Minimize" aria-expanded="true">_</button><button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button><button type="button" class="cls" aria-label="Close">&times;</button></div>
         </div>
         <div class="win-body">
           <img class="shot" src="images/tech/slimscreen.jpg" width="960" height="600" alt="Screenshot of SlimScreen" loading="lazy" />
@@ -195,6 +221,27 @@
         </div>
       </article>
 
+      <article class="win" aria-label="Neon Trailblazer">
+        <div class="titlebar">
+          <div class="title">Neon Trailblazer.exe &mdash; browser game</div>
+          <div class="controls"><button type="button" class="min" aria-label="Minimize" aria-expanded="true">_</button><button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button><button type="button" class="cls" aria-label="Close">&times;</button></div>
+        </div>
+        <div class="win-body">
+          <img class="shot" src="images/tech/neon-trailblazer.jpg" width="960" height="600" alt="Title screen of Neon Trailblazer" loading="lazy" />
+          <div class="meta">
+            <div class="type">3D BROWSER GAME</div>
+            <h2>Neon Trailblazer</h2>
+            <p>A 3D light-cycle game in the browser, built with Three.js for the 2025 Vibe Jam. Leave neon trails, grab powerups, and outlast AI riders that get smarter each round.</p>
+            <div class="links">
+              <div><a href="https://ntb-chi.vercel.app/" target="_blank" rel="noopener noreferrer">ntb-chi.vercel.app</a></div>
+            </div>
+            <div>
+              <a class="btn" href="https://ntb-chi.vercel.app/" target="_blank" rel="noopener noreferrer">PLAY GAME</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
     </div>
 
     <hr />
@@ -205,5 +252,66 @@
     </div>
 
   </div>
+  <div class="taskbar" id="taskbar" role="toolbar" aria-label="Closed windows"></div>
+  <script>
+  (function () {
+    var bar = document.getElementById('taskbar');
+    function syncBar() {
+      var on = bar.children.length > 0;
+      bar.classList.toggle('show', on);
+      document.body.classList.toggle('has-task', on);
+    }
+    function unmax(w) {
+      w.classList.remove('maximized');
+      w.querySelector('.max').setAttribute('aria-pressed', 'false');
+      w.querySelector('.max').setAttribute('aria-label', 'Maximize');
+      document.body.classList.toggle('has-max', !!document.querySelector('.win.maximized'));
+    }
+    document.querySelectorAll('.win').forEach(function (w) {
+      var name = w.getAttribute('aria-label');
+      var min = w.querySelector('.min'), max = w.querySelector('.max'), cls = w.querySelector('.cls');
+      min.addEventListener('click', function () {
+        unmax(w);
+        var m = w.classList.toggle('minimized');
+        min.setAttribute('aria-expanded', String(!m));
+        min.setAttribute('aria-label', m ? 'Restore ' + name : 'Minimize ' + name);
+      });
+      max.addEventListener('click', function () {
+        if (w.classList.contains('maximized')) { unmax(w); max.focus(); return; }
+        w.classList.remove('minimized');
+        min.setAttribute('aria-expanded', 'true');
+        w.classList.add('maximized');
+        max.setAttribute('aria-pressed', 'true');
+        max.setAttribute('aria-label', 'Restore ' + name);
+        document.body.classList.add('has-max');
+        max.focus();
+      });
+      cls.addEventListener('click', function () {
+        unmax(w);
+        w.classList.add('closed');
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = w.querySelector('.title').textContent.split(' \u2014 ')[0];
+        b.setAttribute('aria-label', 'Reopen ' + name);
+        b.addEventListener('click', function () {
+          w.classList.remove('closed');
+          b.remove(); syncBar();
+          min.focus();
+        });
+        bar.appendChild(b); syncBar();
+        b.focus();
+      });
+      min.setAttribute('aria-label', 'Minimize ' + name);
+      max.setAttribute('aria-label', 'Maximize ' + name);
+      cls.setAttribute('aria-label', 'Close ' + name);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        var m = document.querySelector('.win.maximized');
+        if (m) { unmax(m); m.querySelector('.max').focus(); }
+      }
+    });
+  })();
+  </script>
 </body>
 </html>
