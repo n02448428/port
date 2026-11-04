@@ -7,6 +7,17 @@
   <meta name="theme-color" content="#008080" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="description" content="Dmitry Markelov — Creator. Poetry, music, games, podcast, and software." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Dmitry Markelov, Creator" />
+  <meta property="og:description" content="Poetry, music, games, podcast, and software by Dmitry Markelov." />
+  <meta property="og:image" content="https://dmitrymarkelov.com/images/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="https://dmitrymarkelov.com/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Dmitry Markelov, Creator" />
+  <meta name="twitter:description" content="Poetry, music, games, podcast, and software by Dmitry Markelov." />
+  <meta name="twitter:image" content="https://dmitrymarkelov.com/images/og-image.png" />
   <link rel="icon" type="image/png" href="images/flavicon.png" />
   <style>
     * { box-sizing: border-box; }
@@ -100,8 +111,7 @@
       min-width: 280px;
     }
     .win.closed { display: none; }
-    .win.minimized .win-body { display: none; }
-    .win.minimized { max-height: none; height: auto; }
+    .win.minimized { display: none !important; }
     .win.maximized {
       inset: 0 0 calc(40px + env(safe-area-inset-bottom, 0px)) 0 !important;
       width: auto !important; height: auto !important;
@@ -262,12 +272,14 @@
       font-size: 9px; line-height: 14px; text-align: center; font-weight: 800;
     }
     .task-buttons {
-      display: flex; flex-wrap: wrap; gap: 4px; flex: 1; min-width: 0;
+      display: flex; flex-wrap: nowrap; gap: 3px; flex: 1 1 auto; min-width: 0;
+      overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain;
     }
+    .task-buttons::-webkit-scrollbar { display: none; }
     .task-buttons button {
       font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 700;
       background: #c0c0c0; color: #000; cursor: pointer; padding: 3px 10px;
-      max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      flex: 0 0 auto; min-width: 84px; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
       border: 2px solid; border-color: #ffffff #404040 #404040 #ffffff;
     }
     .task-buttons button:active,
@@ -356,15 +368,10 @@
         min-height: 0;
         max-height: none;
       }
-      .win.minimized {
-        position: absolute !important; inset: auto !important;
-        left: -9999px !important; width: 1px !important; height: 1px !important;
-        overflow: hidden; opacity: 0; pointer-events: none;
-      }
       .win.maximized { bottom: calc(40px + env(safe-area-inset-bottom, 0px)) !important; }
       #win-about, #win-poetry, #win-music, #win-games,
       #win-podcast, #win-tech, #win-hire, #win-pdf { width: auto; }
-      .task-buttons button { max-width: 88px; padding: 3px 6px; }
+      .task-buttons button { padding: 3px 6px; font-size: 11px; min-width: 76px; max-width: 120px; }
       .start { padding: 4px 8px; font-size: 12px; }
       .taskbar .pin { padding: 3px 6px; font-size: 11px; }
       .tray { padding: 2px 5px; font-size: 11px; gap: 4px; }
@@ -399,45 +406,31 @@
       .icon .glyph img { width: 68px; height: 68px; }
     }
 
-    /* ---- Boot / startup splash (Win95 style) ---- */
+    /* ---- Boot: BIOS console then DMTR 89 splash ---- */
     #boot-splash {
-      position: fixed; inset: 0; z-index: 200;
-      display: flex; align-items: center; justify-content: center;
-      background: #008080;
-      cursor: pointer;
+      position: fixed; inset: 0; z-index: 200; background: #000; color: #b8b8b8;
+      font: 13px/1.45 "Courier New", Courier, monospace; cursor: pointer;
+      overflow: hidden; padding: 14px 14px 40px;
     }
     #boot-splash[hidden] { display: none !important; }
-    .boot-panel {
-      width: min(360px, 88vw);
-      background: #c0c0c0;
-      border: 2px solid;
-      border-color: #ffffff #404040 #404040 #ffffff;
-      box-shadow: 2px 2px 0 rgba(0,0,0,0.25);
-      padding: 18px 16px 14px;
-      text-align: center;
-      font-family: Arial, Helvetica, sans-serif;
+    #boot-con { margin: 0; white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere; }
+    #boot-con .g { color: #33ff66; }
+    #boot-con .cur { display: inline-block; width: 0.6em; background: #b8b8b8; animation: blink 1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    #boot-logo {
+      position: absolute; inset: 0; display: none; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px; background: #000;
     }
-    .boot-panel img {
-      width: 160px; max-width: 70%; height: auto; display: block; margin: 0 auto 10px;
-      filter: drop-shadow(0 0 1px #fff);
+    #boot-splash.splash #boot-logo { display: flex; }
+    #boot-splash.splash #boot-con { visibility: hidden; }
+    #boot-logo img { width: 150px; max-width: 60vw; filter: brightness(0) invert(1); }
+    #boot-logo .t { color: #33ff66; font-size: 22px; letter-spacing: 0.3em; font-weight: 700; }
+    #boot-logo .s { color: #888; font-size: 12px; letter-spacing: 0.2em; }
+    .boot-hint {
+      position: absolute; left: 0; right: 0; bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      text-align: center; color: #666; font-size: 11px;
     }
-    .boot-title {
-      font-size: 15px; font-weight: 800; letter-spacing: 0.04em; margin: 0 0 12px;
-    }
-    .boot-bar {
-      height: 18px; background: #fff;
-      border: 2px solid; border-color: #808080 #ffffff #ffffff #808080;
-      padding: 2px; margin: 0 0 10px;
-    }
-    .boot-bar-fill {
-      height: 100%; width: 0%; background: #000080;
-      animation: boot-fill 1.4s linear forwards;
-    }
-    @keyframes boot-fill { from { width: 0%; } to { width: 100%; } }
-    .boot-hint { font-size: 11px; color: #333; }
-    @media (prefers-reduced-motion: reduce) {
-      .boot-bar-fill { animation: none; width: 100%; }
-    }
+    @media (max-width: 400px) { #boot-splash { font-size: 11.5px; padding: 10px 10px 40px; } }
 
     /* ---- Start menu ---- */
     .start-menu {
@@ -490,24 +483,78 @@
       .start-menu .sm-item { font-size: 15px; min-height: 48px; padding: 10px 12px; }
       .start-menu .sm-item img { width: 28px; height: 28px; }
     }
+    @media (max-width: 600px) {
+      .titlebar .controls { gap: 6px; }
+      .titlebar .controls button { width: 23px; height: 21px; font-size: 12px; line-height: 1; padding: 0; position: relative; }
+      .titlebar .controls button::after { content: ""; position: absolute; inset: -7px -3px; }
+    }
+    .win-game { width: 720px; height: 520px; display: flex; flex-direction: column; }
+    .win-game.closed { display: none; }
+    .win-game .win-body { display: flex; flex-direction: column; padding: 0; overflow: hidden; flex: 1; min-height: 0; }
+    .win-game iframe { flex: 1; width: 100%; border: 0; background: #000; min-height: 0; }
+    .win-game .gbar { font: 11px Arial, sans-serif; padding: 3px 6px; background: #c0c0c0; border-top: 1px solid #808080; text-align: right; }
+    @media (max-width: 600px) { .win-game { width: auto; height: 70vh; } }
+    .icon .glyph svg { width: 40px; height: 40px; }
+    .sm-item svg { width: 24px; height: 24px; vertical-align: middle; }
+    .bevel { font: 11px Arial, sans-serif; background: #c0c0c0; color: #000; border: 2px outset #fff; padding: 2px 6px; cursor: pointer; text-decoration: none; white-space: nowrap; }
+    .bevel:disabled { color: #808080; }
+    .win-ie { width: 760px; height: 540px; left: 80px; top: 24px; display: flex; flex-direction: column; }
+    .win-ie.closed, .win-np.closed, .win-mc.closed, .win-amp.closed { display: none; }
+    .win-ie .win-body { display: flex; flex-direction: column; padding: 0; flex: 1; min-height: 0; overflow: hidden; }
+    .ie-tools, .ie-bm { display: flex; gap: 4px; align-items: center; padding: 3px 4px; background: #c0c0c0; font: 11px Arial, sans-serif; border-bottom: 1px solid #808080; }
+    .ie-bm { overflow-x: auto; scrollbar-width: thin; }
+    .ie-addr { flex: 1; display: flex; gap: 4px; align-items: center; min-width: 0; }
+    .ie-url { flex: 1; min-width: 0; font: 12px Arial, sans-serif; border: 2px inset #fff; padding: 2px 4px; }
+    .ie-view { position: relative; flex: 1; min-height: 0; background: #fff; border: 2px inset #fff; }
+    .ie-frame { width: 100%; height: 100%; border: 0; display: block; }
+    .ie-err { position: absolute; inset: 0; background: #fff; padding: 20px; font: 13px Arial, sans-serif; }
+    .ie-status { font: 11px Arial, sans-serif; padding: 2px 6px; background: #c0c0c0; border-top: 1px solid #fff; }
+    .win-amp { width: 300px; left: 120px; top: 60px; }
+    .win-amp .win-body { padding: 0; background: #23232f; }
+    .amp { padding: 6px; color: #0f0; font: 11px "Courier New", monospace; }
+    .amp-top { display: flex; flex-direction: column; gap: 4px; }
+    .amp-lcd { display: flex; justify-content: space-between; align-items: center; background: #000; border: 2px inset #555; padding: 3px 6px; }
+    .amp-time { font-size: 20px; letter-spacing: 1px; color: #0f0; }
+    .amp-vis { background: #000; }
+    .amp-marq { background: #000; border: 2px inset #555; overflow: hidden; white-space: nowrap; padding: 2px 0; }
+    .amp-title { display: inline-block; padding-left: 100%; animation: ampmarq 12s linear infinite; color: #0f0; }
+    @keyframes ampmarq { to { transform: translateX(-100%); } }
+    @media (prefers-reduced-motion: reduce) { .amp-title { animation: none; padding-left: 4px; } }
+    .amp-ctrls { display: flex; gap: 3px; margin-top: 6px; align-items: center; }
+    .amp-b { min-width: 30px; height: 20px; background: linear-gradient(#5a5a6e, #34344a); color: #ddd; border: 1px solid #111; box-shadow: inset 1px 1px #888; font-size: 9px; padding: 0 3px; cursor: pointer; }
+    .amp-sel { flex: 1; min-width: 0; background: #000; color: #0f0; border: 1px solid #555; font: 11px "Courier New", monospace; }
+    .amp-yt { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none; }
+    .amp-note { color: #889; margin-top: 4px; font-size: 10px; }
+    .win-np { width: 460px; left: 140px; top: 70px; }
+    .win-np .win-body { padding: 0; background: #fff; }
+    .np-menu { font: 11px Arial, sans-serif; padding: 2px 6px; background: #c0c0c0; border-bottom: 1px solid #808080; }
+    .np-text { margin: 0; padding: 8px; font: 13px "Courier New", monospace; white-space: pre-wrap; border: 2px inset #fff; max-height: 60vh; overflow: auto; }
+    .win-mc { width: 360px; left: 60px; top: 50px; }
+    .mc-drives { display: flex; gap: 14px; padding: 12px; background: #fff; border: 2px inset #fff; flex-wrap: wrap; }
+    .mc-drive { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 84px; background: none; border: 0; font: 11px Arial, sans-serif; cursor: pointer; }
+    .mc-drive:focus { outline: 1px dotted #000; }
+    .mc-drive img, .tb-ico { image-rendering: pixelated; image-rendering: crisp-edges; }
+    .tb-ico { width: 16px; height: 16px; vertical-align: -3px; margin-right: 4px; flex: none; }
+    .titlebar .title { display: flex; align-items: center; }
+    .mc-ico { width: 40px; height: 24px; background: linear-gradient(#e0e0e0, #a0a0a0); border: 1px solid #000; box-shadow: inset -6px -4px 0 -3px #0a0; }
+    #screensaver { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 99999; background: #000; cursor: none; }
+    #screensaver[hidden] { display: none; }
+    @media (max-width: 600px) { .win-ie { width: auto; height: 75vh; } .win-amp, .win-np, .win-mc { width: auto; } .win-amp:not(.maximized), .win-mc:not(.maximized) { bottom: auto !important; height: auto !important; } .ie-new { display: none; } }
   </style>
 </head>
 <body>
   <div id="boot-splash" role="dialog" aria-label="Starting DMTR 89">
-    <div class="boot-panel">
-      <img src="images/signature.png" alt="" />
-      <div class="boot-title">Starting DMTR 89...</div>
-      <div class="boot-bar" aria-hidden="true"><div class="boot-bar-fill"></div></div>
-      <div class="boot-hint">Click, tap, or press any key to skip</div>
-    </div>
+    <pre id="boot-con" aria-hidden="true"></pre>
+    <div id="boot-logo"><img src="images/signature.png" alt="" /><div class="t">DMTR 89</div><div class="s">DMITRY MARKELOV</div></div>
+    <div class="boot-hint">Press any key or tap to skip</div>
   </div>
   <script>
   (function(){
     try {
       var q=new URLSearchParams(location.search).get('shot');
-      var skip=q && q!=='boot';
+      var skip=q && q!=='boot' && q!=='boot2';
       var done=sessionStorage.getItem('dmtr95_booted')==='1';
-      if (skip || (done && q!=='boot')) {
+      if (skip || (done && !q)) {
         var el=document.getElementById('boot-splash');
         if (el) el.setAttribute('hidden','');
       }
@@ -523,6 +570,22 @@
     </div>
 
     <div class="icons" role="navigation" aria-label="Desktop folders">
+      <button type="button" class="icon" data-open="mycomputer">
+        <span class="glyph" aria-hidden="true"><img src="images/win95/mycomputer.png" alt="" width="40" height="40" /></span>
+        <span class="label">My Computer</span>
+      </button>
+      <button type="button" class="icon" data-open="ie">
+        <span class="glyph" aria-hidden="true"><img src="images/win95/ie.png" alt="" width="40" height="40" /></span>
+        <span class="label">Internet Explorer</span>
+      </button>
+      <button type="button" class="icon" data-open="amp">
+        <span class="glyph" aria-hidden="true"><img src="images/win95/player.png" alt="" width="40" height="40" /></span>
+        <span class="label">DMTRamp</span>
+      </button>
+      <button type="button" class="icon" data-open="notepad">
+        <span class="glyph" aria-hidden="true"><img src="images/win95/notepad.png" alt="" width="40" height="40" /></span>
+        <span class="label">Notepad</span>
+      </button>
       <button type="button" class="icon" data-open="poetry">
         <span class="glyph" aria-hidden="true"><img src="images/win95/poetry.png" alt="" width="40" height="40" /></span>
         <span class="label">Poetry</span>
@@ -558,7 +621,7 @@
     </div>
 
     <!-- About Me.txt — open on load -->
-    <article class="win" id="win-about" aria-label="About Me" data-task="About Me.txt">
+    <article class="win closed" id="win-about" aria-label="About Me" data-task="About Me.txt">
       <div class="titlebar">
         <div class="title">About Me.txt</div>
         <div class="controls">
@@ -678,42 +741,42 @@
           <h3>Neon Trailblazer</h3>
           <img class="shot" src="images/tech/neon-trailblazer.jpg" width="960" height="600" alt="Neon Trailblazer title screen" loading="lazy" />
           <p>Weave through the neon cybergrid, leaving light trails in your wake. Built for the 2025 Vibe Jam.</p>
-          <a class="btn" href="https://ntb-chi.vercel.app/" target="_blank" rel="noopener noreferrer">Play</a>
+          <a class="btn" href="https://ntb-chi.vercel.app/" data-frame="https://ntb-chi.vercel.app/" target="_blank" rel="noopener noreferrer">Play</a>
         </div>
         <div class="item">
           <h3>Rosie's Debugger</h3>
           <p>A narrative adventure with a quirky AI guide through a broken digital world.</p>
-          <a class="btn" href="https://n02448428.github.io/rosie/" target="_blank" rel="noopener noreferrer">Play</a>
+          <a class="btn" href="https://n02448428.github.io/rosie/" data-frame="https://n02448428.github.io/rosie/" target="_blank" rel="noopener noreferrer">Play</a>
         </div>
         <div class="item">
           <h3>Firebreather</h3>
           <p>Head-tracking game: breathe fire at ice enemies with your camera.</p>
-          <a class="btn" href="https://n02448428.github.io/Firebreather/" target="_blank" rel="noopener noreferrer">Play</a>
+          <a class="btn" href="https://n02448428.github.io/Firebreather/" data-frame="https://n02448428.github.io/Firebreather/" target="_blank" rel="noopener noreferrer">Play</a>
         </div>
         <div class="item">
           <h3>Win95 3D Maze</h3>
           <p>Navigate a 3D maze, collect retro icons, race the clock.</p>
-          <a class="btn" href="https://novelfilms.itch.io/3d-maze" target="_blank" rel="noopener noreferrer">Play</a>
+          <a class="btn" href="https://novelfilms.itch.io/3d-maze" data-frame="https://html-classic.itch.zone/html/13611259/index.html" target="_blank" rel="noopener noreferrer">Play</a>
         </div>
         <div class="item">
           <h3>8192</h3>
           <p>Numbers puzzle: try to get to the 8192 tile.</p>
-          <a class="btn" href="https://novelfilms.itch.io/8192" target="_blank" rel="noopener noreferrer">Play</a>
+          <a class="btn" href="https://novelfilms.itch.io/8192" data-frame="https://html-classic.itch.zone/html/13543982/index.html" target="_blank" rel="noopener noreferrer">Play</a>
         </div>
         <div class="item">
           <h3>BRIX</h3>
           <p>Brickbreaker-inspired action. Beat the fifth level for a secret bonus.</p>
-          <a class="btn" href="https://novelfilms.itch.io/brix" target="_blank" rel="noopener noreferrer">Play</a>
+          <a class="btn" href="https://novelfilms.itch.io/brix" data-frame="https://html-classic.itch.zone/html/5758830/BRIX%20v1.1/index.html" target="_blank" rel="noopener noreferrer">Play</a>
         </div>
         <div class="item">
           <h3>Flippy Bard</h3>
           <p>A Flappy Bird–style challenge with a pixelated bard.</p>
-          <a class="btn" href="https://novelfilms.itch.io/flippybard" target="_blank" rel="noopener noreferrer">Play</a>
+          <a class="btn" href="https://novelfilms.itch.io/flippybard" data-frame="https://html-classic.itch.zone/html/5582100/FlippyBard%201.5/index.html" target="_blank" rel="noopener noreferrer">Play</a>
         </div>
         <div class="item">
           <h3>Contrast</h3>
           <p>Fast clicker: match falling balls to the correct basket color.</p>
-          <a class="btn" href="https://novelfilms.itch.io/contrast" target="_blank" rel="noopener noreferrer">Play</a>
+          <a class="btn" href="https://novelfilms.itch.io/contrast" data-frame="https://html-classic.itch.zone/html/5546829/CONTRAST%200.7%20-%20WebGL%20%20fullscreen/index.html" target="_blank" rel="noopener noreferrer">Play</a>
         </div>
         <div class="item">
           <h3>Hand Dance Revolution</h3>
@@ -723,7 +786,7 @@
         <div class="item">
           <h3>Kart (working title)</h3>
           <p>Kart game in progress.</p>
-          <a class="btn" href="https://n02448428.github.io/kart/" target="_blank" rel="noopener noreferrer">Play</a>
+          <a class="btn" href="https://n02448428.github.io/kart/" data-frame="https://n02448428.github.io/kart/" target="_blank" rel="noopener noreferrer">Play</a>
         </div>
         <div class="item">
           <h3>Stranded</h3>
@@ -802,6 +865,105 @@
     </article>
 
     <!-- Hire Me -->
+    <article class="win closed win-ie" id="win-ie" aria-label="Internet Explorer" data-task="Internet Explorer">
+      <div class="titlebar">
+        <div class="title">Internet Explorer</div>
+        <div class="controls">
+          <button type="button" class="min" aria-label="Minimize">_</button>
+          <button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button>
+          <button type="button" class="cls" aria-label="Close">&times;</button>
+        </div>
+      </div>
+      <div class="win-body">
+        <div class="ie-tools">
+          <button type="button" class="bevel ie-back" aria-label="Back" disabled>&#9664; Back</button>
+          <button type="button" class="bevel ie-fwd" aria-label="Forward" disabled>&#9654;</button>
+          <label class="ie-addr">Address <input type="url" class="ie-url" value="https://dmitrymarkelov.com/" spellcheck="false" /></label>
+          <button type="button" class="bevel ie-go">Go</button>
+          <a class="bevel ie-new" href="https://dmitrymarkelov.com/" target="_blank" rel="noopener noreferrer">Open in new tab</a>
+        </div>
+        <div class="ie-bm">Links: <button type="button" class="bevel" data-url="https://dmitrymarkelov.com/">dmitrymarkelov.com</button><button type="button" class="bevel" data-url="https://dmitrymarkelov.com/tech.html">Tech</button><button type="button" class="bevel" data-url="https://dmitrymarkelov.com/rupture.html">RUPTURE</button><button type="button" class="bevel" data-url="https://visionaryminds.solutions">Visionary Minds</button><button type="button" class="bevel" data-url="https://komorebi-mindmate.netlify.app/">Komorebi Mindmate</button><button type="button" class="bevel" data-url="https://slim-screen.vercel.app/">SlimScreen</button><button type="button" class="bevel" data-url="https://darkdmtr.com/">darkdmtr.com</button></div>
+        <div class="ie-view">
+          <iframe class="ie-frame" title="Internet Explorer page"></iframe>
+          <div class="ie-err" hidden><p><b>This page can&rsquo;t be displayed here.</b></p><p>The site doesn&rsquo;t allow itself to be shown inside another page.</p><a class="bevel ie-err-open" target="_blank" rel="noopener noreferrer">Open in new tab</a></div>
+        </div>
+        <div class="ie-status">Done</div>
+      </div>
+    </article>
+    <article class="win closed win-amp" id="win-amp" aria-label="DMTRamp" data-task="DMTRamp">
+      <div class="titlebar">
+        <div class="title">DMTRamp</div>
+        <div class="controls">
+          <button type="button" class="min" aria-label="Minimize">_</button>
+          <button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button>
+          <button type="button" class="cls" aria-label="Close">&times;</button>
+        </div>
+      </div>
+      <div class="win-body">
+        <div class="amp">
+          <div class="amp-top">
+            <div class="amp-lcd"><div class="amp-time">00:00</div><canvas class="amp-vis" width="76" height="22"></canvas></div>
+            <div class="amp-marq"><span class="amp-title">DMTRamp &mdash; pick a release, press play</span></div>
+          </div>
+          <div class="amp-ctrls">
+            <button type="button" class="amp-b" data-a="prev" aria-label="Previous track">|&#9664;&#9664;</button>
+            <button type="button" class="amp-b" data-a="play" aria-label="Play">&#9654;</button>
+            <button type="button" class="amp-b" data-a="pause" aria-label="Pause">||</button>
+            <button type="button" class="amp-b" data-a="next" aria-label="Next track">&#9654;&#9654;|</button>
+            <select class="amp-sel" aria-label="Release"></select>
+          </div>
+          <div class="amp-yt"><div id="amp-yt-host"></div></div>
+          <div class="amp-note">Plays through YouTube.</div>
+        </div>
+      </div>
+    </article>
+    <article class="win closed win-np" id="win-notepad" aria-label="Notepad" data-task="Notepad">
+      <div class="titlebar">
+        <div class="title">Poems.txt - Notepad</div>
+        <div class="controls">
+          <button type="button" class="min" aria-label="Minimize">_</button>
+          <button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button>
+          <button type="button" class="cls" aria-label="Close">&times;</button>
+        </div>
+      </div>
+      <div class="win-body">
+        <div class="np-menu">File&nbsp;&nbsp; Edit&nbsp;&nbsp; Search&nbsp;&nbsp; Help</div>
+        <pre class="np-text">Poems.txt
+=========
+
+The poems live in the books, not in plain text on this site.
+
+RUPTURE    - handwritten poems, reprinted page for page.
+             One poem (handwritten) + signed copies:
+             <a href="rupture.html">rupture.html</a>
+
+undone     - my first book of poems.
+             <a href="https://www.amazon.com/undone-book-poems-Dmitry-Markelov/dp/B0DPWVRRWQ" target="_blank" rel="noopener noreferrer">Amazon</a>  |  <a href="https://a.co/d/d8TvY5t" target="_blank" rel="noopener noreferrer">Look inside</a>
+
+Prima Vita - a free book.
+             <a href="assets/Prima%20Vita%20by%20Dmitry%20A.%20Markelov.pdf">Read PDF</a>
+</pre>
+      </div>
+    </article>
+    <article class="win closed win-mc" id="win-mycomputer" aria-label="My Computer" data-task="My Computer">
+      <div class="titlebar">
+        <div class="title">My Computer</div>
+        <div class="controls">
+          <button type="button" class="min" aria-label="Minimize">_</button>
+          <button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button>
+          <button type="button" class="cls" aria-label="Close">&times;</button>
+        </div>
+      </div>
+      <div class="win-body">
+        <div class="mc-drives">
+          <button type="button" class="mc-drive" data-open="poetry"><img src="images/win95/drive-c.png" alt="" width="40" height="40" />POETRY (C:)</button>
+          <button type="button" class="mc-drive" data-open="music"><img src="images/win95/drive-d.png" alt="" width="40" height="40" />MUSIC (D:)</button>
+          <button type="button" class="mc-drive" data-open="tech"><img src="images/win95/drive-e.png" alt="" width="40" height="40" />TECH (E:)</button>
+        </div>
+        <div class="ie-status">3 object(s)</div>
+      </div>
+    </article>
+    <canvas id="screensaver" hidden aria-hidden="true"></canvas>
     <article class="win closed" id="win-hire" aria-label="Hire Me" data-task="Hire Me">
       <div class="titlebar">
         <div class="title">Hire Me.txt</div>
@@ -835,8 +997,7 @@
       <div class="win-body">
         <div class="type">FREE 3-STEP WORKBOOK</div>
         <h2>Living the Dream</h2>
-        <p>Hey — I&rsquo;m Dmitry. I made this free workbook because I wanted a simple way for you to step into the life you keep imagining. Inside are three steps I use myself: how you want to spend your time every day, who you&rsquo;re becoming, and how you grow by taking real wins in the world.</p>
-        <p>I put my heart into it — the same heart I put into my poetry, music, games, podcast, and tech. It&rsquo;s free, it&rsquo;s practical, and if you&rsquo;ve been waiting for a clear first step, this is it. Leave your email and I&rsquo;ll send the PDF in the welcome message.</p>
+        <p>Hey — I&rsquo;m Dmitry. Three steps I use myself: how you spend your days, who you&rsquo;re becoming, and taking real wins in the world. Leave your email and I&rsquo;ll send the PDF.</p>
         <div class="substack-embed" id="substack-embed-slot">
           <iframe
             src="https://dmitrymarkelov.substack.com/embed"
@@ -846,7 +1007,7 @@
             scrolling="no"
           ></iframe>
         </div>
-        <p class="note">Join my email list, Faucets of Reality. You&rsquo;ll get the free PDF right away, then new podcast episodes and the occasional poem or note. Unsubscribe anytime.</p>
+        <p class="note">Faucets of Reality: the free PDF, then podcast episodes and the occasional poem. Unsubscribe anytime.</p>
       </div>
     </article>
 
@@ -859,6 +1020,19 @@
     <nav id="start-menu" class="start-menu" role="menu" aria-label="Start menu" hidden>
       <button type="button" class="sm-item" role="menuitem" data-open="about">
         <img src="images/win95/about.png" alt="" width="24" height="24" /> About Me.txt
+      </button>
+      <div class="sm-sep" aria-hidden="true"></div>
+      <button type="button" class="sm-item" role="menuitem" data-open="mycomputer">
+        <img src="images/win95/mycomputer.png" alt="" width="24" height="24" /> My Computer
+      </button>
+      <button type="button" class="sm-item" role="menuitem" data-open="ie">
+        <img src="images/win95/ie.png" alt="" width="24" height="24" /> Internet Explorer
+      </button>
+      <button type="button" class="sm-item" role="menuitem" data-open="amp">
+        <img src="images/win95/player.png" alt="" width="24" height="24" /> DMTRamp
+      </button>
+      <button type="button" class="sm-item" role="menuitem" data-open="notepad">
+        <img src="images/win95/notepad.png" alt="" width="24" height="24" /> Notepad
       </button>
       <div class="sm-sep" aria-hidden="true"></div>
       <button type="button" class="sm-item" role="menuitem" data-open="poetry">
@@ -887,7 +1061,7 @@
         <img src="images/win95/instagram.png" alt="" width="24" height="24" /> Instagram @1.dmtr
       </a>
     </nav>
-    <button type="button" class="pin" id="pin-pdf" aria-label="Open Dream Life PDF">Dream Life</button>
+    <button type="button" class="pin" id="pin-pdf" aria-label="Open Dream Life PDF"><img class="tb-ico" src="images/win95/pdf.png" alt="" width="16" height="16" />Dream Life</button>
     <div class="task-buttons" id="task-buttons"></div>
     <div class="tray" id="sys-tray" title="Local time — tap for date" role="status" aria-live="polite">
       <time id="tray-clock">--:--</time>
@@ -907,11 +1081,16 @@
       podcast: document.getElementById('win-podcast'),
       tech: document.getElementById('win-tech'),
       hire: document.getElementById('win-hire'),
-      pdf: document.getElementById('win-pdf')
+      pdf: document.getElementById('win-pdf'),
+      ie: document.getElementById('win-ie'),
+      amp: document.getElementById('win-amp'),
+      notepad: document.getElementById('win-notepad'),
+      mycomputer: document.getElementById('win-mycomputer')
     };
 
     function bringFront(w) {
       w.style.zIndex = String(++z);
+      if (taskButtons) syncTasks();
     }
 
     function unmax(w) {
@@ -919,7 +1098,11 @@
       var max = w.querySelector('.max');
       max.setAttribute('aria-pressed', 'false');
       max.setAttribute('aria-label', 'Maximize');
-      document.body.classList.toggle('has-max', !!document.querySelector('.win.maximized'));
+      syncMax();
+    }
+    // Minimized windows keep their maximized state; only visible maximized windows count for has-max
+    function syncMax() {
+      document.body.classList.toggle('has-max', !!document.querySelector('.win.maximized:not(.minimized):not(.closed)'));
     }
 
     function ensureTaskBtn(w) {
@@ -930,6 +1113,7 @@
       b.type = 'button';
       b.dataset.win = id;
       b.textContent = w.getAttribute('data-task') || w.getAttribute('aria-label');
+      b.insertBefore(winIcon(w), b.firstChild);
       b.addEventListener('click', function () {
         if (w.classList.contains('closed')) {
           openWin(w);
@@ -937,6 +1121,9 @@
           w.classList.remove('minimized');
           w.querySelector('.min').setAttribute('aria-expanded', 'true');
           bringFront(w);
+        } else if (topWin() === w) {
+          w.classList.add('minimized');
+          w.querySelector('.min').setAttribute('aria-expanded', 'false');
         } else {
           bringFront(w);
         }
@@ -946,14 +1133,31 @@
       return b;
     }
 
+    var lastTop = null;
+    taskButtons.addEventListener('wheel', function (e) {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { taskButtons.scrollLeft += e.deltaY; e.preventDefault(); }
+    }, { passive: false });
+    function topWin() {
+      var best = null, bz = -1;
+      Object.keys(map).forEach(function (k) {
+        var w = map[k];
+        if (w.classList.contains('closed') || w.classList.contains('minimized')) return;
+        var zz = +w.style.zIndex || 0;
+        if (zz > bz) { bz = zz; best = w; }
+      });
+      return best;
+    }
     function syncTasks() {
+      syncMax();
+      var top = topWin();
       Object.keys(map).forEach(function (k) {
         var w = map[k];
         var btn = taskButtons.querySelector('[data-win="' + w.id + '"]');
         var visible = !w.classList.contains('closed');
         if (visible) {
           btn = ensureTaskBtn(w);
-          btn.classList.toggle('active', !w.classList.contains('minimized'));
+          btn.classList.toggle('active', w === top);
+          if (w === top && w !== lastTop) { lastTop = w; btn.scrollIntoView({ block: 'nearest', inline: 'nearest' }); }
         } else if (btn) {
           btn.remove();
         }
@@ -978,15 +1182,19 @@
       syncTasks();
     }
 
-    Object.keys(map).forEach(function (k) {
-      var w = map[k];
+    Object.keys(map).forEach(function (k) { setupWin(map[k]); });
+    function winIcon(w) {
+      var i = document.createElement('img'); i.className = 'tb-ico'; i.alt = ''; i.width = 16; i.height = 16;
+      i.src = 'images/win95/' + ({ 'win-about': 'about', 'win-poetry': 'poetry', 'win-music': 'music', 'win-games': 'games', 'win-podcast': 'podcast',       'win-tech': 'tech', 'win-hire': 'hire', 'win-pdf': 'pdf', 'win-ie': 'ie', 'win-amp': 'player', 'win-notepad': 'notepad', 'win-mycomputer': 'mycomputer' }[w.id] || (w.classList.contains('win-game') ? 'game' : 'about')) + '.png'; return i;
+    }
+    function setupWin(w) {
+      var tt = w.querySelector('.titlebar .title'); if (tt && !tt.querySelector('.tb-ico')) tt.insertBefore(winIcon(w), tt.firstChild);
       var name = w.getAttribute('aria-label');
       var min = w.querySelector('.min');
       var max = w.querySelector('.max');
       var cls = w.querySelector('.cls');
 
       min.addEventListener('click', function () {
-        unmax(w);
         var m = w.classList.toggle('minimized');
         min.setAttribute('aria-expanded', String(!m));
         min.setAttribute('aria-label', m ? 'Restore ' + name : 'Minimize ' + name);
@@ -1007,12 +1215,49 @@
       cls.addEventListener('click', function () {
         closeWin(w);
       });
-      w.querySelector('.titlebar').addEventListener('mousedown', function () {
+      w.addEventListener('pointerdown', function () {
         if (!w.classList.contains('closed')) bringFront(w);
       });
       min.setAttribute('aria-label', 'Minimize ' + name);
       max.setAttribute('aria-label', 'Maximize ' + name);
       cls.setAttribute('aria-label', 'Close ' + name);
+    }
+
+    // Games open inside the OS as their own windows (iframe) with an "Open full screen" link
+    var desktopEl = document.getElementById('desktop');
+    document.querySelectorAll('#win-games a.btn[data-frame]').forEach(function (a, i) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        var key = 'game' + i;
+        var w = map[key];
+        if (!w) {
+          var title = a.closest('.item').querySelector('h3').textContent;
+          w = document.createElement('article');
+          w.className = 'win closed win-game';
+          w.id = 'win-' + key;
+          w.setAttribute('aria-label', title);
+          w.setAttribute('data-task', title);
+          w.innerHTML = '<div class="titlebar"><div class="title"></div><div class="controls">' +
+            '<button type="button" class="min">_</button><button type="button" class="max" aria-pressed="false">&#9633;</button>' +
+            '<button type="button" class="cls">&times;</button></div></div>' +
+            '<div class="win-body"><iframe allow="autoplay; fullscreen; gamepad; accelerometer; gyroscope" allowfullscreen></iframe>' +
+            '<div class="gbar"><a target="_blank" rel="noopener noreferrer">Open full screen &#8599;</a></div></div>';
+          w.querySelector('.title').textContent = title + '.exe';
+          var fr = w.querySelector('iframe');
+          fr.title = title; fr.src = a.getAttribute('data-frame');
+          w.querySelector('.gbar a').href = a.href;
+          var off = 24 * (i % 5);
+          w.style.left = (40 + off) + 'px'; w.style.top = (20 + off) + 'px';
+          desktopEl.appendChild(w);
+          map[key] = w;
+          setupWin(w);
+          w.querySelector('.cls').addEventListener('click', function () { w.querySelector('iframe').src = 'about:blank'; });
+        }
+        var gf = w.querySelector('iframe');
+        if (gf.getAttribute('src') !== a.getAttribute('data-frame')) gf.src = a.getAttribute('data-frame');
+        openWin(w);
+        if (window.matchMedia('(max-width: 600px)').matches && !w.classList.contains('maximized')) w.querySelector('.max').click();
+      });
     });
 
     document.querySelectorAll('.icon[data-open]').forEach(function (btn) {
@@ -1123,20 +1368,45 @@
     function showBoot() {
       if (!boot) return;
       boot.removeAttribute('hidden');
+      var con = document.getElementById('boot-con');
       var reduce = false;
       try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-      var skipMs = reduce ? 0 : 1500;
-      if (shot === 'boot') {
-        // hold for screenshot; still skippable
-        skipMs = 60000;
-      }
-      var t = setTimeout(dismissBoot, skipMs);
-      function skip() { clearTimeout(t); dismissBoot(); }
+      var timers = [];
+      function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
+      function line(html) { con.insertAdjacentHTML('beforeend', html + '\n'); }
+      function skip() { timers.forEach(clearTimeout); dismissBoot(); document.removeEventListener('keydown', skip); }
       boot.addEventListener('click', skip);
-      document.addEventListener('keydown', skip, { once: true });
+      document.addEventListener('keydown', skip);
+      if (reduce) {
+        con.textContent = 'DMTR 89 BIOS\nLoading DMTR 89... OK';
+        at(800, skip);
+        return;
+      }
+      var hold = shot === 'boot' || shot === 'boot2';
+      line('<span class="g">DMTR 89 BIOS v1.989</span>  (c) Dmitry Markelov');
+      line('');
+      var mem = document.createElement('span'); con.appendChild(mem); con.appendChild(document.createTextNode('\n'));
+      var steps = 18;
+      for (var k = 1; k <= steps; k++) (function (k) {
+        at(80 + k * 50, function () { mem.textContent = 'Memory Test: ' + Math.round(k * 640 / steps) + 'K' + (k === steps ? ' OK' : ''); });
+      })(k);
+      var L = [
+        [1150, ''],
+        [1250, 'Detecting drives...'],
+        [1600, '  Drive C: POETRY    OK'],
+        [1800, '  Drive D: MUSIC     OK'],
+        [2000, '  Drive E: TECH      OK'],
+        [2300, ''],
+        [2400, 'Loading DMTR 89...'],
+        [2850, '<span class="g">Starting desktop</span> <span class="cur">&nbsp;</span>']
+      ];
+      L.forEach(function (x) { at(x[0], function () { line(x[1]); }); });
+      if (hold) { if (shot === 'boot2') at(3100, function () { boot.classList.add('splash'); }); return; }
+      at(3100, function () { boot.classList.add('splash'); });
+      at(4100, skip);
     }
-    var forceBoot = shot === 'boot';
-    var skipBootForShot = !!shot && shot !== 'boot';
+    var forceBoot = shot === 'boot' || shot === 'boot2';
+    var skipBootForShot = !!shot && !forceBoot;
     var already = false;
     try { already = sessionStorage.getItem('dmtr95_booted') === '1'; } catch (e) {}
     if (forceBoot || (!skipBootForShot && !already)) {
@@ -1145,33 +1415,18 @@
       boot.setAttribute('hidden', '');
     }
 
-    if (shot === 'empty' || shot === 'home') {
-      closeWin(map.about);
-    } else if (shot === 'boot') {
-      closeWin(map.about);
-    } else if (shot === 'start') {
-      closeWin(map.about);
-      openStartMenu();
-    } else if (shot === 'tech') {
-      closeWin(map.about);
-      openWin(map.tech);
-    } else if (shot === 'hire') {
-      closeWin(map.about);
-      openWin(map.hire);
-    } else if (shot === 'pdf') {
-      closeWin(map.about);
-      openWin(map.pdf);
-    } else if (shot === 'podcast') {
-      closeWin(map.about);
-      openWin(map.podcast);
-    } else if (shot === 'music') {
-      closeWin(map.about);
-      openWin(map.music);
-    } else if (shot === 'clock') {
-      closeWin(map.about);
-    } else if (!shot) {
-      openWin(map.about);
+    var shotOpen = { tech: 'tech', hire: 'hire', pdf: 'pdf', podcast: 'podcast', music: 'music' };
+    if (shot === 'start') openStartMenu();
+    else if (shotOpen[shot]) openWin(map[shotOpen[shot]]);
+    else if (shot === 'tb3') { openWin(map.music); openWin(map.poetry); openWin(map.hire); }
+    // Deep links: #about, #music, #dream-life (or #pdf) etc. open that window; otherwise desktop starts clean
+    function openFromHash() {
+      var h = (location.hash || '').replace('#', '').toLowerCase();
+      if (h === 'dream-life') h = 'pdf';
+      if (map[h]) openWin(map[h]);
     }
+    openFromHash();
+    window.addEventListener('hashchange', openFromHash);
 
     // Win95 tray clock — visitor local time
     (function trayClock() {
@@ -1211,6 +1466,130 @@
     requestAnimationFrame(fitSubstackEmbed);
     setTimeout(fitSubstackEmbed, 100);
     setTimeout(fitSubstackEmbed, 600);
+
+    // ---- New windows: My Computer, Internet Explorer, DMTRamp, Screensaver ----
+    (function () {
+      document.querySelectorAll('.mc-drive[data-open]').forEach(function (b) {
+        b.addEventListener('click', function () { var w = map[b.getAttribute('data-open')]; if (w) openWin(w); });
+      });
+
+      // Internet Explorer. Sites whose headers block framing (checked with curl) go in NOFRAME.
+      var NOFRAME = [];
+      var ie = map.ie, fr = ie.querySelector('.ie-frame'), url = ie.querySelector('.ie-url');
+      var back = ie.querySelector('.ie-back'), fwd = ie.querySelector('.ie-fwd'), err = ie.querySelector('.ie-err');
+      var st = ie.querySelector('.ie-status'), newTab = ie.querySelector('.ie-new');
+      var hist = [], pos = -1;
+      function show(u) {
+        url.value = u; newTab.href = u; ie.querySelector('.ie-err-open').href = u;
+        var host = ''; try { host = new URL(u).hostname; } catch (e) {}
+        var blocked = NOFRAME.indexOf(host) !== -1 || !/^https:\/\//.test(u);
+        err.hidden = !blocked;
+        st.textContent = blocked ? 'Can\u2019t display ' + u : 'Opening ' + u + '\u2026';
+        fr.src = blocked ? 'about:blank' : u;
+        back.disabled = pos <= 0; fwd.disabled = pos >= hist.length - 1;
+      }
+      function nav(u) {
+        u = (u || '').trim(); if (!u) return;
+        if (!/^[a-z]+:\/\//i.test(u)) u = 'https://' + u;
+        hist = hist.slice(0, pos + 1); hist.push(u); pos = hist.length - 1; show(u);
+      }
+      fr.addEventListener('load', function () { if (fr.src !== 'about:blank') st.textContent = 'Done'; });
+      back.addEventListener('click', function () { if (pos > 0) { pos--; show(hist[pos]); } });
+      fwd.addEventListener('click', function () { if (pos < hist.length - 1) { pos++; show(hist[pos]); } });
+      ie.querySelector('.ie-go').addEventListener('click', function () { nav(url.value); });
+      url.addEventListener('keydown', function (e) { if (e.key === 'Enter') nav(url.value); });
+      ie.querySelectorAll('.ie-bm [data-url]').forEach(function (b) { b.addEventListener('click', function () { nav(b.getAttribute('data-url')); }); });
+      new MutationObserver(function () {
+        if (!ie.classList.contains('closed') && pos < 0) nav('https://dmitrymarkelov.com/');
+        if (ie.classList.contains('closed')) { fr.src = 'about:blank'; hist = []; pos = -1; }
+      }).observe(ie, { attributes: true, attributeFilter: ['class'] });
+
+      // DMTRamp: plays the existing YouTube Topic playlists via the YouTube IFrame API
+      var amp = map.amp, sel = amp.querySelector('.amp-sel'), ttl = amp.querySelector('.amp-title');
+      var tm = amp.querySelector('.amp-time'), vis = amp.querySelector('.amp-vis'), vx = vis.getContext('2d');
+      var rel = [];
+      document.querySelectorAll('#win-music a[href*="list=OLAK"]').forEach(function (a) {
+        var artist = a.closest('.item').querySelector('h3').textContent;
+        rel.push({ list: new URL(a.href).searchParams.get('list'), name: artist + ' \u2014 ' + a.textContent });
+      });
+      rel.forEach(function (r, i) { var o = document.createElement('option'); o.value = i; o.textContent = r.name; sel.appendChild(o); });
+      var yt = null, ytReady = false, pending = null, playing = false;
+      window.ampPlaying = function () { return playing && !amp.classList.contains('closed'); };
+      function loadApi(cb) {
+        if (window.YT && window.YT.Player) return cb();
+        var prev = window.onYouTubeIframeAPIReady;
+        window.onYouTubeIframeAPIReady = function () { if (prev) prev(); cb(); };
+        if (!document.getElementById('yt-api')) { var s = document.createElement('script'); s.id = 'yt-api'; s.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(s); }
+      }
+      function setTitle() {
+        var d = yt && yt.getVideoData ? yt.getVideoData() : null;
+        ttl.textContent = (d && d.title ? d.title + '  \u2022  ' : '') + rel[sel.value].name;
+      }
+      function cue(play) {
+        var list = rel[sel.value].list;
+        if (!yt) {
+          loadApi(function () {
+            yt = new YT.Player('amp-yt-host', { width: 200, height: 120,
+              playerVars: { listType: 'playlist', list: list, playsinline: 1, autoplay: play ? 1 : 0 },
+              events: {
+                onReady: function () { ytReady = true; if (play) yt.playVideo(); },
+                onStateChange: function (e) { playing = e.data === 1; if (e.data === 1) setTitle(); },
+                onError: function () { ttl.textContent = 'Can\u2019t play this release here \u2014 try Next or the Music window links.'; }
+              } });
+          });
+        } else if (ytReady) { yt.loadPlaylist({ listType: 'playlist', list: list }); }
+      }
+      var cuedList = null;
+      amp.querySelector('.amp-ctrls').addEventListener('click', function (e) {
+        var a = e.target.closest('[data-a]'); if (!a) return; a = a.getAttribute('data-a');
+        if (a === 'play') { if (!yt || cuedList !== sel.value) { cuedList = sel.value; cue(true); } else if (ytReady) yt.playVideo(); ttl.textContent = 'Loading\u2026 ' + rel[sel.value].name; }
+        if (!ytReady) return;
+        if (a === 'pause') yt.pauseVideo();
+        if (a === 'next') yt.nextVideo();
+        if (a === 'prev') yt.previousVideo();
+      });
+      sel.addEventListener('change', function () { if (yt && ytReady) { cuedList = sel.value; cue(true); } ttl.textContent = rel[sel.value].name; });
+      new MutationObserver(function () { if (amp.classList.contains('closed') && yt && ytReady) { yt.stopVideo(); playing = false; } })
+        .observe(amp, { attributes: true, attributeFilter: ['class'] });
+      setInterval(function () {
+        if (amp.classList.contains('closed')) return;
+        if (yt && ytReady && yt.getCurrentTime) { var s = Math.floor(yt.getCurrentTime() || 0); tm.textContent = ('0' + Math.floor(s / 60)).slice(-2) + ':' + ('0' + s % 60).slice(-2); }
+        vx.fillStyle = '#000'; vx.fillRect(0, 0, 76, 22);
+        for (var i = 0; i < 19; i++) {
+          var h = playing ? 3 + Math.random() * 19 : 1;
+          vx.fillStyle = h > 15 ? '#f33' : h > 10 ? '#ff0' : '#0f0'; vx.fillRect(i * 4, 22 - h, 3, h);
+        }
+      }, 120);
+
+      // Screensaver: starfield after 60s idle; never during boot, a running game, or the player; off with reduced motion
+      var ss = document.getElementById('screensaver'), sx = ss.getContext('2d'), raf = 0, idle = 0, stars = [];
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      function blocked() {
+        var b = document.getElementById('boot-splash');
+        if (b && !b.hidden) return true;
+        if (document.querySelector('.win-game:not(.closed):not(.minimized)')) return true;
+        return window.ampPlaying();
+      }
+      function startSS() {
+        if (reduce || blocked() || !ss.hidden) return;
+        ss.width = innerWidth; ss.height = innerHeight; ss.hidden = false; stars = [];
+        for (var i = 0; i < 220; i++) stars.push({ x: Math.random() * 2 - 1, y: Math.random() * 2 - 1, z: Math.random() });
+        (function f() {
+          var w = ss.width, h = ss.height; sx.fillStyle = '#000'; sx.fillRect(0, 0, w, h); sx.fillStyle = '#fff';
+          stars.forEach(function (s) {
+            s.z -= 0.006; if (s.z <= 0.01) { s.x = Math.random() * 2 - 1; s.y = Math.random() * 2 - 1; s.z = 1; }
+            var px = w / 2 + s.x / s.z * w / 2, py = h / 2 + s.y / s.z * h / 2, r = (1 - s.z) * 2.5;
+            sx.fillRect(px, py, r, r);
+          });
+          raf = requestAnimationFrame(f);
+        })();
+      }
+      function wake() { idle = 0; if (!ss.hidden) { ss.hidden = true; cancelAnimationFrame(raf); } }
+      ['pointerdown', 'pointermove', 'keydown', 'wheel', 'touchstart', 'scroll'].forEach(function (ev) { window.addEventListener(ev, wake, { passive: true, capture: true }); });
+      setInterval(function () { idle++; if (idle >= 60) startSS(); }, 1000);
+      window.dmtrScreensaver = startSS;
+      if (/[?&]shot=ss\b/.test(location.search)) setTimeout(startSS, 300);
+    })();
   })();
   </script>
 </body>

@@ -14,3 +14,11 @@ Source paths (48px):
   pdf.png       <- Icons/Chicago95/mimes/48/application-pdf.png
   instagram.png <- Icons/Chicago95/devices/48/camera-photo.png
   about.png    <- Icons/Chicago95/mimes/48/text-x-generic.png
+  ie.png          <- Icons/Chicago95/apps/48/internet-web-browser.png
+  player.png      <- Icons/Chicago95/apps/48/xmms.png
+  notepad.png     <- Icons/Chicago95/apps/48/leafpad.png
+  mycomputer.png  <- Icons/Chicago95/devices/48/computer.png
+  drive-c.png     <- Icons/Chicago95/devices/48/drive-harddisk-system.png
+  drive-d.png     <- Icons/Chicago95/devices/48/drive-optical.png
+  drive-e.png     <- Icons/Chicago95/devices/48/drive-harddisk.png
+  game.png        <- Icons/Chicago95/mimes/48/application-x-executable.png
