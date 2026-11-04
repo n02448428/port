@@ -79,6 +79,9 @@
       pointer-events: none;
     }
     .icon .label { word-break: break-word; max-width: 92px; }
+    .icon.selected .label { background: #000080; color: #fff; outline: 1px dotted #fff; }
+    .icon.selected .glyph img { filter: sepia(1) hue-rotate(190deg) saturate(3) brightness(.7); }
+    @media (min-width: 601px) { .win .titlebar { cursor: default; touch-action: none; } }
 
     .banner-mini {
       position: absolute; top: 14px; right: 16px; text-align: right;
@@ -253,13 +256,6 @@
       background: #c0c0c0; border-top: 2px solid #ffffff;
       box-shadow: 0 -1px 0 #808080; min-height: 36px;
     }
-    .taskbar .pin {
-      font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 700;
-      background: #c0c0c0; color: #000; cursor: pointer; padding: 3px 10px;
-      border: 2px solid; border-color: #ffffff #404040 #404040 #ffffff;
-      white-space: nowrap; flex-shrink: 0;
-    }
-    .taskbar .pin:active { border-color: #404040 #ffffff #ffffff #404040; }
     .start {
       font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: 800;
       background: #c0c0c0; color: #000; cursor: pointer; padding: 4px 10px;
@@ -373,7 +369,6 @@
       #win-podcast, #win-tech, #win-hire, #win-pdf { width: auto; }
       .task-buttons button { padding: 3px 6px; font-size: 11px; min-width: 76px; max-width: 120px; }
       .start { padding: 4px 8px; font-size: 12px; }
-      .taskbar .pin { padding: 3px 6px; font-size: 11px; }
       .tray { padding: 2px 5px; font-size: 11px; gap: 4px; }
       #tray-clock { font-size: 11px; }
     }
@@ -499,7 +494,7 @@
     .bevel { font: 11px Arial, sans-serif; background: #c0c0c0; color: #000; border: 2px outset #fff; padding: 2px 6px; cursor: pointer; text-decoration: none; white-space: nowrap; }
     .bevel:disabled { color: #808080; }
     .win-ie { width: 760px; height: 540px; left: 80px; top: 24px; display: flex; flex-direction: column; }
-    .win-ie.closed, .win-np.closed, .win-mc.closed, .win-amp.closed { display: none; }
+    .win-ie.closed { display: none; }
     .win-ie .win-body { display: flex; flex-direction: column; padding: 0; flex: 1; min-height: 0; overflow: hidden; }
     .ie-tools, .ie-bm { display: flex; gap: 4px; align-items: center; padding: 3px 4px; background: #c0c0c0; font: 11px Arial, sans-serif; border-bottom: 1px solid #808080; }
     .ie-bm { overflow-x: auto; scrollbar-width: thin; }
@@ -509,8 +504,11 @@
     .ie-frame { width: 100%; height: 100%; border: 0; display: block; }
     .ie-err { position: absolute; inset: 0; background: #fff; padding: 20px; font: 13px Arial, sans-serif; }
     .ie-status { font: 11px Arial, sans-serif; padding: 2px 6px; background: #c0c0c0; border-top: 1px solid #fff; }
-    .win-amp { width: 300px; left: 120px; top: 60px; }
-    .win-amp .win-body { padding: 0; background: #23232f; }
+    #win-music .amp { margin: -8px -8px 10px; background: #23232f; }
+    #win-music .releases a[data-rel] { cursor: pointer; }
+    #win-music .releases a.playing { background: #000080; color: #fff; }
+    .music-foot { border-top: 1px solid #808080; padding-top: 8px; }
+    .music-foot h4 { margin: 6px 0 4px; font-size: 12px; }
     .amp { padding: 6px; color: #0f0; font: 11px "Courier New", monospace; }
     .amp-top { display: flex; flex-direction: column; gap: 4px; }
     .amp-lcd { display: flex; justify-content: space-between; align-items: center; background: #000; border: 2px inset #555; padding: 3px 6px; }
@@ -527,19 +525,12 @@
     .amp-note { color: #889; margin-top: 4px; font-size: 10px; }
     .win-np { width: 460px; left: 140px; top: 70px; }
     .win-np .win-body { padding: 0; background: #fff; }
-    .np-menu { font: 11px Arial, sans-serif; padding: 2px 6px; background: #c0c0c0; border-bottom: 1px solid #808080; }
-    .np-text { margin: 0; padding: 8px; font: 13px "Courier New", monospace; white-space: pre-wrap; border: 2px inset #fff; max-height: 60vh; overflow: auto; }
     .win-mc { width: 360px; left: 60px; top: 50px; }
-    .mc-drives { display: flex; gap: 14px; padding: 12px; background: #fff; border: 2px inset #fff; flex-wrap: wrap; }
-    .mc-drive { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 84px; background: none; border: 0; font: 11px Arial, sans-serif; cursor: pointer; }
-    .mc-drive:focus { outline: 1px dotted #000; }
-    .mc-drive img, .tb-ico { image-rendering: pixelated; image-rendering: crisp-edges; }
     .tb-ico { width: 16px; height: 16px; vertical-align: -3px; margin-right: 4px; flex: none; }
     .titlebar .title { display: flex; align-items: center; }
-    .mc-ico { width: 40px; height: 24px; background: linear-gradient(#e0e0e0, #a0a0a0); border: 1px solid #000; box-shadow: inset -6px -4px 0 -3px #0a0; }
     #screensaver { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 99999; background: #000; cursor: none; }
     #screensaver[hidden] { display: none; }
-    @media (max-width: 600px) { .win-ie { width: auto; height: 75vh; } .win-amp, .win-np, .win-mc { width: auto; } .win-amp:not(.maximized), .win-mc:not(.maximized) { bottom: auto !important; height: auto !important; } .ie-new { display: none; } }
+    @media (max-width: 600px) { .win-ie { width: auto; height: 75vh; } .ie-new { display: none; } }
   </style>
 </head>
 <body>
@@ -570,21 +561,9 @@
     </div>
 
     <div class="icons" role="navigation" aria-label="Desktop folders">
-      <button type="button" class="icon" data-open="mycomputer">
-        <span class="glyph" aria-hidden="true"><img src="images/win95/mycomputer.png" alt="" width="40" height="40" /></span>
-        <span class="label">My Computer</span>
-      </button>
       <button type="button" class="icon" data-open="ie">
         <span class="glyph" aria-hidden="true"><img src="images/win95/ie.png" alt="" width="40" height="40" /></span>
         <span class="label">Internet Explorer</span>
-      </button>
-      <button type="button" class="icon" data-open="amp">
-        <span class="glyph" aria-hidden="true"><img src="images/win95/player.png" alt="" width="40" height="40" /></span>
-        <span class="label">DMTRamp</span>
-      </button>
-      <button type="button" class="icon" data-open="notepad">
-        <span class="glyph" aria-hidden="true"><img src="images/win95/notepad.png" alt="" width="40" height="40" /></span>
-        <span class="label">Notepad</span>
       </button>
       <button type="button" class="icon" data-open="poetry">
         <span class="glyph" aria-hidden="true"><img src="images/win95/poetry.png" alt="" width="40" height="40" /></span>
@@ -681,14 +660,24 @@
         </div>
       </div>
       <div class="win-body">
+        <div class="amp">
+          <div class="amp-top">
+            <div class="amp-lcd"><div class="amp-time">00:00</div><canvas class="amp-vis" width="76" height="22"></canvas></div>
+            <div class="amp-marq"><span class="amp-title">DMTRamp &mdash; pick a release below, or press play</span></div>
+          </div>
+          <div class="amp-ctrls">
+            <button type="button" class="amp-b" data-a="prev" aria-label="Previous track">|&#9664;&#9664;</button>
+            <button type="button" class="amp-b" data-a="play" aria-label="Play">&#9654;</button>
+            <button type="button" class="amp-b" data-a="pause" aria-label="Pause">||</button>
+            <button type="button" class="amp-b" data-a="next" aria-label="Next track">&#9654;&#9654;|</button>
+            <select class="amp-sel" aria-label="Release"></select>
+          </div>
+          <div class="amp-yt"><div id="amp-yt-host"></div></div>
+          <div class="amp-note">Plays through YouTube.</div>
+        </div>
         <div class="item">
           <h3>Zero Dot Demeter</h3>
           <p class="music-blurb">Songs and EPs. Stream anywhere, or grab the CREATION GOD bundle.</p>
-          <div class="music-links">
-            <a class="btn" href="https://www.youtube.com/@ZeroDotDemeter" target="_blank" rel="noopener noreferrer">YouTube</a>
-            <a class="btn" href="https://open.spotify.com/artist/5imCuxlC3UJ1aHawPOsVPW" target="_blank" rel="noopener noreferrer">Spotify</a>
-            <a class="btn" href="https://music.apple.com/us/artist/zero-dot-demeter/1538349722" target="_blank" rel="noopener noreferrer">Apple Music</a>
-          </div>
           <div class="type">RELEASES</div>
           <ul class="releases">
             <li><span class="when">2026-01-23</span> <a href="https://www.youtube.com/playlist?list=OLAK5uy_mpGJ2iZUYu00eKoLFzimOwU8zrgSqF4ug" target="_blank" rel="noopener noreferrer">INTO THE SUN</a> <span class="when">EP</span></li>
@@ -710,17 +699,26 @@
         <div class="item">
           <h3>darkdmtr</h3>
           <p class="music-blurb">Mixtapes and albums. Stream the catalog, or listen free on the Chaos Garden site.</p>
-          <div class="music-links">
-            <a class="btn" href="https://open.spotify.com/artist/3RPXNckVxaWZMJvjKgnCMT" target="_blank" rel="noopener noreferrer">Spotify</a>
-            <a class="btn" href="https://music.apple.com/us/artist/darkdmtr/1636571857" target="_blank" rel="noopener noreferrer">Apple Music</a>
-            <a class="btn" href="https://darkdmtr.com/" target="_blank" rel="noopener noreferrer">Mixtape site</a>
-          </div>
           <div class="type">RELEASES</div>
           <ul class="releases">
             <li><span class="when">mixtape</span> <a href="https://darkdmtr.com/" target="_blank" rel="noopener noreferrer">CHAOS GARDEN, Vol. 1</a> <span class="when">10 tracks · darkdmtr.com</span></li>
             <li><span class="when">2023-09-14</span> <a href="https://www.youtube.com/playlist?list=OLAK5uy_kAHMMwj9xyi2du4ASrfnlLe7KMcmO9WNc" target="_blank" rel="noopener noreferrer">A Moment&rsquo;s Reprise</a> <span class="when">album · 14 tracks</span></li>
             <li><span class="when">2022–2023</span> Singles rolled into the album: Presence, Perspective, Apathy, Eternity, Existence, Reflection, Context, Perception, SCM&hellip;</li>
           </ul>
+        </div>
+        <div class="music-foot">
+          <h4>Zero Dot Demeter</h4>
+          <div class="music-links">
+            <a class="btn" href="https://www.youtube.com/@ZeroDotDemeter" target="_blank" rel="noopener noreferrer">YouTube</a>
+            <a class="btn" href="https://open.spotify.com/artist/5imCuxlC3UJ1aHawPOsVPW" target="_blank" rel="noopener noreferrer">Spotify</a>
+            <a class="btn" href="https://music.apple.com/us/artist/zero-dot-demeter/1538349722" target="_blank" rel="noopener noreferrer">Apple Music</a>
+          </div>
+          <h4>darkdmtr</h4>
+          <div class="music-links">
+            <a class="btn" href="https://open.spotify.com/artist/3RPXNckVxaWZMJvjKgnCMT" target="_blank" rel="noopener noreferrer">Spotify</a>
+            <a class="btn" href="https://music.apple.com/us/artist/darkdmtr/1636571857" target="_blank" rel="noopener noreferrer">Apple Music</a>
+            <a class="btn" href="https://darkdmtr.com/" target="_blank" rel="noopener noreferrer">darkdmtr.com</a>
+          </div>
         </div>
       </div>
     </article>
@@ -756,27 +754,27 @@
         <div class="item">
           <h3>Win95 3D Maze</h3>
           <p>Navigate a 3D maze, collect retro icons, race the clock.</p>
-          <a class="btn" href="https://novelfilms.itch.io/3d-maze" data-frame="https://html-classic.itch.zone/html/13611259/index.html" target="_blank" rel="noopener noreferrer">Play</a>
+          <a class="btn" href="https://novelfilms.itch.io/3d-maze" target="_blank" rel="noopener noreferrer">Play</a>
         </div>
         <div class="item">
           <h3>8192</h3>
           <p>Numbers puzzle: try to get to the 8192 tile.</p>
-          <a class="btn" href="https://novelfilms.itch.io/8192" data-frame="https://html-classic.itch.zone/html/13543982/index.html" target="_blank" rel="noopener noreferrer">Play</a>
+          <a class="btn" href="https://novelfilms.itch.io/8192" target="_blank" rel="noopener noreferrer">Play</a>
         </div>
         <div class="item">
           <h3>BRIX</h3>
           <p>Brickbreaker-inspired action. Beat the fifth level for a secret bonus.</p>
-          <a class="btn" href="https://novelfilms.itch.io/brix" data-frame="https://html-classic.itch.zone/html/5758830/BRIX%20v1.1/index.html" target="_blank" rel="noopener noreferrer">Play</a>
+          <a class="btn" href="https://novelfilms.itch.io/brix" target="_blank" rel="noopener noreferrer">Play</a>
         </div>
         <div class="item">
           <h3>Flippy Bard</h3>
           <p>A Flappy Bird–style challenge with a pixelated bard.</p>
-          <a class="btn" href="https://novelfilms.itch.io/flippybard" data-frame="https://html-classic.itch.zone/html/5582100/FlippyBard%201.5/index.html" target="_blank" rel="noopener noreferrer">Play</a>
+          <a class="btn" href="https://novelfilms.itch.io/flippybard" target="_blank" rel="noopener noreferrer">Play</a>
         </div>
         <div class="item">
           <h3>Contrast</h3>
           <p>Fast clicker: match falling balls to the correct basket color.</p>
-          <a class="btn" href="https://novelfilms.itch.io/contrast" data-frame="https://html-classic.itch.zone/html/5546829/CONTRAST%200.7%20-%20WebGL%20%20fullscreen/index.html" target="_blank" rel="noopener noreferrer">Play</a>
+          <a class="btn" href="https://novelfilms.itch.io/contrast" target="_blank" rel="noopener noreferrer">Play</a>
         </div>
         <div class="item">
           <h3>Hand Dance Revolution</h3>
@@ -890,79 +888,6 @@
         <div class="ie-status">Done</div>
       </div>
     </article>
-    <article class="win closed win-amp" id="win-amp" aria-label="DMTRamp" data-task="DMTRamp">
-      <div class="titlebar">
-        <div class="title">DMTRamp</div>
-        <div class="controls">
-          <button type="button" class="min" aria-label="Minimize">_</button>
-          <button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button>
-          <button type="button" class="cls" aria-label="Close">&times;</button>
-        </div>
-      </div>
-      <div class="win-body">
-        <div class="amp">
-          <div class="amp-top">
-            <div class="amp-lcd"><div class="amp-time">00:00</div><canvas class="amp-vis" width="76" height="22"></canvas></div>
-            <div class="amp-marq"><span class="amp-title">DMTRamp &mdash; pick a release, press play</span></div>
-          </div>
-          <div class="amp-ctrls">
-            <button type="button" class="amp-b" data-a="prev" aria-label="Previous track">|&#9664;&#9664;</button>
-            <button type="button" class="amp-b" data-a="play" aria-label="Play">&#9654;</button>
-            <button type="button" class="amp-b" data-a="pause" aria-label="Pause">||</button>
-            <button type="button" class="amp-b" data-a="next" aria-label="Next track">&#9654;&#9654;|</button>
-            <select class="amp-sel" aria-label="Release"></select>
-          </div>
-          <div class="amp-yt"><div id="amp-yt-host"></div></div>
-          <div class="amp-note">Plays through YouTube.</div>
-        </div>
-      </div>
-    </article>
-    <article class="win closed win-np" id="win-notepad" aria-label="Notepad" data-task="Notepad">
-      <div class="titlebar">
-        <div class="title">Poems.txt - Notepad</div>
-        <div class="controls">
-          <button type="button" class="min" aria-label="Minimize">_</button>
-          <button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button>
-          <button type="button" class="cls" aria-label="Close">&times;</button>
-        </div>
-      </div>
-      <div class="win-body">
-        <div class="np-menu">File&nbsp;&nbsp; Edit&nbsp;&nbsp; Search&nbsp;&nbsp; Help</div>
-        <pre class="np-text">Poems.txt
-=========
-
-The poems live in the books, not in plain text on this site.
-
-RUPTURE    - handwritten poems, reprinted page for page.
-             One poem (handwritten) + signed copies:
-             <a href="rupture.html">rupture.html</a>
-
-undone     - my first book of poems.
-             <a href="https://www.amazon.com/undone-book-poems-Dmitry-Markelov/dp/B0DPWVRRWQ" target="_blank" rel="noopener noreferrer">Amazon</a>  |  <a href="https://a.co/d/d8TvY5t" target="_blank" rel="noopener noreferrer">Look inside</a>
-
-Prima Vita - a free book.
-             <a href="assets/Prima%20Vita%20by%20Dmitry%20A.%20Markelov.pdf">Read PDF</a>
-</pre>
-      </div>
-    </article>
-    <article class="win closed win-mc" id="win-mycomputer" aria-label="My Computer" data-task="My Computer">
-      <div class="titlebar">
-        <div class="title">My Computer</div>
-        <div class="controls">
-          <button type="button" class="min" aria-label="Minimize">_</button>
-          <button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button>
-          <button type="button" class="cls" aria-label="Close">&times;</button>
-        </div>
-      </div>
-      <div class="win-body">
-        <div class="mc-drives">
-          <button type="button" class="mc-drive" data-open="poetry"><img src="images/win95/drive-c.png" alt="" width="40" height="40" />POETRY (C:)</button>
-          <button type="button" class="mc-drive" data-open="music"><img src="images/win95/drive-d.png" alt="" width="40" height="40" />MUSIC (D:)</button>
-          <button type="button" class="mc-drive" data-open="tech"><img src="images/win95/drive-e.png" alt="" width="40" height="40" />TECH (E:)</button>
-        </div>
-        <div class="ie-status">3 object(s)</div>
-      </div>
-    </article>
     <canvas id="screensaver" hidden aria-hidden="true"></canvas>
     <article class="win closed" id="win-hire" aria-label="Hire Me" data-task="Hire Me">
       <div class="titlebar">
@@ -984,7 +909,7 @@ Prima Vita - a free book.
       </div>
     </article>
 
-    <!-- Dream Life PDF + newsletter (single place; also opened from taskbar pin) -->
+    <!-- Dream Life PDF + newsletter (single place) -->
     <article class="win closed" id="win-pdf" aria-label="Dream Life PDF" data-task="Dream Life PDF">
       <div class="titlebar">
         <div class="title">Dream Life PDF</div>
@@ -1022,17 +947,8 @@ Prima Vita - a free book.
         <img src="images/win95/about.png" alt="" width="24" height="24" /> About Me.txt
       </button>
       <div class="sm-sep" aria-hidden="true"></div>
-      <button type="button" class="sm-item" role="menuitem" data-open="mycomputer">
-        <img src="images/win95/mycomputer.png" alt="" width="24" height="24" /> My Computer
-      </button>
       <button type="button" class="sm-item" role="menuitem" data-open="ie">
         <img src="images/win95/ie.png" alt="" width="24" height="24" /> Internet Explorer
-      </button>
-      <button type="button" class="sm-item" role="menuitem" data-open="amp">
-        <img src="images/win95/player.png" alt="" width="24" height="24" /> DMTRamp
-      </button>
-      <button type="button" class="sm-item" role="menuitem" data-open="notepad">
-        <img src="images/win95/notepad.png" alt="" width="24" height="24" /> Notepad
       </button>
       <div class="sm-sep" aria-hidden="true"></div>
       <button type="button" class="sm-item" role="menuitem" data-open="poetry">
@@ -1061,7 +977,6 @@ Prima Vita - a free book.
         <img src="images/win95/instagram.png" alt="" width="24" height="24" /> Instagram @1.dmtr
       </a>
     </nav>
-    <button type="button" class="pin" id="pin-pdf" aria-label="Open Dream Life PDF"><img class="tb-ico" src="images/win95/pdf.png" alt="" width="16" height="16" />Dream Life</button>
     <div class="task-buttons" id="task-buttons"></div>
     <div class="tray" id="sys-tray" title="Local time — tap for date" role="status" aria-live="polite">
       <time id="tray-clock">--:--</time>
@@ -1082,10 +997,7 @@ Prima Vita - a free book.
       tech: document.getElementById('win-tech'),
       hire: document.getElementById('win-hire'),
       pdf: document.getElementById('win-pdf'),
-      ie: document.getElementById('win-ie'),
-      amp: document.getElementById('win-amp'),
-      notepad: document.getElementById('win-notepad'),
-      mycomputer: document.getElementById('win-mycomputer')
+      ie: document.getElementById('win-ie')
     };
 
     function bringFront(w) {
@@ -1185,7 +1097,7 @@ Prima Vita - a free book.
     Object.keys(map).forEach(function (k) { setupWin(map[k]); });
     function winIcon(w) {
       var i = document.createElement('img'); i.className = 'tb-ico'; i.alt = ''; i.width = 16; i.height = 16;
-      i.src = 'images/win95/' + ({ 'win-about': 'about', 'win-poetry': 'poetry', 'win-music': 'music', 'win-games': 'games', 'win-podcast': 'podcast',       'win-tech': 'tech', 'win-hire': 'hire', 'win-pdf': 'pdf', 'win-ie': 'ie', 'win-amp': 'player', 'win-notepad': 'notepad', 'win-mycomputer': 'mycomputer' }[w.id] || (w.classList.contains('win-game') ? 'game' : 'about')) + '.png'; return i;
+      i.src = 'images/win95/' + ({ 'win-about': 'about', 'win-poetry': 'poetry', 'win-music': 'music', 'win-games': 'games', 'win-podcast': 'podcast',       'win-tech': 'tech', 'win-hire': 'hire', 'win-pdf': 'pdf', 'win-ie': 'ie' }[w.id] || (w.classList.contains('win-game') ? 'game' : 'about')) + '.png'; return i;
     }
     function setupWin(w) {
       var tt = w.querySelector('.titlebar .title'); if (tt && !tt.querySelector('.tb-ico')) tt.insertBefore(winIcon(w), tt.firstChild);
@@ -1218,6 +1130,25 @@ Prima Vita - a free book.
       w.addEventListener('pointerdown', function () {
         if (!w.classList.contains('closed')) bringFront(w);
       });
+      // Drag by the title bar (desktop only); double-click maximizes / restores
+      var tb = w.querySelector('.titlebar');
+      tb.addEventListener('dblclick', function (e) { if (!e.target.closest('.controls')) max.click(); });
+      tb.addEventListener('pointerdown', function (e) {
+        if (e.button !== 0 || e.target.closest('.controls') || w.classList.contains('maximized')) return;
+        if (window.matchMedia('(max-width: 600px)').matches) return;
+        var r = w.getBoundingClientRect(), pr = w.offsetParent.getBoundingClientRect();
+        var dx = e.clientX - r.left, dy = e.clientY - r.top;
+        tb.setPointerCapture(e.pointerId); tb.classList.add('dragging');
+        function mv(ev) {
+          var x = ev.clientX - dx - pr.left, y = ev.clientY - dy - pr.top;
+          x = Math.max(40 - r.width, Math.min(pr.width - 40, x));
+          y = Math.max(0, Math.min(pr.height - tb.offsetHeight, y));
+          w.style.left = x + 'px'; w.style.top = y + 'px'; w.style.right = 'auto'; w.style.bottom = 'auto'; w.style.transform = 'none';
+        }
+        function up() { tb.classList.remove('dragging'); tb.removeEventListener('pointermove', mv); tb.removeEventListener('pointerup', up); tb.removeEventListener('pointercancel', up); }
+        tb.addEventListener('pointermove', mv); tb.addEventListener('pointerup', up); tb.addEventListener('pointercancel', up);
+        e.preventDefault();
+      });
       min.setAttribute('aria-label', 'Minimize ' + name);
       max.setAttribute('aria-label', 'Maximize ' + name);
       cls.setAttribute('aria-label', 'Close ' + name);
@@ -1240,7 +1171,7 @@ Prima Vita - a free book.
           w.innerHTML = '<div class="titlebar"><div class="title"></div><div class="controls">' +
             '<button type="button" class="min">_</button><button type="button" class="max" aria-pressed="false">&#9633;</button>' +
             '<button type="button" class="cls">&times;</button></div></div>' +
-            '<div class="win-body"><iframe allow="autoplay; fullscreen; gamepad; accelerometer; gyroscope" allowfullscreen></iframe>' +
+            '<div class="win-body"><iframe allow="camera; microphone; fullscreen; autoplay; gamepad; accelerometer; gyroscope" allowfullscreen></iframe>' +
             '<div class="gbar"><a target="_blank" rel="noopener noreferrer">Open full screen &#8599;</a></div></div>';
           w.querySelector('.title').textContent = title + '.exe';
           var fr = w.querySelector('iframe');
@@ -1260,16 +1191,21 @@ Prima Vita - a free book.
       });
     });
 
-    document.querySelectorAll('.icon[data-open]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var key = btn.getAttribute('data-open');
-        if (map[key]) openWin(map[key]);
+    // Desktop icons: mouse/pen click selects, double-click or Enter opens; a touch tap opens
+    var lastPtr = 'mouse';
+    function selectIcon(el) { document.querySelectorAll('.icon.selected').forEach(function (i) { if (i !== el) i.classList.remove('selected'); }); if (el) el.classList.add('selected'); }
+    document.querySelectorAll('.icon').forEach(function (btn) {
+      var key = btn.getAttribute('data-open');
+      function go() { selectIcon(btn); if (key && map[key]) openWin(map[key]); else if (btn.href) window.open(btn.href, '_blank', 'noopener'); }
+      btn.addEventListener('pointerdown', function (e) { lastPtr = e.pointerType; });
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (e.detail === 0 || lastPtr === 'touch') return go();
+        selectIcon(btn);
       });
-      btn.addEventListener('dblclick', function () {
-        var key = btn.getAttribute('data-open');
-        if (map[key]) openWin(map[key]);
-      });
+      btn.addEventListener('dblclick', function (e) { e.preventDefault(); go(); });
     });
+    document.getElementById('desktop').addEventListener('pointerdown', function (e) { if (!e.target.closest('.icon')) selectIcon(null); });
 
     var startBtn = document.getElementById('start-btn');
     var startMenu = document.getElementById('start-menu');
@@ -1308,10 +1244,6 @@ Prima Vita - a free book.
       if (startMenu.contains(e.target) || startBtn.contains(e.target)) return;
       closeStartMenu();
     });
-    document.getElementById('pin-pdf').addEventListener('click', function () {
-      closeStartMenu();
-      openWin(map.pdf);
-    });
 
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
@@ -1320,8 +1252,9 @@ Prima Vita - a free book.
           startBtn.focus();
           return;
         }
-        var m = document.querySelector('.win.maximized');
-        if (m) { unmax(m); m.querySelector('.max').focus(); }
+        if (e.target.closest && e.target.closest('input, select, textarea')) return;
+        var t = topWin();
+        if (t) { closeWin(t); var nt = topWin(); if (nt) bringFront(nt); }
       }
     });
 
@@ -1467,11 +1400,8 @@ Prima Vita - a free book.
     setTimeout(fitSubstackEmbed, 100);
     setTimeout(fitSubstackEmbed, 600);
 
-    // ---- New windows: My Computer, Internet Explorer, DMTRamp, Screensaver ----
+    // ---- New windows: Internet Explorer, Music player, Screensaver ----
     (function () {
-      document.querySelectorAll('.mc-drive[data-open]').forEach(function (b) {
-        b.addEventListener('click', function () { var w = map[b.getAttribute('data-open')]; if (w) openWin(w); });
-      });
 
       // Internet Explorer. Sites whose headers block framing (checked with curl) go in NOFRAME.
       var NOFRAME = [];
@@ -1505,7 +1435,7 @@ Prima Vita - a free book.
       }).observe(ie, { attributes: true, attributeFilter: ['class'] });
 
       // DMTRamp: plays the existing YouTube Topic playlists via the YouTube IFrame API
-      var amp = map.amp, sel = amp.querySelector('.amp-sel'), ttl = amp.querySelector('.amp-title');
+      var amp = map.music, sel = amp.querySelector('.amp-sel'), ttl = amp.querySelector('.amp-title');
       var tm = amp.querySelector('.amp-time'), vis = amp.querySelector('.amp-vis'), vx = vis.getContext('2d');
       var rel = [];
       document.querySelectorAll('#win-music a[href*="list=OLAK"]').forEach(function (a) {
@@ -1534,7 +1464,7 @@ Prima Vita - a free book.
               events: {
                 onReady: function () { ytReady = true; if (play) yt.playVideo(); },
                 onStateChange: function (e) { playing = e.data === 1; if (e.data === 1) setTitle(); },
-                onError: function () { ttl.textContent = 'Can\u2019t play this release here \u2014 try Next or the Music window links.'; }
+                onError: function () { ttl.textContent = 'Can\u2019t play this release here \u2014 try Next or the links below.'; }
               } });
           });
         } else if (ytReady) { yt.loadPlaylist({ listType: 'playlist', list: list }); }
@@ -1547,6 +1477,17 @@ Prima Vita - a free book.
         if (a === 'pause') yt.pauseVideo();
         if (a === 'next') yt.nextVideo();
         if (a === 'prev') yt.previousVideo();
+      });
+      // Release list: play in place (Ctrl/Cmd-click still opens YouTube)
+      var relLinks = amp.querySelectorAll('.releases a[href*="list=OLAK"]');
+      relLinks.forEach(function (a, i) {
+        a.setAttribute('data-rel', i);
+        a.addEventListener('click', function (e) {
+          if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+          e.preventDefault(); sel.value = String(i); cuedList = sel.value; cue(true);
+          ttl.textContent = 'Loading\u2026 ' + rel[i].name;
+          relLinks.forEach(function (b) { b.classList.toggle('playing', b === a); });
+        });
       });
       sel.addEventListener('change', function () { if (yt && ytReady) { cuedList = sel.value; cue(true); } ttl.textContent = rel[sel.value].name; });
       new MutationObserver(function () { if (amp.classList.contains('closed') && yt && ytReady) { yt.stopVideo(); playing = false; } })
