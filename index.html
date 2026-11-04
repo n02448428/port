@@ -2,96 +2,1216 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Dmitry Markelov</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Dmitry Markelov — creator. Books, music, games." />
-  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <title>Dmitry Markelov — Creator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#008080" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="description" content="Dmitry Markelov — Creator. Poetry, music, games, podcast, and software." />
+  <link rel="icon" type="image/png" href="images/flavicon.png" />
   <style>
     * { box-sizing: border-box; }
+    html {
+      height: 100%;
+      background-color: #008080; /* classic Win95 teal behind rubber-band */
+      overscroll-behavior: none;
+    }
+    html, body { min-height: 100%; min-height: 100dvh; }
     body {
       margin: 0;
-      background: #c0c0c0;
+      background: #008080;
       color: #000;
       font-family: "Times New Roman", Times, serif;
-      text-align: center;
+      overflow: hidden;
+      overflow-x: hidden;
+      overscroll-behavior: none;
     }
-    .page {
-      max-width: 680px;
-      margin: 0 auto;
+
+    /* ---- Desktop ---- */
+    .desktop {
+      position: relative;
+      height: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: 12px 12px 44px;
+      padding-bottom: calc(44px + env(safe-area-inset-bottom, 0px));
+      background: #008080; /* teal desktop; silver lives on windows/icons */
+      overflow-x: hidden;
+    }
+    .icons {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 96px);
+      grid-auto-rows: 100px;
+      gap: 8px 12px;
+      align-content: start;
+      width: 100%;
+      max-width: 560px;
+    }
+    .icon {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: flex-start; gap: 6px;
+      width: 96px; padding: 6px 4px 4px;
+      background: transparent; border: 1px dotted transparent;
+      cursor: pointer; color: #000; text-decoration: none;
+      font-family: Arial, Helvetica, sans-serif; font-size: 12px;
+      text-align: center; line-height: 1.2;
+    }
+    .icon:focus-visible, .icon:hover { border-color: #000080; background: rgba(0,0,128,0.08); }
+    .icon .glyph {
+      width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+      background: transparent; border: 0; box-shadow: none; padding: 0;
+    }
+    .icon .glyph img {
+      width: 40px; height: 40px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      display: block;
+      pointer-events: none;
+    }
+    .icon .label { word-break: break-word; max-width: 92px; }
+
+    .banner-mini {
+      position: absolute; top: 14px; right: 16px; text-align: right;
+      pointer-events: none; max-width: 42vw;
+    }
+    .banner-mini .name {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 18px; font-weight: 800; letter-spacing: 0.06em;
+    }
+    .banner-mini .creator {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 12px; letter-spacing: 0.35em; color: #333; margin-top: 2px;
+    }
+    .banner-mini img {
+      width: 140px; max-width: 36vw; height: auto; display: block; margin: 0 0 6px auto;
+      filter: drop-shadow(0 0 1px #fff);
+    }
+
+    /* ---- Win95 windows (from tech.html) ---- */
+    .win {
+      background: #c0c0c0;
       border: 2px solid;
       border-color: #ffffff #404040 #404040 #ffffff;
+      padding: 3px;
+      position: absolute;
+      z-index: 10;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.25);
+      display: flex; flex-direction: column;
+      max-height: calc(100% - 56px);
+      min-width: 280px;
     }
-    .banner { background: #000; padding: 26px 12px 20px; }
-    .banner img { width: 300px; max-width: 78%; height: auto; display: block; margin: 0 auto 8px; }
-    .name {
-      color: #fff; font-family: Arial, Helvetica, sans-serif;
-      font-size: 38px; font-weight: 800; letter-spacing: 0.04em; line-height: 1.1;
+    .win.closed { display: none; }
+    .win.minimized .win-body { display: none; }
+    .win.minimized { max-height: none; height: auto; }
+    .win.maximized {
+      inset: 0 0 calc(40px + env(safe-area-inset-bottom, 0px)) 0 !important;
+      width: auto !important; height: auto !important;
+      max-height: none; z-index: 50; margin: 0;
+      box-shadow: none;
     }
-    .creator {
-      color: #ababab; font-family: Arial, Helvetica, sans-serif;
-      font-size: 17px; letter-spacing: 0.35em; margin-top: 5px;
+    body.has-max { overflow: hidden; }
+    .titlebar {
+      background: #000080; color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px; font-weight: 700;
+      padding: 3px 5px;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      user-select: none; cursor: default; flex-shrink: 0;
     }
-    .rupture { padding: 24px 16px 4px; }
-    .rupture .kicker { font-size: 17px; letter-spacing: 0.25em; }
-    .rupture h1 { font-size: 66px; margin: 4px 0; line-height: 1.1; }
-    .rupture .sub { font-size: 21px; }
-    .btn {
-      display: inline-block; background: #c0c0c0; color: #000;
-      font-family: Arial, Helvetica, sans-serif; font-size: 19px; font-weight: 700;
-      text-decoration: none; padding: 8px 22px; margin: 14px 5px 0;
+    .titlebar .title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .titlebar .controls { display: flex; gap: 2px; flex-shrink: 0; }
+    .titlebar .controls button {
+      display: inline-block; width: 16px; height: 14px; line-height: 10px; padding: 0;
+      text-align: center; font-size: 10px; font-weight: 700; color: #000;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #c0c0c0; cursor: pointer;
       border: 2px solid; border-color: #ffffff #404040 #404040 #ffffff;
     }
+    .titlebar .controls button:active { border-color: #404040 #ffffff #ffffff #404040; }
+    .titlebar .controls button:focus-visible { outline: 1px dotted #fff; outline-offset: 1px; }
+    .win-body {
+      padding: 10px 12px 12px;
+      overflow: auto; text-align: left;
+      font-size: 16px; line-height: 1.5;
+      flex: 1 1 auto;
+      min-height: 0; /* fill remaining window height; scroll inside */
+    }
+    .win-body h2 {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 18px; margin: 0 0 8px; line-height: 1.2;
+    }
+    .win-body p { margin: 0 0 10px; }
+    .win-body ul { margin: 0 0 10px; padding-left: 1.2em; }
+    .win-body li { margin-bottom: 6px; }
+    .win-body a { color: #0000ee; }
+    .type {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 11px; letter-spacing: 0.12em; color: #222; margin: 0 0 4px;
+    }
+    .item {
+      border: 2px solid; border-color: #808080 #ffffff #ffffff #808080;
+      background: #dfdfdf; padding: 8px 10px; margin: 0 0 8px;
+    }
+    .item h3 {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 15px; margin: 0 0 4px;
+    }
+    .item p { font-size: 14px; margin: 0 0 6px; }
+    .btn {
+      display: inline-block; background: #c0c0c0; color: #000;
+      font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 700;
+      text-decoration: none; padding: 5px 12px; margin: 2px 6px 0 0;
+      border: 2px solid; border-color: #ffffff #404040 #404040 #ffffff;
+      cursor: pointer;
+    }
     .btn:active { border-color: #404040 #ffffff #ffffff #404040; }
-    .order-note { font-size: 17px; margin-top: 12px; }
-    .small { font-size: 16px; color: #222; }
-    hr { border: none; border-top: 2px groove #ffffff; margin: 24px 30px 0; }
-    .links { padding-top: 18px; font-size: 24px; line-height: 2.0; }
-    .links a { color: #0000ee; }
-    .contact { padding: 16px 0 34px; font-size: 21px; }
-    .contact a { color: #0000ee; }
+    .btn[disabled], .btn.disabled { color: #808080; cursor: default; }
+    .placeholder {
+      border: 1px dashed #808080; padding: 8px 10px; margin: 8px 0;
+      font-size: 14px; color: #333; background: #ececec;
+    }
+    .shot {
+      display: block; width: 100%; max-width: 420px; height: auto;
+      border: 2px solid; border-color: #808080 #ffffff #ffffff #808080;
+      background: #000; margin: 0 0 8px;
+    }
+    .form-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; }
+    .form-row input[type="email"] {
+      flex: 1 1 180px; min-width: 160px; padding: 5px 8px;
+      font-family: "Times New Roman", Times, serif; font-size: 15px;
+      border: 2px solid; border-color: #808080 #ffffff #ffffff #808080;
+      background: #fff;
+    }
+    .note { font-size: 13px; color: #333; margin-top: 8px; }
+    .substack-embed {
+      margin: 10px 0 4px;
+      background: #fff;
+      border: 2px solid;
+      border-color: #808080 #ffffff #ffffff #808080;
+      overflow: hidden;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      position: relative;
+      height: 340px; /* JS updates after scale */
+    }
+    .substack-embed iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      border: 0;
+      background: #fff;
+      box-sizing: border-box;
+      transform-origin: top left;
+      /* width/height/transform set by fitSubstackEmbed — Substack's layout is ~480px and does not reflow */
+    }
+    #win-pdf .win-body {
+      min-width: 0;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+    @media (max-width: 700px) {
+      #win-pdf .win-body {
+        padding-left: 4px;
+        padding-right: 4px;
+      }
+      .substack-embed {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+
+    /* About Me starts small */
+    #win-about {
+      width: 340px; left: 120px; top: 80px;
+    }
+    #win-poetry { width: 420px; left: 40px; top: 48px; }
+    #win-music { width: 420px; left: 48px; top: 48px; }
+    #win-games { width: 460px; left: 50px; top: 40px; }
+    #win-podcast { width: 380px; left: 70px; top: 70px; }
+    #win-tech { width: 520px; left: 80px; top: 36px; }
+    #win-hire { width: 360px; left: 100px; top: 90px; }
+    #win-pdf { width: 480px; left: 90px; top: 80px; }
+
+    /* ---- Taskbar ---- */
+    .taskbar {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+      display: flex; align-items: center; gap: 4px; padding: 3px 4px;
+      padding-bottom: calc(3px + env(safe-area-inset-bottom, 0px));
+      padding-left: calc(4px + env(safe-area-inset-left, 0px));
+      padding-right: calc(4px + env(safe-area-inset-right, 0px));
+      background: #c0c0c0; border-top: 2px solid #ffffff;
+      box-shadow: 0 -1px 0 #808080; min-height: 36px;
+    }
+    .taskbar .pin {
+      font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 700;
+      background: #c0c0c0; color: #000; cursor: pointer; padding: 3px 10px;
+      border: 2px solid; border-color: #ffffff #404040 #404040 #ffffff;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .taskbar .pin:active { border-color: #404040 #ffffff #ffffff #404040; }
+    .start {
+      font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: 800;
+      background: #c0c0c0; color: #000; cursor: pointer; padding: 4px 10px;
+      border: 2px solid; border-color: #ffffff #404040 #404040 #ffffff;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .start:active { border-color: #404040 #ffffff #ffffff #404040; }
+    .start .mark {
+      width: 14px; height: 14px; background: #000; color: #fff;
+      font-size: 9px; line-height: 14px; text-align: center; font-weight: 800;
+    }
+    .task-buttons {
+      display: flex; flex-wrap: wrap; gap: 4px; flex: 1; min-width: 0;
+    }
+    .task-buttons button {
+      font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 700;
+      background: #c0c0c0; color: #000; cursor: pointer; padding: 3px 10px;
+      max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      border: 2px solid; border-color: #ffffff #404040 #404040 #ffffff;
+    }
+    .task-buttons button:active,
+    .task-buttons button.active { border-color: #404040 #ffffff #ffffff #404040; }
+    .tray {
+      font-family: Arial, Helvetica, sans-serif; font-size: 12px;
+      padding: 2px 6px; border: 2px solid; border-color: #808080 #ffffff #ffffff #808080;
+      margin-left: auto; white-space: nowrap; flex-shrink: 0;
+      display: flex; align-items: center; gap: 6px;
+      min-height: 22px; cursor: default; user-select: none;
+    }
+    .tray a { color: #000; text-decoration: none; font-weight: 700; }
+    .tray a:hover { text-decoration: underline; }
+    #tray-clock {
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    #tray-date {
+      color: #000;
+      font-weight: 400;
+      display: none;
+    }
+    @media (min-width: 700px) {
+      #tray-date { display: inline; }
+    }
+    .tray.show-date #tray-date { display: inline; }
+    .music-blurb { margin: 0 0 6px; }
+    .music-links {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin: 4px 0 8px;
+    }
+    .music-links .btn {
+      margin: 0;
+      font-size: 12px;
+      padding: 7px 10px;
+      min-height: 34px;
+      display: inline-flex; align-items: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .releases {
+      list-style: none; padding: 0; margin: 6px 0 0;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 12px; line-height: 1.35;
+    }
+    .releases li {
+      display: flex; flex-wrap: wrap; gap: 4px 8px;
+      align-items: baseline;
+      padding: 5px 0;
+      border-bottom: 1px solid #dfdfdf;
+    }
+    .releases li:last-child { border-bottom: 0; }
+    .releases a { color: #000080; text-decoration: underline; word-break: break-word; }
+    .releases .when { color: #555; flex-shrink: 0; }
+    .music-sep {
+      height: 2px; margin: 12px 0;
+      border: 0;
+      background: #808080;
+      box-shadow: 0 1px 0 #ffffff;
+    }
+    @media (max-width: 640px) {
+      body { overflow: auto; overflow-x: hidden; }
+      .desktop {
+        padding: 10px 8px calc(52px + env(safe-area-inset-bottom, 0px));
+        min-height: 100vh; min-height: 100dvh; height: auto;
+      }
+      .icons {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        max-width: none; gap: 10px 8px; width: 100%;
+        grid-auto-rows: minmax(108px, auto);
+      }
+      .icon { width: auto; max-width: 100%; font-size: 13px; }
+      .icon .label { max-width: 100%; }
+      .banner-mini { position: static; text-align: center; margin: 0 0 12px; max-width: none; }
+      .banner-mini img { margin: 0 auto 6px; max-width: 160px; }
+      .win {
+        position: fixed !important;
+        left: 0 !important; right: 0 !important; top: 0 !important;
+        bottom: calc(40px + env(safe-area-inset-bottom, 0px)) !important;
+        width: auto !important; height: auto !important; max-height: none;
+        min-width: 0; z-index: 40;
+        display: flex; flex-direction: column;
+      }
+      .win-body {
+        flex: 1 1 auto;
+        min-height: 0;
+        max-height: none;
+      }
+      .win.minimized {
+        position: absolute !important; inset: auto !important;
+        left: -9999px !important; width: 1px !important; height: 1px !important;
+        overflow: hidden; opacity: 0; pointer-events: none;
+      }
+      .win.maximized { bottom: calc(40px + env(safe-area-inset-bottom, 0px)) !important; }
+      #win-about, #win-poetry, #win-music, #win-games,
+      #win-podcast, #win-tech, #win-hire, #win-pdf { width: auto; }
+      .task-buttons button { max-width: 88px; padding: 3px 6px; }
+      .start { padding: 4px 8px; font-size: 12px; }
+      .taskbar .pin { padding: 3px 6px; font-size: 11px; }
+      .tray { padding: 2px 5px; font-size: 11px; gap: 4px; }
+      #tray-clock { font-size: 11px; }
+    }
+    @media (max-width: 380px) {
+      .name { font-size: 16px; }
+      .banner-mini .creator { letter-spacing: 0.22em; }
+    }
+
+    /* Phones: roughly 2× desktop icons so the grid fills the screen */
+    @media (max-width: 480px) {
+      .icons {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-auto-rows: minmax(118px, auto);
+        gap: 12px 8px;
+      }
+      .icon {
+        width: auto; max-width: 100%;
+        font-size: 13px; gap: 6px; padding: 6px 2px 4px;
+      }
+      .icon .glyph { width: 64px; height: 64px; }
+      .icon .glyph img { width: 64px; height: 64px; }
+      .icon .label { max-width: 100%; font-size: 13px; }
+    }
+    @media (max-width: 360px) {
+      .icons {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-rows: minmax(120px, auto);
+      }
+      .icon .glyph { width: 68px; height: 68px; }
+      .icon .glyph img { width: 68px; height: 68px; }
+    }
+
+    /* ---- Boot / startup splash (Win95 style) ---- */
+    #boot-splash {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+      background: #008080;
+      cursor: pointer;
+    }
+    #boot-splash[hidden] { display: none !important; }
+    .boot-panel {
+      width: min(360px, 88vw);
+      background: #c0c0c0;
+      border: 2px solid;
+      border-color: #ffffff #404040 #404040 #ffffff;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.25);
+      padding: 18px 16px 14px;
+      text-align: center;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .boot-panel img {
+      width: 160px; max-width: 70%; height: auto; display: block; margin: 0 auto 10px;
+      filter: drop-shadow(0 0 1px #fff);
+    }
+    .boot-title {
+      font-size: 15px; font-weight: 800; letter-spacing: 0.04em; margin: 0 0 12px;
+    }
+    .boot-bar {
+      height: 18px; background: #fff;
+      border: 2px solid; border-color: #808080 #ffffff #ffffff #808080;
+      padding: 2px; margin: 0 0 10px;
+    }
+    .boot-bar-fill {
+      height: 100%; width: 0%; background: #000080;
+      animation: boot-fill 1.4s linear forwards;
+    }
+    @keyframes boot-fill { from { width: 0%; } to { width: 100%; } }
+    .boot-hint { font-size: 11px; color: #333; }
+    @media (prefers-reduced-motion: reduce) {
+      .boot-bar-fill { animation: none; width: 100%; }
+    }
+
+    /* ---- Start menu ---- */
+    .start-menu {
+      position: fixed;
+      left: 4px;
+      bottom: calc(36px + env(safe-area-inset-bottom, 0px));
+      z-index: 80;
+      width: min(280px, calc(100vw - 8px));
+      max-height: min(70vh, 520px);
+      overflow: auto;
+      background: #c0c0c0;
+      border: 2px solid;
+      border-color: #ffffff #404040 #404040 #ffffff;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.35);
+      padding: 2px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .start-menu[hidden] { display: none !important; }
+    .start-menu .sm-item {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; text-align: left;
+      background: transparent; border: 0; color: #000;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px; font-weight: 700;
+      padding: 8px 10px; min-height: 44px;
+      cursor: pointer; text-decoration: none;
+      box-sizing: border-box;
+    }
+    .start-menu .sm-item:hover,
+    .start-menu .sm-item:focus-visible {
+      background: #000080; color: #fff; outline: none;
+    }
+    .start-menu .sm-item img {
+      width: 24px; height: 24px; flex-shrink: 0;
+      image-rendering: pixelated; image-rendering: crisp-edges;
+    }
+    .start-menu .sm-sep {
+      height: 2px; margin: 3px 4px;
+      border-top: 1px solid #808080;
+      border-bottom: 1px solid #ffffff;
+    }
+    .start.open {
+      border-color: #404040 #ffffff #ffffff #404040;
+    }
+    @media (max-width: 480px) {
+      .start-menu {
+        width: min(320px, calc(100vw - 8px));
+        max-height: min(75vh, 560px);
+      }
+      .start-menu .sm-item { font-size: 15px; min-height: 48px; padding: 10px 12px; }
+      .start-menu .sm-item img { width: 28px; height: 28px; }
+    }
   </style>
 </head>
 <body>
-  <div class="page">
+  <div id="boot-splash" role="dialog" aria-label="Starting DMTR 89">
+    <div class="boot-panel">
+      <img src="images/signature.png" alt="" />
+      <div class="boot-title">Starting DMTR 89...</div>
+      <div class="boot-bar" aria-hidden="true"><div class="boot-bar-fill"></div></div>
+      <div class="boot-hint">Click, tap, or press any key to skip</div>
+    </div>
+  </div>
+  <script>
+  (function(){
+    try {
+      var q=new URLSearchParams(location.search).get('shot');
+      var skip=q && q!=='boot';
+      var done=sessionStorage.getItem('dmtr95_booted')==='1';
+      if (skip || (done && q!=='boot')) {
+        var el=document.getElementById('boot-splash');
+        if (el) el.setAttribute('hidden','');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <div class="desktop" id="desktop">
 
-    <div class="banner">
-      <img src="https://dmitrymarkelov.com/images/signature.png" alt="Dmitry Markelov signature" />
+    <div class="banner-mini">
+      <img src="images/signature.png" alt="" />
       <div class="name">DMITRY MARKELOV</div>
-      <div class="creator">creator</div>
+      <div class="creator">CREATOR</div>
     </div>
 
-    <div class="rupture">
-      <div class="kicker">NEW BOOK &mdash; OUT NOW</div>
-      <h1>RUPTURE</h1>
-      <div class="sub">handwritten poems, reprinted from the original notebook</div>
-      <div>
-        <a class="btn" href="rupture.html">ORDER RUPTURE</a>
+    <div class="icons" role="navigation" aria-label="Desktop folders">
+      <button type="button" class="icon" data-open="poetry">
+        <span class="glyph" aria-hidden="true"><img src="images/win95/poetry.png" alt="" width="40" height="40" /></span>
+        <span class="label">Poetry</span>
+      </button>
+      <button type="button" class="icon" data-open="music">
+        <span class="glyph" aria-hidden="true"><img src="images/win95/music.png" alt="" width="40" height="40" /></span>
+        <span class="label">Music</span>
+      </button>
+      <button type="button" class="icon" data-open="games">
+        <span class="glyph" aria-hidden="true"><img src="images/win95/games.png" alt="" width="40" height="40" /></span>
+        <span class="label">Games</span>
+      </button>
+      <button type="button" class="icon" data-open="podcast">
+        <span class="glyph" aria-hidden="true"><img src="images/win95/podcast.png" alt="" width="40" height="40" /></span>
+        <span class="label">Podcast</span>
+      </button>
+      <button type="button" class="icon" data-open="tech">
+        <span class="glyph" aria-hidden="true"><img src="images/win95/tech.png" alt="" width="40" height="40" /></span>
+        <span class="label">Tech</span>
+      </button>
+      <button type="button" class="icon" data-open="hire">
+        <span class="glyph" aria-hidden="true"><img src="images/win95/hire.png" alt="" width="40" height="40" /></span>
+        <span class="label">Hire Me</span>
+      </button>
+      <button type="button" class="icon" data-open="pdf">
+        <span class="glyph" aria-hidden="true"><img src="images/win95/pdf.png" alt="" width="40" height="40" /></span>
+        <span class="label">Dream Life PDF</span>
+      </button>
+      <a class="icon" href="https://www.instagram.com/1.dmtr/" target="_blank" rel="noopener noreferrer">
+        <span class="glyph" aria-hidden="true"><img src="images/win95/instagram.png" alt="" width="40" height="40" /></span>
+        <span class="label">@1.dmtr</span>
+      </a>
+    </div>
+
+    <!-- About Me.txt — open on load -->
+    <article class="win" id="win-about" aria-label="About Me" data-task="About Me.txt">
+      <div class="titlebar">
+        <div class="title">About Me.txt</div>
+        <div class="controls">
+          <button type="button" class="min" aria-label="Minimize">_</button>
+          <button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button>
+          <button type="button" class="cls" aria-label="Close">&times;</button>
+        </div>
       </div>
-    </div>
+      <div class="win-body">
+        <p>I&rsquo;m Dmitry Markelov, a creator.</p>
+        <p>I make poems, music, games, and tools with AI.</p>
+        <p><strong>Make more art, and explore who you really are.</strong></p>
+      </div>
+    </article>
 
-    <hr />
+    <!-- Poetry -->
+    <article class="win closed" id="win-poetry" aria-label="Poetry" data-task="Poetry">
+      <div class="titlebar">
+        <div class="title">Poetry</div>
+        <div class="controls">
+          <button type="button" class="min" aria-label="Minimize">_</button>
+          <button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button>
+          <button type="button" class="cls" aria-label="Close">&times;</button>
+        </div>
+      </div>
+      <div class="win-body">
+        <div class="item">
+          <div class="type">NEW BOOK</div>
+          <h3>RUPTURE</h3>
+          <p>Handwritten poems, reprinted from the original notebook. Every copy ordered here is signed by hand.</p>
+          <a class="btn" href="rupture.html">Order RUPTURE</a>
+        </div>
+        <div class="item">
+          <div class="type">BOOK</div>
+          <h3>undone</h3>
+          <p>My first book of poems.</p>
+          <a class="btn" href="https://www.amazon.com/undone-book-poems-Dmitry-Markelov/dp/B0DPWVRRWQ" target="_blank" rel="noopener noreferrer">Amazon</a>
+          <a class="btn" href="https://a.co/d/d8TvY5t" target="_blank" rel="noopener noreferrer">Look inside</a>
+        </div>
+        <div class="item">
+          <div class="type">FREE BOOK</div>
+          <h3>Prima Vita</h3>
+          <p>A free book. Read it.</p>
+          <a class="btn" href="assets/Prima%20Vita%20by%20Dmitry%20A.%20Markelov.pdf">Read PDF</a>
+        </div>
+      </div>
+    </article>
 
-    <!-- ============================================================
-         YOUR LINKS. One per line. To change a link, just replace the
-         address inside the quotes and the text between > and </a>.
-         Copy a whole line to add a new one.
-         ============================================================ -->
-    <div class="links">
-      <div><a href="https://www.amazon.com/undone-book-poems-Dmitry-Markelov/dp/B0DPWVRRWQ">undone</a> &mdash; my first book of poems</div>
-      <div><a href="assets/Prima%20Vita%20by%20Dmitry%20A.%20Markelov.pdf">Prima Vita</a> &mdash; free book, read it</div>
-      <div><a href="#">Zero Dot Demeter</a> &mdash; music</div>
-      <div><a href="#">darkdmtr</a> &mdash; music</div>
-      <div><a href="#">Neon Trailblazer</a> &mdash; a game, play it</div>
-      <div><a href="#">Faucets of Reality</a> &mdash; podcast</div>
-      <div><a href="https://visionaryminds.solutions">Visionary Minds Solutions</a> &mdash; my AI company</div>
-    </div>
+    <!-- Music -->
+    <article class="win closed" id="win-music" aria-label="Music" data-task="Music">
+      <div class="titlebar">
+        <div class="title">Music</div>
+        <div class="controls">
+          <button type="button" class="min" aria-label="Minimize">_</button>
+          <button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button>
+          <button type="button" class="cls" aria-label="Close">&times;</button>
+        </div>
+      </div>
+      <div class="win-body">
+        <div class="item">
+          <h3>Zero Dot Demeter</h3>
+          <p class="music-blurb">Songs and EPs. Stream anywhere, or grab the CREATION GOD bundle.</p>
+          <div class="music-links">
+            <a class="btn" href="https://www.youtube.com/@ZeroDotDemeter" target="_blank" rel="noopener noreferrer">YouTube</a>
+            <a class="btn" href="https://open.spotify.com/artist/5imCuxlC3UJ1aHawPOsVPW" target="_blank" rel="noopener noreferrer">Spotify</a>
+            <a class="btn" href="https://music.apple.com/us/artist/zero-dot-demeter/1538349722" target="_blank" rel="noopener noreferrer">Apple Music</a>
+          </div>
+          <div class="type">RELEASES</div>
+          <ul class="releases">
+            <li><span class="when">2026-01-23</span> <a href="https://www.youtube.com/playlist?list=OLAK5uy_mpGJ2iZUYu00eKoLFzimOwU8zrgSqF4ug" target="_blank" rel="noopener noreferrer">INTO THE SUN</a> <span class="when">EP</span></li>
+            <li><span class="when">2025-05-12</span> <a href="https://www.youtube.com/playlist?list=OLAK5uy_lca6Fmb_K0Nq84iej-RrnRAO30lLxYayA" target="_blank" rel="noopener noreferrer">CREATION GOD</a> <span class="when">EP</span> · <a href="https://4evrgrn.com/b/cg" target="_blank" rel="noopener noreferrer">bundle</a></li>
+            <li><span class="when">2025-03-28</span> <a href="https://www.youtube.com/playlist?list=OLAK5uy_k-tCcVmctHVjDlqoDNCVacvg5qgh_hGQs" target="_blank" rel="noopener noreferrer">can&rsquo;t believe</a></li>
+            <li><span class="when">2025-02-28</span> <a href="https://www.youtube.com/playlist?list=OLAK5uy_lDdbZ9pv5w1ZHzLf78RgFGNvLxAJUjA-w" target="_blank" rel="noopener noreferrer">Help (Butter)</a></li>
+            <li><span class="when">2025-01-17</span> <a href="https://www.youtube.com/playlist?list=OLAK5uy_mU4ihpBf1-e-Yam86Tc-xrEIIaraciN2g" target="_blank" rel="noopener noreferrer">METS 25</a></li>
+            <li><span class="when">2024-06-07</span> <a href="https://www.youtube.com/playlist?list=OLAK5uy_lriOy-w-xxjTtUYQSe8Y_3ZnK9J6XZIs0" target="_blank" rel="noopener noreferrer">Everything I Don&rsquo;t Want To Know</a></li>
+            <li><span class="when">2024-04-01</span> <a href="https://www.youtube.com/playlist?list=OLAK5uy_lR-InkQ4qU4k-S_w1i9OHaQC9GedSszkU" target="_blank" rel="noopener noreferrer">Act a Fool 2024</a></li>
+            <li><span class="when">2024-03-01</span> <a href="https://www.youtube.com/playlist?list=OLAK5uy_nDmu-BWLNPpMM_y0LxcAvk_8UvFCkz86M" target="_blank" rel="noopener noreferrer">Sun&rsquo;s Lullaby</a></li>
+            <li><span class="when">2024-01-12</span> <a href="https://www.youtube.com/playlist?list=OLAK5uy_n_-ce0rEz45u6AgswOMZF_WG8i97QUrmg" target="_blank" rel="noopener noreferrer">A Rose Arisen</a></li>
+            <li><span class="when">2023-12-22</span> <a href="https://www.youtube.com/playlist?list=OLAK5uy_kn6hqgpiQ8TZeHmarIWWSO289CBFHgPgY" target="_blank" rel="noopener noreferrer">Little Girl</a></li>
+            <li><span class="when">2023-12-08</span> <a href="https://www.youtube.com/playlist?list=OLAK5uy_m0FZw4I7dFlpB4s3A3RK15YIsN7VtOhtc" target="_blank" rel="noopener noreferrer">1024</a></li>
+            <li><span class="when">2021-02-12</span> <a href="https://www.youtube.com/playlist?list=OLAK5uy_kOmtJa2jSx_JLf_PW2ofugB5UtrI5n_E8" target="_blank" rel="noopener noreferrer">[Eternal Peace]</a> <span class="when">EP</span></li>
+            <li><span class="when">2020-11-01</span> <a href="https://www.youtube.com/playlist?list=OLAK5uy_nqKb5m6sVAzzWv9yRsCPSOhv4qL2wmqIU" target="_blank" rel="noopener noreferrer">The Blue</a></li>
+          </ul>
+        </div>
+        <hr class="music-sep" />
+        <div class="item">
+          <h3>darkdmtr</h3>
+          <p class="music-blurb">Mixtapes and albums. Stream the catalog, or listen free on the Chaos Garden site.</p>
+          <div class="music-links">
+            <a class="btn" href="https://open.spotify.com/artist/3RPXNckVxaWZMJvjKgnCMT" target="_blank" rel="noopener noreferrer">Spotify</a>
+            <a class="btn" href="https://music.apple.com/us/artist/darkdmtr/1636571857" target="_blank" rel="noopener noreferrer">Apple Music</a>
+            <a class="btn" href="https://darkdmtr.com/" target="_blank" rel="noopener noreferrer">Mixtape site</a>
+          </div>
+          <div class="type">RELEASES</div>
+          <ul class="releases">
+            <li><span class="when">mixtape</span> <a href="https://darkdmtr.com/" target="_blank" rel="noopener noreferrer">CHAOS GARDEN, Vol. 1</a> <span class="when">10 tracks · darkdmtr.com</span></li>
+            <li><span class="when">2023-09-14</span> <a href="https://www.youtube.com/playlist?list=OLAK5uy_kAHMMwj9xyi2du4ASrfnlLe7KMcmO9WNc" target="_blank" rel="noopener noreferrer">A Moment&rsquo;s Reprise</a> <span class="when">album · 14 tracks</span></li>
+            <li><span class="when">2022–2023</span> Singles rolled into the album: Presence, Perspective, Apathy, Eternity, Existence, Reflection, Context, Perception, SCM&hellip;</li>
+          </ul>
+        </div>
+      </div>
+    </article>
 
-    <hr />
+    <!-- Games -->
+    <article class="win closed" id="win-games" aria-label="Games" data-task="Games">
+      <div class="titlebar">
+        <div class="title">Games</div>
+        <div class="controls">
+          <button type="button" class="min" aria-label="Minimize">_</button>
+          <button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button>
+          <button type="button" class="cls" aria-label="Close">&times;</button>
+        </div>
+      </div>
+      <div class="win-body">
+        <div class="item">
+          <div class="type">3D BROWSER GAME</div>
+          <h3>Neon Trailblazer</h3>
+          <img class="shot" src="images/tech/neon-trailblazer.jpg" width="960" height="600" alt="Neon Trailblazer title screen" loading="lazy" />
+          <p>Weave through the neon cybergrid, leaving light trails in your wake. Built for the 2025 Vibe Jam.</p>
+          <a class="btn" href="https://ntb-chi.vercel.app/" target="_blank" rel="noopener noreferrer">Play</a>
+        </div>
+        <div class="item">
+          <h3>Rosie's Debugger</h3>
+          <p>A narrative adventure with a quirky AI guide through a broken digital world.</p>
+          <a class="btn" href="https://n02448428.github.io/rosie/" target="_blank" rel="noopener noreferrer">Play</a>
+        </div>
+        <div class="item">
+          <h3>Firebreather</h3>
+          <p>Head-tracking game: breathe fire at ice enemies with your camera.</p>
+          <a class="btn" href="https://n02448428.github.io/Firebreather/" target="_blank" rel="noopener noreferrer">Play</a>
+        </div>
+        <div class="item">
+          <h3>Win95 3D Maze</h3>
+          <p>Navigate a 3D maze, collect retro icons, race the clock.</p>
+          <a class="btn" href="https://novelfilms.itch.io/3d-maze" target="_blank" rel="noopener noreferrer">Play</a>
+        </div>
+        <div class="item">
+          <h3>8192</h3>
+          <p>Numbers puzzle: try to get to the 8192 tile.</p>
+          <a class="btn" href="https://novelfilms.itch.io/8192" target="_blank" rel="noopener noreferrer">Play</a>
+        </div>
+        <div class="item">
+          <h3>BRIX</h3>
+          <p>Brickbreaker-inspired action. Beat the fifth level for a secret bonus.</p>
+          <a class="btn" href="https://novelfilms.itch.io/brix" target="_blank" rel="noopener noreferrer">Play</a>
+        </div>
+        <div class="item">
+          <h3>Flippy Bard</h3>
+          <p>A Flappy Bird–style challenge with a pixelated bard.</p>
+          <a class="btn" href="https://novelfilms.itch.io/flippybard" target="_blank" rel="noopener noreferrer">Play</a>
+        </div>
+        <div class="item">
+          <h3>Contrast</h3>
+          <p>Fast clicker: match falling balls to the correct basket color.</p>
+          <a class="btn" href="https://novelfilms.itch.io/contrast" target="_blank" rel="noopener noreferrer">Play</a>
+        </div>
+        <div class="item">
+          <h3>Hand Dance Revolution</h3>
+          <p>DDR played with hands, using camera hand-tracking.</p>
+          <a class="btn" href="https://rosebud.ai/p/cd3fb542-5e34-4c0f-b5b9-618b963a25e3" target="_blank" rel="noopener noreferrer">Play</a>
+        </div>
+        <div class="item">
+          <h3>Kart (working title)</h3>
+          <p>Kart game in progress.</p>
+          <a class="btn" href="https://n02448428.github.io/kart/" target="_blank" rel="noopener noreferrer">Play</a>
+        </div>
+        <div class="item">
+          <h3>Stranded</h3>
+          <p>First-person 3D island exploration. In progress.</p>
+          <a class="btn" href="https://github.com/n02448428/Stranded-game" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
+      </div>
+    </article>
 
-    <div class="contact">
-      contact: <a href="mailto:dmarkelo89@gmail.com">dmarkelo89@gmail.com</a>
-    </div>
+    <!-- Podcast -->
+    <article class="win closed" id="win-podcast" aria-label="Podcast" data-task="Podcast">
+      <div class="titlebar">
+        <div class="title">Podcast</div>
+        <div class="controls">
+          <button type="button" class="min" aria-label="Minimize">_</button>
+          <button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button>
+          <button type="button" class="cls" aria-label="Close">&times;</button>
+        </div>
+      </div>
+      <div class="win-body">
+        <div class="item">
+          <div class="type">PODCAST</div>
+          <h3>Faucets of Reality, by Dmitry Markelov</h3>
+          <p>Conversations and reflections from the same creative desk as everything else here.</p>
+          <p>
+            <a class="btn" href="https://dmitrymarkelov.substack.com/podcast" target="_blank" rel="noopener noreferrer">Listen on Substack</a>
+            <a class="btn" href="https://podcasts.apple.com/us/podcast/faucets-of-reality/id1667952923" target="_blank" rel="noopener noreferrer">Apple Podcasts</a>
+          </p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Tech -->
+    <article class="win closed" id="win-tech" aria-label="Tech" data-task="Tech">
+      <div class="titlebar">
+        <div class="title">Tech</div>
+        <div class="controls">
+          <button type="button" class="min" aria-label="Minimize">_</button>
+          <button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button>
+          <button type="button" class="cls" aria-label="Close">&times;</button>
+        </div>
+      </div>
+      <div class="win-body">
+        <p>Software and AI I&rsquo;ve built &mdash; things you can try.</p>
+        <div class="item">
+          <div class="type">AI PHONE RECEPTIONIST</div>
+          <h3>Cove</h3>
+          <img class="shot" src="images/tech/cove.jpg" width="960" height="600" alt="Cove landing page" loading="lazy" />
+          <p>An AI receptionist that answers the calls you can&rsquo;t take, asks custom questions, and emails you a summary.</p>
+          <a class="btn" href="tel:+16193402683">Call demo (619) 340-2683</a>
+          <a class="btn" href="https://visionaryminds.solutions" target="_blank" rel="noopener noreferrer">visionaryminds.solutions</a>
+        </div>
+        <div class="item">
+          <div class="type">AI WELLNESS</div>
+          <h3>Komorebi Mindmate</h3>
+          <img class="shot" src="images/tech/komorebi.jpg" width="960" height="600" alt="Komorebi Mindmate" loading="lazy" />
+          <p>An AI wellness companion with chat sessions, archive, and insights.</p>
+          <a class="btn" href="https://komorebi-mindmate.netlify.app/" target="_blank" rel="noopener noreferrer">Open app</a>
+        </div>
+        <div class="item">
+          <div class="type">BROWSER OVERLAY</div>
+          <h3>SlimScreen</h3>
+          <img class="shot" src="images/tech/slimscreen.jpg" width="960" height="600" alt="SlimScreen" loading="lazy" />
+          <p>An AI browser overlay for instant definitions, with Lexi, its built-in assistant.</p>
+          <a class="btn" href="https://slim-screen.vercel.app/" target="_blank" rel="noopener noreferrer">Open site</a>
+        </div>
+        <div class="item">
+          <div class="type">3D BROWSER GAME</div>
+          <h3>Neon Trailblazer</h3>
+          <img class="shot" src="images/tech/neon-trailblazer.jpg" width="960" height="600" alt="Neon Trailblazer" loading="lazy" />
+          <p>A 3D light-cycle game in the browser, built with Three.js.</p>
+          <a class="btn" href="https://ntb-chi.vercel.app/" target="_blank" rel="noopener noreferrer">Play</a>
+        </div>
+        <p style="margin-top:12px;"><a href="tech.html">Open full Tech page &rarr;</a></p>
+      </div>
+    </article>
+
+    <!-- Hire Me -->
+    <article class="win closed" id="win-hire" aria-label="Hire Me" data-task="Hire Me">
+      <div class="titlebar">
+        <div class="title">Hire Me.txt</div>
+        <div class="controls">
+          <button type="button" class="min" aria-label="Minimize">_</button>
+          <button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button>
+          <button type="button" class="cls" aria-label="Close">&times;</button>
+        </div>
+      </div>
+      <div class="win-body">
+        <p>I work with people one-on-one, and I also take on tech and creative projects.</p>
+        <ul>
+          <li><strong>One-on-one coaching</strong> &mdash; calm, practical support for getting clear and moving forward.</li>
+          <li><strong>Tech &amp; creative work</strong> &mdash; software, AI tools, games, writing, and design for a project you already care about.</li>
+        </ul>
+        <p>Email me: <a href="mailto:dmitry@visionaryminds.solutions">dmitry@visionaryminds.solutions</a></p>
+        <p>For business AI receptionist work, see <a href="https://visionaryminds.solutions" target="_blank" rel="noopener noreferrer">visionaryminds.solutions</a>.</p>
+      </div>
+    </article>
+
+    <!-- Dream Life PDF + newsletter (single place; also opened from taskbar pin) -->
+    <article class="win closed" id="win-pdf" aria-label="Dream Life PDF" data-task="Dream Life PDF">
+      <div class="titlebar">
+        <div class="title">Dream Life PDF</div>
+        <div class="controls">
+          <button type="button" class="min" aria-label="Minimize">_</button>
+          <button type="button" class="max" aria-label="Maximize" aria-pressed="false">&#9633;</button>
+          <button type="button" class="cls" aria-label="Close">&times;</button>
+        </div>
+      </div>
+      <div class="win-body">
+        <div class="type">FREE 3-STEP WORKBOOK</div>
+        <h2>Living the Dream</h2>
+        <p>Hey — I&rsquo;m Dmitry. I made this free workbook because I wanted a simple way for you to step into the life you keep imagining. Inside are three steps I use myself: how you want to spend your time every day, who you&rsquo;re becoming, and how you grow by taking real wins in the world.</p>
+        <p>I put my heart into it — the same heart I put into my poetry, music, games, podcast, and tech. It&rsquo;s free, it&rsquo;s practical, and if you&rsquo;ve been waiting for a clear first step, this is it. Leave your email and I&rsquo;ll send the PDF in the welcome message.</p>
+        <div class="substack-embed" id="substack-embed-slot">
+          <iframe
+            src="https://dmitrymarkelov.substack.com/embed"
+            title="Subscribe to Faucets Of Reality"
+            style="border:none; background:#fff; box-sizing:border-box;"
+            frameborder="0"
+            scrolling="no"
+          ></iframe>
+        </div>
+        <p class="note">Join my email list, Faucets of Reality. You&rsquo;ll get the free PDF right away, then new podcast episodes and the occasional poem or note. Unsubscribe anytime.</p>
+      </div>
+    </article>
 
   </div>
+
+  <div class="taskbar" id="taskbar" role="toolbar" aria-label="Taskbar">
+    <button type="button" class="start" id="start-btn" aria-label="Start" aria-haspopup="menu" aria-expanded="false" aria-controls="start-menu">
+      <span class="mark">D</span> Start
+    </button>
+    <nav id="start-menu" class="start-menu" role="menu" aria-label="Start menu" hidden>
+      <button type="button" class="sm-item" role="menuitem" data-open="about">
+        <img src="images/win95/about.png" alt="" width="24" height="24" /> About Me.txt
+      </button>
+      <div class="sm-sep" aria-hidden="true"></div>
+      <button type="button" class="sm-item" role="menuitem" data-open="poetry">
+        <img src="images/win95/poetry.png" alt="" width="24" height="24" /> Poetry
+      </button>
+      <button type="button" class="sm-item" role="menuitem" data-open="music">
+        <img src="images/win95/music.png" alt="" width="24" height="24" /> Music
+      </button>
+      <button type="button" class="sm-item" role="menuitem" data-open="games">
+        <img src="images/win95/games.png" alt="" width="24" height="24" /> Games
+      </button>
+      <button type="button" class="sm-item" role="menuitem" data-open="podcast">
+        <img src="images/win95/podcast.png" alt="" width="24" height="24" /> Podcast
+      </button>
+      <button type="button" class="sm-item" role="menuitem" data-open="tech">
+        <img src="images/win95/tech.png" alt="" width="24" height="24" /> Tech
+      </button>
+      <button type="button" class="sm-item" role="menuitem" data-open="hire">
+        <img src="images/win95/hire.png" alt="" width="24" height="24" /> Hire Me
+      </button>
+      <div class="sm-sep" aria-hidden="true"></div>
+      <button type="button" class="sm-item" role="menuitem" data-open="pdf">
+        <img src="images/win95/pdf.png" alt="" width="24" height="24" /> Dream Life PDF
+      </button>
+      <a class="sm-item" role="menuitem" href="https://www.instagram.com/1.dmtr/" target="_blank" rel="noopener noreferrer">
+        <img src="images/win95/instagram.png" alt="" width="24" height="24" /> Instagram @1.dmtr
+      </a>
+    </nav>
+    <button type="button" class="pin" id="pin-pdf" aria-label="Open Dream Life PDF">Dream Life</button>
+    <div class="task-buttons" id="task-buttons"></div>
+    <div class="tray" id="sys-tray" title="Local time — tap for date" role="status" aria-live="polite">
+      <time id="tray-clock">--:--</time>
+      <span id="tray-date"></span>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var z = 20;
+    var taskButtons = document.getElementById('task-buttons');
+    var map = {
+      about: document.getElementById('win-about'),
+      poetry: document.getElementById('win-poetry'),
+      music: document.getElementById('win-music'),
+      games: document.getElementById('win-games'),
+      podcast: document.getElementById('win-podcast'),
+      tech: document.getElementById('win-tech'),
+      hire: document.getElementById('win-hire'),
+      pdf: document.getElementById('win-pdf')
+    };
+
+    function bringFront(w) {
+      w.style.zIndex = String(++z);
+    }
+
+    function unmax(w) {
+      w.classList.remove('maximized');
+      var max = w.querySelector('.max');
+      max.setAttribute('aria-pressed', 'false');
+      max.setAttribute('aria-label', 'Maximize');
+      document.body.classList.toggle('has-max', !!document.querySelector('.win.maximized'));
+    }
+
+    function ensureTaskBtn(w) {
+      var id = w.id;
+      var existing = taskButtons.querySelector('[data-win="' + id + '"]');
+      if (existing) return existing;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.dataset.win = id;
+      b.textContent = w.getAttribute('data-task') || w.getAttribute('aria-label');
+      b.addEventListener('click', function () {
+        if (w.classList.contains('closed')) {
+          openWin(w);
+        } else if (w.classList.contains('minimized')) {
+          w.classList.remove('minimized');
+          w.querySelector('.min').setAttribute('aria-expanded', 'true');
+          bringFront(w);
+        } else {
+          bringFront(w);
+        }
+        syncTasks();
+      });
+      taskButtons.appendChild(b);
+      return b;
+    }
+
+    function syncTasks() {
+      Object.keys(map).forEach(function (k) {
+        var w = map[k];
+        var btn = taskButtons.querySelector('[data-win="' + w.id + '"]');
+        var visible = !w.classList.contains('closed');
+        if (visible) {
+          btn = ensureTaskBtn(w);
+          btn.classList.toggle('active', !w.classList.contains('minimized'));
+        } else if (btn) {
+          btn.remove();
+        }
+      });
+    }
+
+    function openWin(w) {
+      w.classList.remove('closed', 'minimized');
+      var min = w.querySelector('.min');
+      if (min) min.setAttribute('aria-expanded', 'true');
+      bringFront(w);
+      syncTasks();
+      if (w && w.id === 'win-pdf') {
+        requestAnimationFrame(function () { fitSubstackEmbed(); setTimeout(fitSubstackEmbed, 50); });
+      }
+    }
+
+    function closeWin(w) {
+      unmax(w);
+      w.classList.add('closed');
+      w.classList.remove('minimized');
+      syncTasks();
+    }
+
+    Object.keys(map).forEach(function (k) {
+      var w = map[k];
+      var name = w.getAttribute('aria-label');
+      var min = w.querySelector('.min');
+      var max = w.querySelector('.max');
+      var cls = w.querySelector('.cls');
+
+      min.addEventListener('click', function () {
+        unmax(w);
+        var m = w.classList.toggle('minimized');
+        min.setAttribute('aria-expanded', String(!m));
+        min.setAttribute('aria-label', m ? 'Restore ' + name : 'Minimize ' + name);
+        syncTasks();
+      });
+      max.addEventListener('click', function () {
+        if (w.classList.contains('maximized')) { unmax(w); max.focus(); return; }
+        w.classList.remove('minimized');
+        min.setAttribute('aria-expanded', 'true');
+        w.classList.add('maximized');
+        max.setAttribute('aria-pressed', 'true');
+        max.setAttribute('aria-label', 'Restore ' + name);
+        document.body.classList.add('has-max');
+        bringFront(w);
+        syncTasks();
+        max.focus();
+      });
+      cls.addEventListener('click', function () {
+        closeWin(w);
+      });
+      w.querySelector('.titlebar').addEventListener('mousedown', function () {
+        if (!w.classList.contains('closed')) bringFront(w);
+      });
+      min.setAttribute('aria-label', 'Minimize ' + name);
+      max.setAttribute('aria-label', 'Maximize ' + name);
+      cls.setAttribute('aria-label', 'Close ' + name);
+    });
+
+    document.querySelectorAll('.icon[data-open]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var key = btn.getAttribute('data-open');
+        if (map[key]) openWin(map[key]);
+      });
+      btn.addEventListener('dblclick', function () {
+        var key = btn.getAttribute('data-open');
+        if (map[key]) openWin(map[key]);
+      });
+    });
+
+    var startBtn = document.getElementById('start-btn');
+    var startMenu = document.getElementById('start-menu');
+    function closeStartMenu() {
+      if (!startMenu || startMenu.hasAttribute('hidden')) return;
+      startMenu.setAttribute('hidden', '');
+      startBtn.setAttribute('aria-expanded', 'false');
+      startBtn.classList.remove('open');
+    }
+    function openStartMenu() {
+      if (!startMenu) return;
+      startMenu.removeAttribute('hidden');
+      startBtn.setAttribute('aria-expanded', 'true');
+      startBtn.classList.add('open');
+    }
+    function toggleStartMenu() {
+      if (startMenu.hasAttribute('hidden')) openStartMenu();
+      else closeStartMenu();
+    }
+    startBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      toggleStartMenu();
+    });
+    startMenu.querySelectorAll('[data-open]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        var key = el.getAttribute('data-open');
+        closeStartMenu();
+        if (map[key]) openWin(map[key]);
+      });
+    });
+    startMenu.querySelectorAll('a.sm-item').forEach(function (el) {
+      el.addEventListener('click', function () { closeStartMenu(); });
+    });
+    document.addEventListener('mousedown', function (e) {
+      if (startMenu.hasAttribute('hidden')) return;
+      if (startMenu.contains(e.target) || startBtn.contains(e.target)) return;
+      closeStartMenu();
+    });
+    document.getElementById('pin-pdf').addEventListener('click', function () {
+      closeStartMenu();
+      openWin(map.pdf);
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        if (!startMenu.hasAttribute('hidden')) {
+          closeStartMenu();
+          startBtn.focus();
+          return;
+        }
+        var m = document.querySelector('.win.maximized');
+        if (m) { unmax(m); m.querySelector('.max').focus(); }
+      }
+    });
+
+    // Scale Substack embed to the window width (their layout is ~480px and won't reflow)
+    var EMBED_W = 560, EMBED_H = 340;
+    function fitSubstackEmbed() {
+      var slot = document.getElementById('substack-embed-slot');
+      if (!slot) return;
+      var iframe = slot.querySelector('iframe');
+      if (!iframe) return;
+      // Measure the content box before the iframe can stretch it (iframe is position:absolute)
+      var avail = slot.clientWidth;
+      if (!avail) {
+        var parent = slot.parentElement;
+        avail = parent ? parent.clientWidth : 0;
+      }
+      if (!avail) return;
+      var scale = Math.min(1, avail / EMBED_W);
+      iframe.style.width = EMBED_W + 'px';
+      iframe.style.height = EMBED_H + 'px';
+      iframe.style.maxWidth = 'none';
+      iframe.style.transform = 'scale(' + scale + ')';
+      slot.style.height = Math.ceil(EMBED_H * scale) + 'px';
+      slot.setAttribute('data-embed-scale', String(scale.toFixed(3)));
+      slot.setAttribute('data-embed-avail', String(Math.round(avail)));
+    }
+    if (window.ResizeObserver) {
+      var _embedSlot = document.getElementById('substack-embed-slot');
+      if (_embedSlot) new ResizeObserver(fitSubstackEmbed).observe(_embedSlot);
+    }
+    window.addEventListener('resize', fitSubstackEmbed);
+
+    // About Me open on load (skip for screenshot helpers)
+    var params = new URLSearchParams(location.search);
+    var shot = params.get('shot');
+
+    // Boot splash: once per browser session; skipped for screenshot modes except shot=boot
+    var boot = document.getElementById('boot-splash');
+    function dismissBoot() {
+      if (!boot || boot.hasAttribute('hidden')) return;
+      boot.setAttribute('hidden', '');
+      try { sessionStorage.setItem('dmtr95_booted', '1'); } catch (e) {}
+    }
+    function showBoot() {
+      if (!boot) return;
+      boot.removeAttribute('hidden');
+      var reduce = false;
+      try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+      var skipMs = reduce ? 0 : 1500;
+      if (shot === 'boot') {
+        // hold for screenshot; still skippable
+        skipMs = 60000;
+      }
+      var t = setTimeout(dismissBoot, skipMs);
+      function skip() { clearTimeout(t); dismissBoot(); }
+      boot.addEventListener('click', skip);
+      document.addEventListener('keydown', skip, { once: true });
+    }
+    var forceBoot = shot === 'boot';
+    var skipBootForShot = !!shot && shot !== 'boot';
+    var already = false;
+    try { already = sessionStorage.getItem('dmtr95_booted') === '1'; } catch (e) {}
+    if (forceBoot || (!skipBootForShot && !already)) {
+      showBoot();
+    } else if (boot) {
+      boot.setAttribute('hidden', '');
+    }
+
+    if (shot === 'empty' || shot === 'home') {
+      closeWin(map.about);
+    } else if (shot === 'boot') {
+      closeWin(map.about);
+    } else if (shot === 'start') {
+      closeWin(map.about);
+      openStartMenu();
+    } else if (shot === 'tech') {
+      closeWin(map.about);
+      openWin(map.tech);
+    } else if (shot === 'hire') {
+      closeWin(map.about);
+      openWin(map.hire);
+    } else if (shot === 'pdf') {
+      closeWin(map.about);
+      openWin(map.pdf);
+    } else if (shot === 'podcast') {
+      closeWin(map.about);
+      openWin(map.podcast);
+    } else if (shot === 'music') {
+      closeWin(map.about);
+      openWin(map.music);
+    } else if (shot === 'clock') {
+      closeWin(map.about);
+    } else if (!shot) {
+      openWin(map.about);
+    }
+
+    // Win95 tray clock — visitor local time
+    (function trayClock() {
+      var clockEl = document.getElementById('tray-clock');
+      var dateEl = document.getElementById('tray-date');
+      var tray = document.getElementById('sys-tray');
+      if (!clockEl || !dateEl || !tray) return;
+      function pad(n) { return n < 10 ? '0' + n : String(n); }
+      function fmtTime(d) {
+        var h = d.getHours();
+        var m = d.getMinutes();
+        var ap = h >= 12 ? 'PM' : 'AM';
+        h = h % 12; if (h === 0) h = 12;
+        return h + ':' + pad(m) + ' ' + ap;
+      }
+      function fmtDate(d) {
+        var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return days[d.getDay()] + ' ' + months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+      }
+      function tick() {
+        var now = new Date();
+        clockEl.textContent = fmtTime(now);
+        clockEl.setAttribute('datetime', now.toISOString());
+        dateEl.textContent = fmtDate(now);
+        tray.setAttribute('title', fmtDate(now) + ' — local time');
+        var ms = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+        setTimeout(tick, Math.max(250, ms + 20));
+      }
+      tick();
+      tray.addEventListener('click', function () {
+        tray.classList.toggle('show-date');
+      });
+    })();
+
+    // initial fit in case pdf already open / late layout
+    requestAnimationFrame(fitSubstackEmbed);
+    setTimeout(fitSubstackEmbed, 100);
+    setTimeout(fitSubstackEmbed, 600);
+  })();
+  </script>
 </body>
 </html>

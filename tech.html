@@ -3,17 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <title>Dmitry Markelov — Software &amp; AI</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#c0c0c0" />
   <meta name="description" content="Software and AI projects by Dmitry Markelov — Cove, Komorebi Mindmate, SlimScreen, and Neon Trailblazer." />
-  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="icon" type="image/png" href="images/flavicon.png" />
   <style>
     * { box-sizing: border-box; }
+    html {
+      background-color: #c0c0c0;
+      overscroll-behavior: none;
+    }
     body {
       margin: 0;
       background: #c0c0c0;
       color: #000;
       font-family: "Times New Roman", Times, serif;
       text-align: center;
+      overflow-x: hidden;
+      overscroll-behavior: none;
+      min-height: 100%;
+      min-height: 100dvh;
     }
     .page {
       max-width: 720px;
@@ -85,6 +94,7 @@
     .taskbar {
       position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
       display: none; flex-wrap: wrap; gap: 4px; padding: 3px 4px;
+      padding-bottom: calc(3px + env(safe-area-inset-bottom, 0px));
       background: #c0c0c0; border-top: 2px solid #ffffff;
       box-shadow: 0 -1px 0 #808080;
     }
@@ -133,6 +143,7 @@
       .projects { padding: 14px 8px 4px; }
       .meta h2 { font-size: 19px; }
       .btn { font-size: 15px; padding: 6px 12px; }
+      .page { border-left: none; border-right: none; }
     }
   </style>
 </head>

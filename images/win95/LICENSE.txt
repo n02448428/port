@@ -1,0 +1,16 @@
+Windows 95-style desktop icons in this folder are from the Chicago95 icon theme
+(https://github.com/grassmunk/Chicago95), Copyright (c) Grassmunk and contributors.
+
+Chicago95 is dual-licensed GPL-3.0-or-later / MIT. These PNG assets are used here
+under the MIT license terms of that project.
+
+Source paths (48px):
+  poetry.png    <- Icons/Chicago95/apps/48/accessories-text-editor.png
+  music.png     <- Icons/Chicago95/devices/48/media-optical-audio.png
+  games.png     <- Icons/Chicago95/devices/48/joystick.png
+  podcast.png   <- Icons/Chicago95/devices/48/audio-input-microphone.png
+  tech.png      <- Icons/Chicago95/devices/48/computer.png
+  hire.png      <- Icons/Chicago95/apps/48/internet-mail.png
+  pdf.png       <- Icons/Chicago95/mimes/48/application-pdf.png
+  instagram.png <- Icons/Chicago95/devices/48/camera-photo.png
+  about.png    <- Icons/Chicago95/mimes/48/text-x-generic.png
