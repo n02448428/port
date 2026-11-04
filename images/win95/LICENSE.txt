@@ -22,3 +22,4 @@ Source paths (48px):
   drive-d.png     <- Icons/Chicago95/devices/48/drive-optical.png
   drive-e.png     <- Icons/Chicago95/devices/48/drive-harddisk.png
   game.png        <- Icons/Chicago95/mimes/48/application-x-executable.png
+  shutdown.png    <- Icons/Chicago95/apps/48/system-shutdown.png

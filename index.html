@@ -478,6 +478,23 @@
       border-top: 1px solid #808080;
       border-bottom: 1px solid #ffffff;
     }
+    .start-menu .sm-arr { margin-left: auto; font-size: 10px; }
+    .start-menu .sm-parent.on { background: #000080; color: #fff; }
+    .sm-sub { position: fixed; z-index: 81; width: 250px; max-height: min(80vh, 560px); overflow: auto; background: #c0c0c0; border: 2px solid; border-color: #fff #404040 #404040 #fff; box-shadow: 2px 2px 0 rgba(0,0,0,0.35); padding: 2px; font-family: Arial, Helvetica, sans-serif; }
+    .sm-sub[hidden] { display: none !important; }
+    .sm-sub .sm-item { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; background: transparent; border: 0; color: #000; font: 12px Arial, Helvetica, sans-serif; padding: 5px 10px; min-height: 26px; cursor: pointer; text-decoration: none; box-sizing: border-box; }
+    .sm-sub .sm-item:hover, .sm-sub .sm-item:focus-visible { background: #000080; color: #fff; outline: none; }
+    .sm-sub .sm-item img { width: 16px; height: 16px; flex: none; }
+    .sm-sub .sm-head { font: 700 11px Arial, sans-serif; color: #404040; padding: 6px 10px 2px; }
+    .sm-sub .sm-sep { height: 2px; margin: 3px 4px; border-top: 1px solid #808080; border-bottom: 1px solid #fff; }
+    @media (max-width: 600px) {
+      .sm-sub { width: min(230px, calc(100vw - 60px)); max-height: calc(100vh - 48px); }
+      .sm-sub .sm-item { font-size: 15px; min-height: 44px; padding: 8px 12px; }
+      .sm-sub .sm-item img { width: 24px; height: 24px; }
+    }
+    .win-poem { width: 420px; }
+    .win-poem .poem-text { white-space: pre-wrap; font: 14px/1.5 "Courier New", Courier, monospace; background: #fff; border: 2px solid; border-color: #808080 #fff #fff #808080; padding: 10px; margin: 0 0 10px; max-height: 55vh; overflow: auto; }
+    @media (max-width: 600px) { .win-poem { width: auto; } }
     .start.open {
       border-color: #404040 #ffffff #ffffff #404040;
     }
@@ -541,6 +558,27 @@
     .titlebar .title { display: flex; align-items: center; }
     #screensaver { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 99999; background: #000; cursor: none; }
     #screensaver[hidden] { display: none; }
+    .sd-dim { position: fixed; inset: 0; z-index: 150; display: flex; align-items: center; justify-content: center; background: repeating-conic-gradient(rgba(0,0,0,0.5) 0 25%, transparent 0 50%) 0 0/2px 2px; }
+    .sd-dim[hidden], #sd-screen[hidden] { display: none !important; }
+    .sd-dim .dlg { background: #c0c0c0; border: 2px solid; border-color: #fff #404040 #404040 #fff; width: min(380px, 94vw); font: 12px Arial, sans-serif; box-shadow: 1px 1px 0 #000; }
+    .sd-dim .dlg-t { background: #000080; color: #fff; font-weight: 700; padding: 3px 6px; display: flex; justify-content: space-between; align-items: center; }
+    .sd-dim .dlg-t button { width: 16px; height: 14px; padding: 0; font: 700 10px/1 Arial; }
+    .sd-dim .dlg-b { display: flex; gap: 14px; padding: 14px 14px 6px; }
+    .sd-dim .dlg-b img { flex: none; }
+    .sd-dim fieldset { border: 0; margin: 0; padding: 0; }
+    .sd-dim label { display: block; margin: 6px 0; cursor: default; }
+    .sd-dim .dlg-f { display: flex; justify-content: flex-end; gap: 6px; padding: 8px 12px 12px; }
+    .sd-dim .dlg-f button { min-width: 72px; padding: 4px 8px; font: 12px Arial, sans-serif; }
+    .sd-dim .dlg-f button:disabled { color: #808080; text-shadow: 1px 1px 0 #fff; }
+    #sd-screen { position: fixed; inset: 0; z-index: 300; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; font: 700 clamp(18px, 4.5vw, 34px)/1.4 Arial, sans-serif; }
+    #sd-screen.off { background: #000; }
+    #sd-screen .pwr { width: 112px; height: 112px; border-radius: 50%; border: 3px solid; border-color: #555 #111 #111 #555; background: radial-gradient(circle at 35% 30%, #3a3a3a, #111 70%); color: #33ff66; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; box-shadow: 0 0 18px rgba(51,255,102,0.35); animation: pwr 2.4s ease-in-out infinite; }
+    #sd-screen .pwr:active { border-color: #111 #555 #555 #111; }
+    #sd-screen .pwr:focus-visible { outline: 2px dotted #33ff66; outline-offset: 6px; }
+    #sd-screen .pwr svg { width: 56px; height: 56px; filter: drop-shadow(0 0 6px #33ff66); }
+    @keyframes pwr { 50% { box-shadow: 0 0 34px rgba(51,255,102,0.6); } }
+    @media (prefers-reduced-motion: reduce) { #sd-screen .pwr { animation: none; } }
+    @media (max-width: 600px) { .sd-dim .dlg-f button { min-height: 40px; } .sd-dim label { margin: 12px 0; font-size: 15px; } .sd-dim .dlg { font-size: 14px; } }
     @media (max-width: 600px) { .win-ie { width: auto; height: 75vh; } .ie-new { display: none; } }
   </style>
 </head>
@@ -550,6 +588,18 @@
     <div id="boot-logo"><img src="images/signature.png" alt="" /><div class="t">DMTR 89</div><div class="s">DMITRY MARKELOV</div><div class="boot-bar"><i></i></div></div>
     <div class="boot-hint">press any key to skip</div>
   </div>
+  <div class="sd-dim" id="sd-dlg" hidden>
+    <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="sd-title">
+      <div class="dlg-t"><span id="sd-title">Shut Down Windows</span><button type="button" class="bevel sd-x" aria-label="Close">&times;</button></div>
+      <div class="dlg-b"><img src="images/win95/shutdown.png" alt="" width="32" height="32" />
+        <fieldset><legend>Are you sure you want to:</legend>
+          <label><input type="radio" name="sd" value="shut" checked /> <u>S</u>hut down the computer?</label>
+          <label><input type="radio" name="sd" value="restart" /> <u>R</u>estart the computer?</label>
+        </fieldset></div>
+      <div class="dlg-f"><button type="button" class="bevel sd-ok">OK</button><button type="button" class="bevel sd-cancel">Cancel</button><button type="button" class="bevel" disabled>Help</button></div>
+    </div>
+  </div>
+  <div id="sd-screen" hidden role="status" aria-live="polite"></div>
   <script>
   (function(){
     try {
@@ -640,17 +690,10 @@
       </div>
       <div class="win-body">
         <div class="item">
-          <div class="type">NEW BOOK</div>
-          <h3>RUPTURE</h3>
-          <p>Handwritten poems, reprinted from the original notebook. Every copy ordered here is signed by hand.</p>
-          <a class="btn" href="rupture.html">Order RUPTURE</a>
-        </div>
-        <div class="item">
           <div class="type">BOOK</div>
           <h3>undone</h3>
           <p>My first book of poems.</p>
           <a class="btn" href="https://www.amazon.com/undone-book-poems-Dmitry-Markelov/dp/B0DPWVRRWQ" target="_blank" rel="noopener noreferrer">Amazon</a>
-          <a class="btn" href="https://a.co/d/d8TvY5t" target="_blank" rel="noopener noreferrer">Look inside</a>
         </div>
         <div class="item">
           <div class="type">FREE BOOK</div>
@@ -892,7 +935,7 @@
           <button type="button" class="bevel ie-go">Go</button>
           <a class="bevel ie-new" href="https://dmitrymarkelov.com/" target="_blank" rel="noopener noreferrer">Open in new tab</a>
         </div>
-        <div class="ie-bm">Links: <button type="button" class="bevel" data-url="https://dmitrymarkelov.com/">dmitrymarkelov.com</button><button type="button" class="bevel" data-url="https://dmitrymarkelov.com/tech.html">Tech</button><button type="button" class="bevel" data-url="https://dmitrymarkelov.com/rupture.html">RUPTURE</button><button type="button" class="bevel" data-url="https://visionaryminds.solutions">Visionary Minds</button><button type="button" class="bevel" data-url="https://komorebi-mindmate.netlify.app/">Komorebi Mindmate</button><button type="button" class="bevel" data-url="https://slim-screen.vercel.app/">SlimScreen</button><button type="button" class="bevel" data-url="https://darkdmtr.com/">darkdmtr.com</button></div>
+        <div class="ie-bm">Links: <button type="button" class="bevel" data-url="https://dmitrymarkelov.com/">dmitrymarkelov.com</button><button type="button" class="bevel" data-url="https://dmitrymarkelov.com/tech.html">Tech</button><button type="button" class="bevel" data-url="https://visionaryminds.solutions">Visionary Minds</button><button type="button" class="bevel" data-url="https://komorebi-mindmate.netlify.app/">Komorebi Mindmate</button><button type="button" class="bevel" data-url="https://slim-screen.vercel.app/">SlimScreen</button><button type="button" class="bevel" data-url="https://darkdmtr.com/">darkdmtr.com</button></div>
         <div class="ie-view">
           <iframe class="ie-frame" title="Internet Explorer page"></iframe>
           <div class="ie-err" hidden><p><b>This page can&rsquo;t be displayed here.</b></p><p>The site doesn&rsquo;t allow itself to be shown inside another page.</p><a class="bevel ie-err-open" target="_blank" rel="noopener noreferrer">Open in new tab</a></div>
@@ -964,11 +1007,11 @@
         <img src="images/win95/ie.png" alt="" width="24" height="24" /> Internet Explorer
       </button>
       <div class="sm-sep" aria-hidden="true"></div>
-      <button type="button" class="sm-item" role="menuitem" data-open="poetry">
-        <img src="images/win95/poetry.png" alt="" width="24" height="24" /> Poetry
+      <button type="button" class="sm-item sm-parent" role="menuitem" aria-haspopup="menu" aria-expanded="false" data-sub="poetry">
+        <img src="images/win95/poetry.png" alt="" width="24" height="24" /> Poetry <span class="sm-arr" aria-hidden="true">&#9654;</span>
       </button>
-      <button type="button" class="sm-item" role="menuitem" data-open="music">
-        <img src="images/win95/music.png" alt="" width="24" height="24" /> Music
+      <button type="button" class="sm-item sm-parent" role="menuitem" aria-haspopup="menu" aria-expanded="false" data-sub="music">
+        <img src="images/win95/music.png" alt="" width="24" height="24" /> Music <span class="sm-arr" aria-hidden="true">&#9654;</span>
       </button>
       <button type="button" class="sm-item" role="menuitem" data-open="games">
         <img src="images/win95/games.png" alt="" width="24" height="24" /> Games
@@ -989,7 +1032,12 @@
       <a class="sm-item" role="menuitem" href="https://www.instagram.com/1.dmtr/" target="_blank" rel="noopener noreferrer">
         <img src="images/win95/instagram.png" alt="" width="24" height="24" /> Instagram @1.dmtr
       </a>
+      <div class="sm-sep" aria-hidden="true"></div>
+      <button type="button" class="sm-item" role="menuitem" id="sm-shutdown">
+        <img src="images/win95/shutdown.png" alt="" width="24" height="24" /> Shut Down...
+      </button>
     </nav>
+    <div class="sm-sub" id="sm-sub" role="menu" hidden></div>
     <div class="task-buttons" id="task-buttons"></div>
     <div class="tray" id="sys-tray" title="Local time — tap for date" role="status" aria-live="polite">
       <time id="tray-clock">--:--</time>
@@ -1110,7 +1158,7 @@
     Object.keys(map).forEach(function (k) { setupWin(map[k]); });
     function winIcon(w) {
       var i = document.createElement('img'); i.className = 'tb-ico'; i.alt = ''; i.width = 16; i.height = 16;
-      i.src = 'images/win95/' + ({ 'win-about': 'about', 'win-poetry': 'poetry', 'win-music': 'music', 'win-games': 'games', 'win-podcast': 'podcast',       'win-tech': 'tech', 'win-hire': 'hire', 'win-pdf': 'pdf', 'win-ie': 'ie' }[w.id] || (w.classList.contains('win-game') ? 'game' : 'about')) + '.png'; return i;
+      i.src = 'images/win95/' + ({ 'win-about': 'about', 'win-poetry': 'poetry', 'win-music': 'music', 'win-games': 'games', 'win-podcast': 'podcast',       'win-tech': 'tech', 'win-hire': 'hire', 'win-pdf': 'pdf', 'win-ie': 'ie' }[w.id] || (w.classList.contains('win-game') ? 'game' : w.classList.contains('win-poem') ? 'poetry' : 'about')) + '.png'; return i;
     }
     function setupWin(w) {
       var tt = w.querySelector('.titlebar .title'); if (tt && !tt.querySelector('.tb-ico')) tt.insertBefore(winIcon(w), tt.firstChild);
@@ -1225,6 +1273,7 @@
     function closeStartMenu() {
       if (!startMenu || startMenu.hasAttribute('hidden')) return;
       startMenu.setAttribute('hidden', '');
+      if (window.closeSub) closeSub();
       startBtn.setAttribute('aria-expanded', 'false');
       startBtn.classList.remove('open');
     }
@@ -1252,9 +1301,91 @@
     startMenu.querySelectorAll('a.sm-item').forEach(function (el) {
       el.addEventListener('click', function () { closeStartMenu(); });
     });
+    // Cascading submenus (Poetry, Music): hover opens on desktop, tap opens on phones (with a Back row)
+    // POEMS: add entries as { title: '...', text: '...' }; each opens a Notepad-style window with a Buy undone link
+    var POEMS = [];
+    var UNDONE_URL = 'https://www.amazon.com/undone-book-poems-Dmitry-Markelov/dp/B0DPWVRRWQ';
+    var sub = document.getElementById('sm-sub'), subKey = null, subFrom = null;
+    var hoverable = window.matchMedia('(hover: hover) and (min-width: 601px)');
+    function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    function openPoem(i) {
+      var key = 'poem' + i, w = map[key], p = POEMS[i];
+      if (!w) {
+        w = document.createElement('article');
+        w.className = 'win closed win-poem'; w.id = 'win-' + key;
+        w.setAttribute('aria-label', p.title); w.setAttribute('data-task', p.title);
+        w.innerHTML = '<div class="titlebar"><div class="title"></div><div class="controls">' +
+          '<button type="button" class="min">_</button><button type="button" class="max" aria-pressed="false">&#9633;</button>' +
+          '<button type="button" class="cls">&times;</button></div></div>' +
+          '<div class="win-body"><pre class="poem-text"></pre><a class="btn" target="_blank" rel="noopener noreferrer">Buy undone</a></div>';
+        w.querySelector('.title').textContent = p.title + '.txt - Notepad';
+        w.querySelector('.poem-text').textContent = p.text;
+        w.querySelector('.btn').href = UNDONE_URL;
+        var off = 24 * (i % 5); w.style.left = (60 + off) + 'px'; w.style.top = (30 + off) + 'px';
+        document.getElementById('desktop').appendChild(w); map[key] = w; setupWin(w);
+      }
+      openWin(w);
+    }
+    function subHTML(k) {
+      var h = '';
+      if (k === 'music') {
+        h += '<button type="button" class="sm-item" data-act="open" data-k="music"><img src="images/win95/music.png" alt="" /> Open Music</button>';
+        document.querySelectorAll('#win-music .releases').forEach(function (ul) {
+          var artist = ul.closest('.item').querySelector('h3').textContent;
+          h += '<div class="sm-sep"></div><div class="sm-head">' + esc(artist) + '</div>';
+          ul.querySelectorAll('a').forEach(function (a) {
+            if (a.textContent === 'bundle') return;
+            var ri = a.getAttribute('data-rel');
+            h += ri !== null ? '<button type="button" class="sm-item" data-act="rel" data-i="' + ri + '"><img src="images/win95/music.png" alt="" /> ' + esc(a.textContent) + '</button>'
+              : '<a class="sm-item" href="' + esc(a.href) + '" target="_blank" rel="noopener noreferrer"><img src="images/win95/music.png" alt="" /> ' + esc(a.textContent) + ' &#8599;</a>';
+          });
+        });
+      } else {
+        h += '<button type="button" class="sm-item" data-act="open" data-k="poetry"><img src="images/win95/poetry.png" alt="" /> Open Poetry</button><div class="sm-sep"></div>';
+        h += '<a class="sm-item" href="' + UNDONE_URL + '" target="_blank" rel="noopener noreferrer"><img src="images/win95/poetry.png" alt="" /> undone (Amazon) &#8599;</a>';
+        h += '<a class="sm-item" href="assets/Prima%20Vita%20by%20Dmitry%20A.%20Markelov.pdf"><img src="images/win95/pdf.png" alt="" /> Prima Vita (PDF)</a>';
+        if (POEMS.length) {
+          h += '<div class="sm-sep"></div><div class="sm-head">Poems</div>';
+          POEMS.forEach(function (p, i) { h += '<button type="button" class="sm-item" data-act="poem" data-i="' + i + '"><img src="images/win95/notepad.png" alt="" /> ' + esc(p.title) + '</button>'; });
+        }
+      }
+      return h;
+    }
+    window.closeSub = function () {
+      sub.hidden = true; subKey = null;
+      startMenu.querySelectorAll('.sm-parent').forEach(function (b) { b.classList.remove('on'); b.setAttribute('aria-expanded', 'false'); });
+    };
+    function openSub(btn) {
+      var k = btn.getAttribute('data-sub'); if (subKey === k && !sub.hidden) return;
+      closeSub(); subKey = k; subFrom = btn;
+      btn.classList.add('on'); btn.setAttribute('aria-expanded', 'true');
+      sub.innerHTML = subHTML(k); sub.setAttribute('aria-label', k === 'music' ? 'Music' : 'Poetry'); sub.hidden = false;
+      // Cascade to the right of the item at every width; on narrow phones it slides left just enough to stay on screen
+      var r = btn.getBoundingClientRect(), m = startMenu.getBoundingClientRect();
+      sub.style.left = Math.max(4, Math.min(m.right - 3, window.innerWidth - sub.offsetWidth - 4)) + 'px';
+      sub.style.top = Math.max(4, Math.min(r.top - 3, window.innerHeight - 40 - sub.offsetHeight)) + 'px';
+    }
+    startMenu.querySelectorAll('.sm-parent').forEach(function (b) {
+      b.addEventListener('click', function (e) { e.stopPropagation(); openSub(b); });
+      b.addEventListener('mouseenter', function () { if (hoverable.matches) openSub(b); });
+      b.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') { openSub(b); var f = sub.querySelector('.sm-item:not(.sm-back)'); if (f) f.focus(); } });
+    });
+    startMenu.querySelectorAll('.sm-item:not(.sm-parent)').forEach(function (b) {
+      b.addEventListener('mouseenter', function () { if (hoverable.matches) closeSub(); });
+    });
+    sub.addEventListener('keydown', function (e) { if (e.key === 'ArrowLeft' || e.key === 'Escape') { e.stopPropagation(); var f = subFrom; closeSub(); if (f) f.focus(); } });
+    sub.addEventListener('click', function (e) {
+      var el = e.target.closest('.sm-item'); if (!el) return;
+      var act = el.getAttribute('data-act');
+      closeStartMenu();
+      if (act === 'open') openWin(map[el.getAttribute('data-k')]);
+      else if (act === 'rel') { openWin(map.music); var a = document.querySelector('#win-music .releases a[data-rel="' + el.getAttribute('data-i') + '"]'); if (a) a.click(); }
+      else if (act === 'poem') openPoem(+el.getAttribute('data-i'));
+    });
+
     document.addEventListener('mousedown', function (e) {
       if (startMenu.hasAttribute('hidden')) return;
-      if (startMenu.contains(e.target) || startBtn.contains(e.target)) return;
+      if (startMenu.contains(e.target) || startBtn.contains(e.target) || document.getElementById('sm-sub').contains(e.target)) return;
       closeStartMenu();
     });
 
@@ -1314,13 +1445,15 @@
     function showBoot() {
       if (!boot) return;
       boot.removeAttribute('hidden');
-      var con = document.getElementById('boot-con');
+      boot.classList.remove('splash');
+      var con = document.getElementById('boot-con'); con.innerHTML = '';
+      var _h = boot.querySelector('.boot-hint'), _b = boot.querySelector('.boot-bar i'); if (_h) _h.classList.remove('on'); if (_b) _b.style.width = '0';
       var reduce = false;
       try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
       var timers = [];
       function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
       function line(html) { con.insertAdjacentHTML('beforeend', html + '\n'); }
-      function skip() { timers.forEach(clearTimeout); dismissBoot(); document.removeEventListener('keydown', skip); }
+      function skip() { timers.forEach(clearTimeout); dismissBoot(); document.removeEventListener('keydown', skip); boot.removeEventListener('click', skip); }
       boot.addEventListener('click', skip);
       document.addEventListener('keydown', skip);
       if (reduce) {
@@ -1369,6 +1502,39 @@
     } else if (boot) {
       boot.setAttribute('hidden', '');
     }
+
+    // Start > Shut Down...: authentic dialog; Restart replays the full boot, Shut Down shows the safe-to-turn-off screen
+    (function () {
+      var dlg = document.getElementById('sd-dlg'), scr = document.getElementById('sd-screen'), opener = null;
+      function closeAll() { document.querySelectorAll('.win:not(.closed)').forEach(closeWin); }
+      function hideDlg() { dlg.hidden = true; if (opener) opener.focus(); }
+      function restart() {
+        scr.hidden = true; scr.className = ''; scr.innerHTML = '';
+        if (framedCopy) { location.reload(); return; } // tunnel copies never boot; a reload is the sane restart
+        closeAll(); showBoot();
+      }
+      function shutDown() {
+        closeAll();
+        scr.className = 'off'; scr.hidden = false;
+        scr.innerHTML = '<button type="button" class="pwr" aria-label="Power on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v9"/><path d="M6.3 6.3a8 8 0 1 0 11.4 0"/></svg></button>';
+        var btn = scr.querySelector('.pwr'); btn.focus();
+        setTimeout(function () {
+          function on(e) { if (e.type === 'keydown') e.preventDefault(); btn.removeEventListener('click', on); document.removeEventListener('keydown', on, true); setTimeout(restart, 0); }
+          btn.addEventListener('click', on); document.addEventListener('keydown', on, true);
+        }, 400);
+      }
+      document.getElementById('sm-shutdown').addEventListener('click', function () {
+        closeStartMenu(); opener = startBtn; dlg.hidden = false; dlg.querySelector('.sd-ok').focus();
+      });
+      dlg.querySelector('.sd-ok').addEventListener('click', function () {
+        var v = dlg.querySelector('input[name=sd]:checked').value; dlg.hidden = true;
+        if (v === 'restart') restart(); else shutDown();
+      });
+      dlg.querySelector('.sd-cancel').addEventListener('click', hideDlg);
+      dlg.querySelector('.sd-x').addEventListener('click', hideDlg);
+      dlg.addEventListener('keydown', function (e) { if (e.key === 'Escape') { e.stopPropagation(); hideDlg(); } });
+      if (shot === 'shutdown') { dlg.hidden = false; }
+    })();
 
     var shotOpen = { tech: 'tech', hire: 'hire', pdf: 'pdf', podcast: 'podcast', music: 'music' };
     if (shot === 'start') openStartMenu();
