@@ -403,9 +403,9 @@
 
     /* ---- Boot: BIOS console then DMTR 89 splash ---- */
     #boot-splash {
-      position: fixed; inset: 0; z-index: 200; background: #000; color: #b8b8b8;
-      font: 13px/1.45 "Courier New", Courier, monospace; cursor: pointer;
-      overflow: hidden; padding: 14px 14px 40px;
+      position: fixed; inset: 0; z-index: 200; background: #000; color: #c0c0c0;
+      font: 700 20px/1.4 "Courier New", Courier, monospace; cursor: default;
+      overflow: hidden; padding: 20px 24px 48px; text-shadow: 0 0 4px rgba(192,192,192,0.35);
     }
     #boot-splash[hidden] { display: none !important; }
     #boot-con { margin: 0; white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere; }
@@ -421,11 +421,22 @@
     #boot-logo img { width: 150px; max-width: 60vw; filter: brightness(0) invert(1); }
     #boot-logo .t { color: #33ff66; font-size: 22px; letter-spacing: 0.3em; font-weight: 700; }
     #boot-logo .s { color: #888; font-size: 12px; letter-spacing: 0.2em; }
+    #boot-con .w { color: #fff; }
+    .boot-bar { width: 220px; max-width: 70vw; height: 16px; border: 2px solid #c0c0c0; padding: 2px; margin-top: 10px; }
+    .boot-bar i { display: block; height: 100%; width: 0; background: repeating-linear-gradient(90deg, #33ff66 0 10px, transparent 10px 12px); }
     .boot-hint {
-      position: absolute; left: 0; right: 0; bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-      text-align: center; color: #666; font-size: 11px;
+      position: absolute; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+      color: #555; font-size: 11px; font-weight: 400; text-shadow: none; opacity: 0; transition: opacity .6s;
     }
-    @media (max-width: 400px) { #boot-splash { font-size: 11.5px; padding: 10px 10px 40px; } }
+    .boot-hint.on { opacity: 1; }
+    @media (max-width: 600px) { #boot-splash { font-size: 15px; line-height: 1.45; padding: 14px 12px 44px; } }
+    .ie-deep { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,128,128,0.6); z-index: 5; }
+    .ie-deep[hidden] { display: none; }
+    .ie-deep .dlg { background: #c0c0c0; border: 2px solid; border-color: #fff #404040 #404040 #fff; width: min(340px, 92%); font: 12px Arial, sans-serif; }
+    .ie-deep .dlg-t { background: #000080; color: #fff; font-weight: 700; padding: 3px 6px; }
+    .ie-deep .dlg-b { display: flex; gap: 12px; padding: 12px; align-items: flex-start; }
+    .ie-deep .dlg-x { flex: none; width: 32px; height: 32px; border-radius: 50%; background: #e00; color: #fff; font: 700 20px/32px Arial; text-align: center; }
+    .ie-deep .dlg-f { text-align: center; padding: 0 0 10px; }
 
     /* ---- Start menu ---- */
     .start-menu {
@@ -536,8 +547,8 @@
 <body>
   <div id="boot-splash" role="dialog" aria-label="Starting DMTR 89">
     <pre id="boot-con" aria-hidden="true"></pre>
-    <div id="boot-logo"><img src="images/signature.png" alt="" /><div class="t">DMTR 89</div><div class="s">DMITRY MARKELOV</div></div>
-    <div class="boot-hint">Press any key or tap to skip</div>
+    <div id="boot-logo"><img src="images/signature.png" alt="" /><div class="t">DMTR 89</div><div class="s">DMITRY MARKELOV</div><div class="boot-bar"><i></i></div></div>
+    <div class="boot-hint">press any key to skip</div>
   </div>
   <script>
   (function(){
@@ -545,7 +556,8 @@
       var q=new URLSearchParams(location.search).get('shot');
       var skip=q && q!=='boot' && q!=='boot2';
       var done=sessionStorage.getItem('dmtr95_booted')==='1';
-      if (skip || (done && !q)) {
+      var framed=false; try { framed = window.self !== window.top; } catch(e) { framed = true; }
+      if (skip || framed || (done && !q)) {
         var el=document.getElementById('boot-splash');
         if (el) el.setAttribute('hidden','');
       }
@@ -885,6 +897,7 @@
           <iframe class="ie-frame" title="Internet Explorer page"></iframe>
           <div class="ie-err" hidden><p><b>This page can&rsquo;t be displayed here.</b></p><p>The site doesn&rsquo;t allow itself to be shown inside another page.</p><a class="bevel ie-err-open" target="_blank" rel="noopener noreferrer">Open in new tab</a></div>
         </div>
+        <div class="ie-deep" hidden role="alertdialog" aria-label="Tunnel too deep"><div class="dlg"><div class="dlg-t">Internet Explorer</div><div class="dlg-b"><div class="dlg-x">&times;</div><p>IEXPLORE has reached the bottom of the tunnel.<br />Recursion depth 5 exceeds this computer&rsquo;s 640K of memory. Climb back up and try again.</p></div><div class="dlg-f"><button type="button" class="bevel ie-deep-ok">OK</button></div></div></div>
         <div class="ie-status">Done</div>
       </div>
     </article>
@@ -1311,38 +1324,47 @@
       boot.addEventListener('click', skip);
       document.addEventListener('keydown', skip);
       if (reduce) {
-        con.textContent = 'DMTR 89 BIOS\nLoading DMTR 89... OK';
+        con.textContent = 'DMTR 89 BIOS v1.989\nC:\\>WIN';
         at(800, skip);
         return;
       }
       var hold = shot === 'boot' || shot === 'boot2';
-      line('<span class="g">DMTR 89 BIOS v1.989</span>  (c) Dmitry Markelov');
+      var hint = boot.querySelector('.boot-hint'), bar = boot.querySelector('.boot-bar i');
+      at(2000, function () { hint.classList.add('on'); });
+      var t = 0;
+      function J(ms) { return ms + Math.round(Math.random() * ms * 0.5); } // HDD-ish jitter
+      function then(ms, fn) { t += ms; at(t, fn); }
+      line('<span class="w">DMTR 89 BIOS v1.989</span>');
+      line('Copyright (C) 1989 Dmitry Markelov');
       line('');
       var mem = document.createElement('span'); con.appendChild(mem); con.appendChild(document.createTextNode('\n'));
-      var steps = 18;
-      for (var k = 1; k <= steps; k++) (function (k) {
-        at(80 + k * 50, function () { mem.textContent = 'Memory Test: ' + Math.round(k * 640 / steps) + 'K' + (k === steps ? ' OK' : ''); });
+      t = 400;
+      for (var k = 1; k <= 32; k++) (function (k) {
+        then(45, function () { mem.textContent = 'Memory Test: ' + (k * 512) + 'K' + (k === 32 ? ' OK' : ''); });
       })(k);
-      var L = [
-        [1150, ''],
-        [1250, 'Detecting drives...'],
-        [1600, '  Drive C: POETRY    OK'],
-        [1800, '  Drive D: MUSIC     OK'],
-        [2000, '  Drive E: TECH      OK'],
-        [2300, ''],
-        [2400, 'Loading DMTR 89...'],
-        [2850, '<span class="g">Starting desktop</span> <span class="cur">&nbsp;</span>']
-      ];
-      L.forEach(function (x) { at(x[0], function () { line(x[1]); }); });
-      if (hold) { if (shot === 'boot2') at(3100, function () { boot.classList.add('splash'); }); return; }
-      at(3100, function () { boot.classList.add('splash'); });
-      at(4100, skip);
+      [[450, ''], [250, 'Detecting drives...'], [J(300), '  A: 3.5" FLOPPY    OK'], [J(330), '  C: POETRY        OK'],
+       [J(330), '  D: MUSIC         OK'], [J(330), '  E: TECH          OK'], [500, ''],
+       [300, 'Starting MS-DOS...'], [J(650), 'HIMEM is testing extended'], [0, 'memory... done.'], [J(500), '']
+      ].forEach(function (x) { then(x[0], function () { line(x[1]); }); });
+      var pr = document.createElement('span'); var cur = '<span class="cur">&nbsp;</span>';
+      then(200, function () { con.appendChild(pr); pr.innerHTML = 'C:\\&gt;' + cur; });
+      var typed = '';
+      then(700, function () {});
+      'WIN'.split('').forEach(function (ch) { then(J(170), function () { typed += ch; pr.innerHTML = 'C:\\&gt;' + typed + cur; }); });
+      then(450, function () { pr.innerHTML = 'C:\\&gt;WIN\n'; });
+      if (hold && shot === 'boot') return;
+      then(350, function () { boot.classList.add('splash'); hint.classList.remove('on'); });
+      var start = t;
+      for (var b = 1; b <= 12; b++) (function (b) { at(start + b * J(140), function () { bar.style.width = Math.min(100, b * 100 / 12) + '%'; }); })(b);
+      if (hold) return;
+      at(start + 2000, skip);
     }
     var forceBoot = shot === 'boot' || shot === 'boot2';
     var skipBootForShot = !!shot && !forceBoot;
     var already = false;
     try { already = sessionStorage.getItem('dmtr95_booted') === '1'; } catch (e) {}
-    if (forceBoot || (!skipBootForShot && !already)) {
+    var framedCopy = false; try { framedCopy = window.self !== window.top; } catch (e) { framedCopy = true; }
+    if (!framedCopy && (forceBoot || (!skipBootForShot && !already))) {
       showBoot();
     } else if (boot) {
       boot.setAttribute('hidden', '');
@@ -1409,13 +1431,27 @@
       var back = ie.querySelector('.ie-back'), fwd = ie.querySelector('.ie-fwd'), err = ie.querySelector('.ie-err');
       var st = ie.querySelector('.ie-status'), newTab = ie.querySelector('.ie-new');
       var hist = [], pos = -1;
+      // Endless tunnel: this site inside its own IE. depth = how many frames deep this copy is.
+      var depth = 0; try { var pw = window; while (pw !== pw.top && depth < 50) { pw = pw.parent; depth++; } } catch (e) {}
+      var MAXD = 5, deep = ie.querySelector('.ie-deep'), ieTitle = ie.querySelector('.titlebar .title');
+      var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+      var HOME = local ? location.origin + '/' : 'https://dmitrymarkelov.com/';
+      ie.querySelector('.ie-deep-ok').addEventListener('click', function () { deep.hidden = true; closeWin(ie); });
+      function isSelf(h) { return h === 'dmitrymarkelov.com' || h === 'www.dmitrymarkelov.com' || h === location.hostname; }
+      function setTitle95(t) { var n = ieTitle.lastChild; if (n && n.nodeType === 3) n.textContent = t; else ieTitle.appendChild(document.createTextNode(t)); }
       function show(u) {
         url.value = u; newTab.href = u; ie.querySelector('.ie-err-open').href = u;
         var host = ''; try { host = new URL(u).hostname; } catch (e) {}
-        var blocked = NOFRAME.indexOf(host) !== -1 || !/^https:\/\//.test(u);
+        var blocked = NOFRAME.indexOf(host) !== -1 || !(/^https:\/\//.test(u) || (local && isSelf(host)));
+        var self = isSelf(host);
+        setTitle95(self ? host + ' (depth ' + (depth + 1) + ') - Internet Explorer' : 'Internet Explorer');
+        deep.hidden = !(self && depth + 1 >= MAXD);
+        if (!deep.hidden) { fr.src = 'about:blank'; st.textContent = 'Tunnel limit reached'; back.disabled = pos <= 0; fwd.disabled = pos >= hist.length - 1; return; }
         err.hidden = !blocked;
         st.textContent = blocked ? 'Can\u2019t display ' + u : 'Opening ' + u + '\u2026';
-        fr.src = blocked ? 'about:blank' : u;
+        // Browsers refuse to nest a frame whose URL matches an ancestor's, so each level gets its own ?tunnel=N
+        var src = u; if (self && !blocked) { try { var uu = new URL(u); uu.searchParams.set('tunnel', String(depth + 1)); src = uu.href; } catch (e) {} }
+        fr.src = blocked ? 'about:blank' : src;
         back.disabled = pos <= 0; fwd.disabled = pos >= hist.length - 1;
       }
       function nav(u) {
@@ -1430,7 +1466,7 @@
       url.addEventListener('keydown', function (e) { if (e.key === 'Enter') nav(url.value); });
       ie.querySelectorAll('.ie-bm [data-url]').forEach(function (b) { b.addEventListener('click', function () { nav(b.getAttribute('data-url')); }); });
       new MutationObserver(function () {
-        if (!ie.classList.contains('closed') && pos < 0) nav('https://dmitrymarkelov.com/');
+        if (!ie.classList.contains('closed') && pos < 0) nav(HOME);
         if (ie.classList.contains('closed')) { fr.src = 'about:blank'; hist = []; pos = -1; }
       }).observe(ie, { attributes: true, attributeFilter: ['class'] });
 
@@ -1508,6 +1544,7 @@
       function blocked() {
         var b = document.getElementById('boot-splash');
         if (b && !b.hidden) return true;
+        if (window.self !== window.top) return true;
         if (document.querySelector('.win-game:not(.closed):not(.minimized)')) return true;
         return window.ampPlaying();
       }
